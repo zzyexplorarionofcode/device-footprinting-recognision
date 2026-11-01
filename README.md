@@ -55,7 +55,9 @@ FADE 主评估与轮换配置使用单次重复，基线配置使用两次重复
 ## 第一阶段实验结论与结果
 
 - 结论汇总：[docs/第一阶段实验结论.md](docs/第一阶段实验结论.md)
+- 一页简报：[docs/第一阶段简报.md](docs/第一阶段简报.md)
 - 评估协议：[docs/评估协议.md](docs/评估协议.md)
+- PingPong 审计：[docs/PingPong审计.md](docs/PingPong审计.md)
 - 结果 JSON：artifacts/es/（BA、CI、消融、直方图、dummy、时间稳健性）
 - 数据划分：artifacts/splits/（只保留 split_indices.npz）
 - 原始数据、处理后的 NPZ、运行产物不提交；复现见 [docs/数据处理与运行说明.md](docs/数据处理与运行说明.md)。

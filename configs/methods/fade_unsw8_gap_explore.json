@@ -1,0 +1,885 @@
+{
+  "schema_version": 1,
+  "dataset": {
+    "devices": [
+      "AugustDoorBell",
+      "iHome",
+      "NetatmoWelcome",
+      "AmazonEcho",
+      "WithingsSleepSensor",
+      "TribySpeaker",
+      "PhilipsHue",
+      "PixStarPhotoFrame"
+    ],
+    "min_packets": 4,
+    "max_packets": 32,
+    "tls_port": 443,
+    "mac_filename": "_iotdevice-mac.txt",
+    "pcap_pattern": "*.pcap",
+    "max_feature_gap_seconds": 10.0,
+    "max_frame_length": 1514.0
+  },
+  "trigger_jitter": {
+    "length_relative_bound": 0.05,
+    "gap_relative_bound": 0.05,
+    "minimum_gap_seconds": 0.004
+  },
+  "evaluation": {
+    "capture_train_ratio": 0.75,
+    "split_seed": 42,
+    "default_apply_seed": 731800,
+    "retraining_mask_seed": 731100,
+    "model_seed": 42,
+    "retraining_ratios": [
+      0.0,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ]
+  },
+  "selection": {
+    "validation_captures_per_class": 2,
+    "retraining_ratios": [
+      0.5,
+      1.0
+    ],
+    "repeats": 2,
+    "validation_trials": 3,
+    "same_mapping_floor": 0.65,
+    "trigger_selection_mode": "geometry",
+    "trigger_codebook_candidates": 6,
+    "trigger_pool_size": 64,
+    "trigger_min_gap_seconds": 0.004,
+    "trigger_codebook_prefix": "tb32_reduce30_delay1500ms",
+    "inner_split_seed": 731100,
+    "weakener_train_seed": 731200,
+    "weakener_validation_seed": 731300,
+    "trigger_train_seed": 731400,
+    "trigger_validation_seed": 731500,
+    "codebook_seed": 731600,
+    "weakener_candidates": [
+      {
+        "candidate_id": "w32_00_balanced_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.12,
+            0.2,
+            0.22,
+            0.2,
+            0.16,
+            0.1
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.22,
+            0.32,
+            0.28,
+            0.18
+          ],
+          "max_padding_per_packet": 260.0,
+          "max_delay_per_packet": 0.02571428571428571,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.12,
+            0.22,
+            0.66
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.58,
+          "delay_probability": 0.58
+        }
+      },
+      {
+        "candidate_id": "w32_01_dense_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.12,
+            0.2,
+            0.22,
+            0.2,
+            0.16,
+            0.1
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.22,
+            0.32,
+            0.28,
+            0.18
+          ],
+          "max_padding_per_packet": 180.0,
+          "max_delay_per_packet": 0.017142857142857144,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.12,
+            0.22,
+            0.66
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.78,
+          "delay_probability": 0.76
+        }
+      },
+      {
+        "candidate_id": "w32_02_sparse_strong_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.12,
+            0.2,
+            0.22,
+            0.2,
+            0.16,
+            0.1
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.22,
+            0.32,
+            0.28,
+            0.18
+          ],
+          "max_padding_per_packet": 400.0,
+          "max_delay_per_packet": 0.04285714285714286,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.12,
+            0.22,
+            0.66
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.38,
+          "delay_probability": 0.4
+        }
+      },
+      {
+        "candidate_id": "w32_03_padding_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.12,
+            0.2,
+            0.22,
+            0.2,
+            0.16,
+            0.1
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.22,
+            0.32,
+            0.28,
+            0.18
+          ],
+          "max_padding_per_packet": 320.0,
+          "max_delay_per_packet": 0.02571428571428571,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.12,
+            0.22,
+            0.66
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.78,
+          "delay_probability": 0.38
+        }
+      },
+      {
+        "candidate_id": "w32_04_timing_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.12,
+            0.2,
+            0.22,
+            0.2,
+            0.16,
+            0.1
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.22,
+            0.32,
+            0.28,
+            0.18
+          ],
+          "max_padding_per_packet": 260.0,
+          "max_delay_per_packet": 0.03642857142857143,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.12,
+            0.22,
+            0.66
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.4,
+          "delay_probability": 0.8
+        }
+      },
+      {
+        "candidate_id": "w32_05_high_targets_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.04,
+            0.1,
+            0.18,
+            0.25,
+            0.25,
+            0.18
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.08,
+            0.2,
+            0.34,
+            0.38
+          ],
+          "max_padding_per_packet": 260.0,
+          "max_delay_per_packet": 0.02571428571428571,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.04,
+            0.1,
+            0.86
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.6,
+          "delay_probability": 0.58
+        }
+      },
+      {
+        "candidate_id": "w32_06_mid_targets_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.1,
+            0.25,
+            0.3,
+            0.22,
+            0.1,
+            0.03
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.15,
+            0.4,
+            0.35,
+            0.1
+          ],
+          "max_padding_per_packet": 220.0,
+          "max_delay_per_packet": 0.02571428571428571,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.1,
+            0.25,
+            0.6499999999999999
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.16,
+            0.24,
+            0.28,
+            0.2,
+            0.12
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.68,
+          "delay_probability": 0.68
+        }
+      },
+      {
+        "candidate_id": "w32_07_byte_timing_heavy_reduce30_scaled_dummy_cap115_delay1500ms",
+        "weakener": {
+          "length_targets": [
+            256.0,
+            512.0,
+            768.0,
+            1024.0,
+            1280.0,
+            1514.0
+          ],
+          "length_probabilities": [
+            0.12,
+            0.2,
+            0.22,
+            0.2,
+            0.16,
+            0.1
+          ],
+          "gap_targets": [
+            0.005142857142857143,
+            0.012857142857142855,
+            0.02571428571428571,
+            0.04285714285714286
+          ],
+          "gap_probabilities": [
+            0.22,
+            0.32,
+            0.28,
+            0.18
+          ],
+          "max_padding_per_packet": 340.0,
+          "max_delay_per_packet": 0.03428571428571429,
+          "dummy_length_targets": [
+            60.0,
+            84.0,
+            115.0
+          ],
+          "dummy_length_probabilities": [
+            0.12,
+            0.22,
+            0.66
+          ],
+          "dummy_gap_targets": [
+            0.0018,
+            0.0036,
+            0.0075,
+            0.012,
+            0.018000000000000002
+          ],
+          "dummy_gap_probabilities": [
+            0.06,
+            0.12,
+            0.24,
+            0.28,
+            0.3
+          ],
+          "dummy_insertion_outbound_slots": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "padding_probability": 0.72,
+          "delay_probability": 0.7
+        }
+      }
+    ]
+  },
+  "budget_extension_provenance": {
+    "source": "D:\\VS-copilot\\shuijun\\iot_uap_simple_real_tls\\iot_uap_simple\\our_method\\method32_config_unsw_10class_selected.txt",
+    "source_sha256": "1b42a428029aa7c09b312caf646992c688149fbc81ca06b5da507173a8fa218a",
+    "bytes_multiplier": 1.5,
+    "delay_multiplier": 40,
+    "weakener_dummy_length_cap": 115,
+    "weakener_dummy_count": 3,
+    "trigger_packet_count": 2,
+    "dummy_upper_bound": 6,
+    "trigger_transform": "scale original length proportions to 283B; first length round half up, second receives remainder; original gaps multiplied by 40",
+    "byte_partition_rounding": "floor desired trigger 283.5B to 283B; weakener receives remaining 347B; total 630B unchanged",
+    "weakener_sampling": "dummy lengths capped at 115B with duplicate probability mass merged; other targets/probabilities/per-packet caps unchanged",
+    "mapping_and_relative_jitter": "unchanged",
+    "new_policy_selection": false,
+    "delay_pilot": {
+      "source_config": "method33_config_unsw_8class_high_budget.json",
+      "time_scale": 0.14285714285714285,
+      "changed_fields": [
+        "hard_budget.delay_seconds",
+        "weakener_budget.delay_seconds",
+        "trigger_budget.delay_seconds",
+        "weakener.gap_targets",
+        "weakener.dummy_gap_targets",
+        "weakener.max_delay_per_packet",
+        "selection.weakener_candidates[*].weakener time fields",
+        "trigger_codes[*][*].gap_seconds"
+      ],
+      "unchanged_fields": [
+        "byte budgets",
+        "packet budgets",
+        "trigger positions",
+        "class mappings",
+        "weakener probabilities",
+        "trigger lengths"
+      ],
+      "new_selection_performed": false
+    }
+  },
+  "budget_profile": {
+    "name": "delay1500ms",
+    "label_zh": "FADE 1.5秒时延上限",
+    "not_reselected": true
+  },
+  "method33": {
+    "version": 1,
+    "method_key": "method33_position_coded_zero_sum_jittered_rotating_trigger",
+    "weakener_candidate_id": "w32_00_balanced_reduce30_scaled_dummy_cap115_delay1500ms",
+    "trigger_codebook_id": "tb32_reduce30_00_tn2_bytes1p5_delay40_delay1500ms",
+    "limits": {
+      "max_frame_length": 1514.0,
+      "min_dummy_frame_length": 60.0,
+      "require_all_dummies_in_window": false
+    },
+    "hard_budget": {
+      "bytes": 630.0,
+      "delay_seconds": 1.5,
+      "dummy_packets": 6
+    },
+    "weakener_budget": {
+      "bytes": 347.0,
+      "delay_seconds": 1.05,
+      "dummy_packets": 3
+    },
+    "trigger_budget": {
+      "bytes": 283,
+      "delay_seconds": 0.45,
+      "dummy_packets": 2
+    },
+    "weakener_dummy_count": 3,
+    "trigger_packet_count": 2,
+    "weakener": {
+      "length_targets": [
+        256.0,
+        512.0,
+        768.0,
+        1024.0,
+        1280.0,
+        1514.0
+      ],
+      "length_probabilities": [
+        0.12,
+        0.2,
+        0.22,
+        0.2,
+        0.16,
+        0.1
+      ],
+      "gap_targets": [
+        0.005142857142857143,
+        0.012857142857142855,
+        0.02571428571428571,
+        0.04285714285714286
+      ],
+      "gap_probabilities": [
+        0.22,
+        0.32,
+        0.28,
+        0.18
+      ],
+      "max_padding_per_packet": 260.0,
+      "max_delay_per_packet": 0.02571428571428571,
+      "dummy_length_targets": [
+        60.0,
+        84.0,
+        115.0
+      ],
+      "dummy_length_probabilities": [
+        0.12,
+        0.22,
+        0.66
+      ],
+      "dummy_gap_targets": [
+        0.0018,
+        0.0036,
+        0.0075,
+        0.012,
+        0.018000000000000002
+      ],
+      "dummy_gap_probabilities": [
+        0.16,
+        0.24,
+        0.28,
+        0.2,
+        0.12
+      ],
+      "dummy_insertion_outbound_slots": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "padding_probability": 0.58,
+      "delay_probability": 0.58
+    },
+    "trigger_codes": [
+      [
+        [
+          121.0,
+          0.14206499808021456
+        ],
+        [
+          162.0,
+          0.30793500191978546
+        ]
+      ],
+      [
+        [
+          100.0,
+          0.3804042492251283
+        ],
+        [
+          183.0,
+          0.06959575077487173
+        ]
+      ],
+      [
+        [
+          192.0,
+          0.340362
+        ],
+        [
+          91.0,
+          0.109638
+        ]
+      ],
+      [
+        [
+          193.0,
+          0.10265261618329338
+        ],
+        [
+          90.0,
+          0.3473473838167066
+        ]
+      ],
+      [
+        [
+          91.0,
+          0.24591199105292327
+        ],
+        [
+          192.0,
+          0.20408800894707668
+        ]
+      ],
+      [
+        [
+          184.0,
+          0.19902788088081902
+        ],
+        [
+          99.0,
+          0.250972119119181
+        ]
+      ],
+      [
+        [
+          141.0,
+          0.26961832154657156
+        ],
+        [
+          142.0,
+          0.18038167845342845
+        ]
+      ],
+      [
+        [
+          156.0,
+          0.3527022560244439
+        ],
+        [
+          127.0,
+          0.0972977439755561
+        ]
+      ]
+    ],
+    "old_mapping": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "next_mapping": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      0
+    ],
+    "trigger_position_anchor": "original_real_packet_both_directions",
+    "trigger_positions": [
+      [
+        1,
+        8
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        8,
+        16
+      ],
+      [
+        1,
+        12
+      ],
+      [
+        4,
+        16
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        8,
+        12
+      ]
+    ]
+  },
+  "runtime_protocol": {
+    "version": 2,
+    "first_packet_wait_observable": false,
+    "dummy_visibility": "tail_allowed_full_cost",
+    "parameter_status": "frozen_config_not_reselected",
+    "partition_protocol": "unsw-8class-train-cap10000-v1",
+    "train_cap_per_class": 10000,
+    "source_template": "configs\\methods\\method33_config_unsw_10class_high_budget.json",
+    "source_template_sha256": "522c592d9bd88f7b6ed2b152e00427e4f2ea93c6f6e4b30f22e68783ea23c35d",
+    "code_assignment": "first eight template codewords bound to declared new device order",
+    "rotation": "fixed cyclic shift by one; defined without classifier scores"
+  }
+}

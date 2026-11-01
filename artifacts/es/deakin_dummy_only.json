@@ -1,0 +1,350 @@
+{
+  "lr": {
+    "ba": 0.1119167264895908,
+    "ba_from_recall": 0.1119167264895908,
+    "recall_sum": 1.1191672648959081,
+    "accuracy": 0.20840105013126642,
+    "classes_present": [
+      "Echo Show 8",
+      "Netatmo Weather Station",
+      "TOPERSUN Smart Plug",
+      "32' Smart Monitor M80B UHD",
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera",
+      "Netatmo Smart Indoor Security Camera",
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera",
+      "Perfk Motion Sensor",
+      "Pix-Star Easy Digital Photo Frame",
+      "HP Envy"
+    ],
+    "test_support": {
+      "Echo Show 8": 1501,
+      "Netatmo Weather Station": 133,
+      "TOPERSUN Smart Plug": 1393,
+      "32' Smart Monitor M80B UHD": 585,
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera": 210,
+      "Netatmo Smart Indoor Security Camera": 1286,
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera": 1179,
+      "Perfk Motion Sensor": 284,
+      "Pix-Star Easy Digital Photo Frame": 493,
+      "HP Envy": 935
+    },
+    "ba_ci": [
+      0.11009880558952874,
+      0.11372227019623024
+    ],
+    "per_class": {
+      "Echo Show 8": {
+        "support": 1501,
+        "recall": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "Netatmo Weather Station": {
+        "support": 133,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TOPERSUN Smart Plug": {
+        "support": 1393,
+        "recall": 0.1191672648959081,
+        "ci": [
+          0.10098805589528742,
+          0.13722270196230235
+        ]
+      },
+      "32' Smart Monitor M80B UHD": {
+        "support": 585,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera": {
+        "support": 210,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Smart Indoor Security Camera": {
+        "support": 1286,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera": {
+        "support": 1179,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Perfk Motion Sensor": {
+        "support": 284,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Pix-Star Easy Digital Photo Frame": {
+        "support": 493,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "HP Envy": {
+        "support": 935,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "rf": {
+    "ba": 0.1119167264895908,
+    "ba_from_recall": 0.1119167264895908,
+    "recall_sum": 1.1191672648959081,
+    "accuracy": 0.20840105013126642,
+    "classes_present": [
+      "Echo Show 8",
+      "Netatmo Weather Station",
+      "TOPERSUN Smart Plug",
+      "32' Smart Monitor M80B UHD",
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera",
+      "Netatmo Smart Indoor Security Camera",
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera",
+      "Perfk Motion Sensor",
+      "Pix-Star Easy Digital Photo Frame",
+      "HP Envy"
+    ],
+    "test_support": {
+      "Echo Show 8": 1501,
+      "Netatmo Weather Station": 133,
+      "TOPERSUN Smart Plug": 1393,
+      "32' Smart Monitor M80B UHD": 585,
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera": 210,
+      "Netatmo Smart Indoor Security Camera": 1286,
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera": 1179,
+      "Perfk Motion Sensor": 284,
+      "Pix-Star Easy Digital Photo Frame": 493,
+      "HP Envy": 935
+    },
+    "ba_ci": [
+      0.10981464511301084,
+      0.11355991644305562
+    ],
+    "per_class": {
+      "Echo Show 8": {
+        "support": 1501,
+        "recall": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "Netatmo Weather Station": {
+        "support": 133,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TOPERSUN Smart Plug": {
+        "support": 1393,
+        "recall": 0.1191672648959081,
+        "ci": [
+          0.09814645113010832,
+          0.13559916443055603
+        ]
+      },
+      "32' Smart Monitor M80B UHD": {
+        "support": 585,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera": {
+        "support": 210,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Smart Indoor Security Camera": {
+        "support": 1286,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera": {
+        "support": 1179,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Perfk Motion Sensor": {
+        "support": 284,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Pix-Star Easy Digital Photo Frame": {
+        "support": 493,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "HP Envy": {
+        "support": 935,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "mlp": {
+    "ba": 0.1119167264895908,
+    "ba_from_recall": 0.1119167264895908,
+    "recall_sum": 1.1191672648959081,
+    "accuracy": 0.20840105013126642,
+    "classes_present": [
+      "Echo Show 8",
+      "Netatmo Weather Station",
+      "TOPERSUN Smart Plug",
+      "32' Smart Monitor M80B UHD",
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera",
+      "Netatmo Smart Indoor Security Camera",
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera",
+      "Perfk Motion Sensor",
+      "Pix-Star Easy Digital Photo Frame",
+      "HP Envy"
+    ],
+    "test_support": {
+      "Echo Show 8": 1501,
+      "Netatmo Weather Station": 133,
+      "TOPERSUN Smart Plug": 1393,
+      "32' Smart Monitor M80B UHD": 585,
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera": 210,
+      "Netatmo Smart Indoor Security Camera": 1286,
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera": 1179,
+      "Perfk Motion Sensor": 284,
+      "Pix-Star Easy Digital Photo Frame": 493,
+      "HP Envy": 935
+    },
+    "ba_ci": [
+      0.10988320965291573,
+      0.11358660835023665
+    ],
+    "per_class": {
+      "Echo Show 8": {
+        "support": 1501,
+        "recall": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "Netatmo Weather Station": {
+        "support": 133,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TOPERSUN Smart Plug": {
+        "support": 1393,
+        "recall": 0.1191672648959081,
+        "ci": [
+          0.09883209652915742,
+          0.13586608350236645
+        ]
+      },
+      "32' Smart Monitor M80B UHD": {
+        "support": 585,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TP-Link Tapo Pan/Tilt Wi-Fi Camera": {
+        "support": 210,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Smart Indoor Security Camera": {
+        "support": 1286,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "SAMSUNG Pan/Tilt 1080P Wi-Fi Camera": {
+        "support": 1179,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Perfk Motion Sensor": {
+        "support": 284,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Pix-Star Easy Digital Photo Frame": {
+        "support": 493,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "HP Envy": {
+        "support": 935,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

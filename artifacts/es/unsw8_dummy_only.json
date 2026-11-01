@@ -1,0 +1,290 @@
+{
+  "lr": {
+    "ba": 0.1556210335497995,
+    "ba_from_recall": 0.1556210335497995,
+    "recall_sum": 1.244968268398396,
+    "accuracy": 0.281875,
+    "classes_present": [
+      "AugustDoorBell",
+      "iHome",
+      "NetatmoWelcome",
+      "AmazonEcho",
+      "WithingsSleepSensor",
+      "TribySpeaker",
+      "PhilipsHue",
+      "PixStarPhotoFrame"
+    ],
+    "test_support": {
+      "AugustDoorBell": 6619,
+      "iHome": 437,
+      "NetatmoWelcome": 441,
+      "AmazonEcho": 291,
+      "WithingsSleepSensor": 104,
+      "TribySpeaker": 59,
+      "PhilipsHue": 29,
+      "PixStarPhotoFrame": 20
+    },
+    "ba_ci": [
+      0.14975851669216547,
+      0.17129442165403072
+    ],
+    "per_class": {
+      "AugustDoorBell": {
+        "support": 6619,
+        "recall": 0.27617464873848013,
+        "ci": [
+          0.2675750176223204,
+          0.2852823563413446
+        ]
+      },
+      "iHome": {
+        "support": 437,
+        "recall": 0.059496567505720827,
+        "ci": [
+          0.0,
+          0.08791208791208792
+        ]
+      },
+      "NetatmoWelcome": {
+        "support": 441,
+        "recall": 0.909297052154195,
+        "ci": [
+          0.87810031614905,
+          0.942391516549827
+        ]
+      },
+      "AmazonEcho": {
+        "support": 291,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "WithingsSleepSensor": {
+        "support": 104,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TribySpeaker": {
+        "support": 59,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "PhilipsHue": {
+        "support": 29,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "PixStarPhotoFrame": {
+        "support": 20,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "rf": {
+    "ba": 0.1537251841764367,
+    "ba_from_recall": 0.1537251841764367,
+    "recall_sum": 1.2298014734114937,
+    "accuracy": 0.249875,
+    "classes_present": [
+      "AugustDoorBell",
+      "iHome",
+      "NetatmoWelcome",
+      "AmazonEcho",
+      "WithingsSleepSensor",
+      "TribySpeaker",
+      "PhilipsHue",
+      "PixStarPhotoFrame"
+    ],
+    "test_support": {
+      "AugustDoorBell": 6619,
+      "iHome": 437,
+      "NetatmoWelcome": 441,
+      "AmazonEcho": 291,
+      "WithingsSleepSensor": 104,
+      "TribySpeaker": 59,
+      "PhilipsHue": 29,
+      "PixStarPhotoFrame": 20
+    },
+    "ba_ci": [
+      0.14730423322330607,
+      0.16481816950922512
+    ],
+    "per_class": {
+      "AugustDoorBell": {
+        "support": 6619,
+        "recall": 0.23583622903761897,
+        "ci": [
+          0.22690367999959898,
+          0.24429558051972056
+        ]
+      },
+      "iHome": {
+        "support": 437,
+        "recall": 0.08466819221967964,
+        "ci": [
+          0.0,
+          0.12087912087912088
+        ]
+      },
+      "NetatmoWelcome": {
+        "support": 441,
+        "recall": 0.909297052154195,
+        "ci": [
+          0.878351402733532,
+          0.9406324036936853
+        ]
+      },
+      "AmazonEcho": {
+        "support": 291,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "WithingsSleepSensor": {
+        "support": 104,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TribySpeaker": {
+        "support": 59,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "PhilipsHue": {
+        "support": 29,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "PixStarPhotoFrame": {
+        "support": 20,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "mlp": {
+    "ba": 0.205940384990403,
+    "ba_from_recall": 0.205940384990403,
+    "recall_sum": 1.647523079923224,
+    "accuracy": 0.645,
+    "classes_present": [
+      "AugustDoorBell",
+      "iHome",
+      "NetatmoWelcome",
+      "AmazonEcho",
+      "WithingsSleepSensor",
+      "TribySpeaker",
+      "PhilipsHue",
+      "PixStarPhotoFrame"
+    ],
+    "test_support": {
+      "AugustDoorBell": 6619,
+      "iHome": 437,
+      "NetatmoWelcome": 441,
+      "AmazonEcho": 291,
+      "WithingsSleepSensor": 104,
+      "TribySpeaker": 59,
+      "PhilipsHue": 29,
+      "PixStarPhotoFrame": 20
+    },
+    "ba_ci": [
+      0.20152404812764707,
+      0.2331521044865011
+    ],
+    "per_class": {
+      "AugustDoorBell": {
+        "support": 6619,
+        "recall": 0.7176310620939719,
+        "ci": [
+          0.7101319943254142,
+          0.7249824433663297
+        ]
+      },
+      "iHome": {
+        "support": 437,
+        "recall": 0.020594965675057208,
+        "ci": [
+          0.0,
+          0.03296703296703297
+        ]
+      },
+      "NetatmoWelcome": {
+        "support": 441,
+        "recall": 0.909297052154195,
+        "ci": [
+          0.8767025954525954,
+          0.9409992538241512
+        ]
+      },
+      "AmazonEcho": {
+        "support": 291,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "WithingsSleepSensor": {
+        "support": 104,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "TribySpeaker": {
+        "support": 59,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "PhilipsHue": {
+        "support": 29,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "PixStarPhotoFrame": {
+        "support": 20,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

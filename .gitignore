@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+data/processed/
+tmp/
+artifacts/*
+!artifacts/es/
+!artifacts/es/*.json
+!artifacts/splits/
+!artifacts/splits/*.npz

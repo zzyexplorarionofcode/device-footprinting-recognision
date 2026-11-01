@@ -1,0 +1,55 @@
+"""Public API for the isolated iPET PyTorch v2-aligned implementation."""
+
+from .baseline import (
+    DEFAULT_DISCRIMINATOR_EPOCHS,
+    DEFAULT_DISCRIMINATOR_RETRAIN_EPOCHS,
+    DEFAULT_GENERATOR_EPOCHS,
+    DEFAULT_TRAINING_STAGES,
+    IPET_METHOD,
+    IPET_OUTBOUND_METHOD,
+    IPET_BUDGETED_V3_METHOD,
+    PHYSICAL_RUNTIME_MARKER,
+    OFFICIAL_INITIAL_DISCRIMINATOR_BATCH_SIZE,
+    OFFICIAL_IPET_BATCH_SIZE,
+    OFFICIAL_NADAM_EPS,
+    OFFICIAL_NADAM_LR,
+    OFFICIAL_PERTURBATION_VECTOR_COUNT,
+    OUTBOUND_REPRODUCTION_NOTICE,
+    OutboundOnlyOfficialCodeIPETPolicy,
+    REPRODUCTION_NOTICE,
+    OfficialCodeIPETPolicy,
+    UPSTREAM_COMMIT,
+    UPSTREAM_REPOSITORY,
+    apply_policy,
+    apply_budgeted_policy_v3,
+    apply_shared_budget_policy,
+    fit_baseline,
+    fit_outbound_only_baseline,
+    inject_official_ipet_trace,
+    load_policy,
+    save_policy,
+    summarize_application,
+    validate_dataset,
+)
+from .model import (
+    DEFAULT_GENERATION_BATCH_SIZE,
+    LATENT_DIM,
+    MAX_PACKETS_PER_OMEGA,
+    MAX_PAYLOAD_PER_OMEGA,
+    OfficialIPETGenerator,
+    OfficialMSequenceDiscriminator,
+    generate_perturbation,
+    generate_perturbation_pool,
+    train_official_ipet,
+)
+from .traffic import (
+    FEATURE_ORDER,
+    OMEGA_SECONDS,
+    PerturbationPlan,
+    SILENCE_THRESHOLD_SECONDS,
+    TOTAL_TIME_SECONDS,
+    TraceEvent,
+    slotize_flows,
+)
+
+__all__ = [name for name in globals() if not name.startswith("_")]

@@ -1,0 +1,6 @@
+numpy<2
+scikit-learn
+tensorflow==2.15.0
+tf-keras==2.15.0
+tensorflow-probability==0.23.0
+tf-agents==0.19.0

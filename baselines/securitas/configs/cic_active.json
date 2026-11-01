@@ -1,0 +1,24 @@
+{
+  "method33_config": "configs/methods/fade_cic_active.json",
+  "dataset": "data/processed/cic_v2/flows_cic_active_10class.npz",
+  "dataset_status": "CIC active: 10 classes, whole-PCAP split, no classifier undersampling",
+  "data_protocol": "cic-tcp-sessions-v2-first-packet-origin",
+  "simulate_icmp": true,
+  "protocol": {
+    "header_mode": "pcap"
+  },
+  "icmp": {
+    "response_probability": 0.48,
+    "timing_model": "uniform_before_next_inbound",
+    "tail_delay_seconds": 0.01,
+    "simulation_seed": 20260913
+  },
+  "data": {
+    "inner_split_mode": "method32-captures"
+  },
+  "shared_budget_file": "configs/experiments/baseline_budget.json",
+  "policy": {
+    "epochs": 30,
+    "validation_candidates": 4
+  }
+}

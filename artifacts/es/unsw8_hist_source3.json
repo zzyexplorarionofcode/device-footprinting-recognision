@@ -1,0 +1,81 @@
+{
+  "dataset": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\data\\processed\\unsw_main8_v1\\flows_unsw_8class.npz",
+  "config": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\configs\\methods\\fade_unsw8.json",
+  "train_flows": 8000,
+  "test_flows": 8000,
+  "results": {
+    "clean_real": {
+      "ba": 0.976763664323816,
+      "recall": [
+        0.9897265447952863,
+        0.9977116704805492,
+        0.9977324263038548,
+        0.9347079037800687,
+        0.8942307692307693,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "real": {
+      "ba": 0.9643372735001644,
+      "recall": [
+        0.9885179030064964,
+        0.9977116704805492,
+        0.9977324263038548,
+        0.9518900343642611,
+        0.7788461538461539,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "dummy": {
+      "ba": 0.20523296054719137,
+      "recall": [
+        0.7141562169512011,
+        0.029748283752860413,
+        0.8979591836734694,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "combined": {
+      "ba": 0.9580303563924832,
+      "recall": [
+        0.987611421664904,
+        0.9977116704805492,
+        1.0,
+        0.9209621993127147,
+        0.8269230769230769,
+        1.0,
+        0.9310344827586207,
+        1.0
+      ]
+    },
+    "clean_to_defended": {
+      "ba": 0.9182707263263188,
+      "recall": [
+        0.8755098957546457,
+        0.9977116704805492,
+        0.9750566893424036,
+        0.9587628865979382,
+        0.7115384615384616,
+        1.0,
+        0.8275862068965517,
+        1.0
+      ]
+    },
+    "counts": {
+      "real_train_mean": 22.815875,
+      "dummy_train_mean": 5.0,
+      "real_test_mean": 21.209125,
+      "dummy_test_mean": 5.0
+    }
+  },
+  "seconds": 35.0,
+  "note": "oracle source ablation; real/dummy labels come from the event trace"
+}

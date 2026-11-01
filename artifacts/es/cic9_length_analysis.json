@@ -1,0 +1,771 @@
+{
+  "class_names": [
+    "Amazon Alexa Echo Dot 1",
+    "Amazon Alexa Echo Dot 2",
+    "Amazon Alexa Echo Spot",
+    "Amazon Alexa Echo Studio",
+    "Arlo Base Station",
+    "Arlo Q Camera",
+    "Sonos One Speaker",
+    "Netatmo Camera",
+    "Smart Board"
+  ],
+  "distances": [
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Amazon Alexa Echo Dot 2"
+      ],
+      "js": 0.008756289665045169,
+      "wasserstein": 1.2756594229112876
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Spot",
+        "Amazon Alexa Echo Studio"
+      ],
+      "js": 0.1204865635362399,
+      "wasserstein": 30.81825507004163
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Spot",
+        "Smart Board"
+      ],
+      "js": 0.131052135694498,
+      "wasserstein": 45.667398261250355
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Studio",
+        "Smart Board"
+      ],
+      "js": 0.16993169153937962,
+      "wasserstein": 18.152968281729663
+    },
+    {
+      "pair": [
+        "Arlo Base Station",
+        "Smart Board"
+      ],
+      "js": 0.1725430816516447,
+      "wasserstein": 74.85988535759284
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Studio",
+        "Arlo Base Station"
+      ],
+      "js": 0.18263949584306682,
+      "wasserstein": 90.37906529003934
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Spot",
+        "Arlo Base Station"
+      ],
+      "js": 0.1861986162536545,
+      "wasserstein": 120.5272836188432
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Amazon Alexa Echo Spot"
+      ],
+      "js": 0.1971969243563495,
+      "wasserstein": 72.19175935837353
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Amazon Alexa Echo Spot"
+      ],
+      "js": 0.19852535698210522,
+      "wasserstein": 72.82646029238637
+    },
+    {
+      "pair": [
+        "Arlo Base Station",
+        "Sonos One Speaker"
+      ],
+      "js": 0.20384467805356,
+      "wasserstein": 60.46076687138568
+    },
+    {
+      "pair": [
+        "Sonos One Speaker",
+        "Smart Board"
+      ],
+      "js": 0.21476372409737418,
+      "wasserstein": 24.43781789643507
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Spot",
+        "Sonos One Speaker"
+      ],
+      "js": 0.2167772267985692,
+      "wasserstein": 66.14539318301013
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Smart Board"
+      ],
+      "js": 0.22270121528416634,
+      "wasserstein": 27.544771901257448
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Smart Board"
+      ],
+      "js": 0.22323525565155114,
+      "wasserstein": 28.206291500385724
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Amazon Alexa Echo Studio"
+      ],
+      "js": 0.22947659277319046,
+      "wasserstein": 42.043541029569646
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Amazon Alexa Echo Studio"
+      ],
+      "js": 0.22989379265713153,
+      "wasserstein": 42.6782419635825
+    },
+    {
+      "pair": [
+        "Arlo Base Station",
+        "Netatmo Camera"
+      ],
+      "js": 0.23420974932366997,
+      "wasserstein": 143.85454809981073
+    },
+    {
+      "pair": [
+        "Arlo Base Station",
+        "Arlo Q Camera"
+      ],
+      "js": 0.2392703530878435,
+      "wasserstein": 72.89019706542855
+    },
+    {
+      "pair": [
+        "Arlo Q Camera",
+        "Sonos One Speaker"
+      ],
+      "js": 0.24122448180703746,
+      "wasserstein": 19.929943690370628
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Arlo Base Station"
+      ],
+      "js": 0.24468086072881323,
+      "wasserstein": 50.38460360085756
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Arlo Base Station"
+      ],
+      "js": 0.24506933982757112,
+      "wasserstein": 51.161552175536755
+    },
+    {
+      "pair": [
+        "Arlo Q Camera",
+        "Smart Board"
+      ],
+      "js": 0.24930177323246092,
+      "wasserstein": 19.94887355632475
+    },
+    {
+      "pair": [
+        "Netatmo Camera",
+        "Smart Board"
+      ],
+      "js": 0.25706951744824663,
+      "wasserstein": 218.71443345740363
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Studio",
+        "Sonos One Speaker"
+      ],
+      "js": 0.2600475761158953,
+      "wasserstein": 36.890139717675886
+    },
+    {
+      "pair": [
+        "Sonos One Speaker",
+        "Netatmo Camera"
+      ],
+      "js": 0.26678727430871424,
+      "wasserstein": 198.23643853564386
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Spot",
+        "Arlo Q Camera"
+      ],
+      "js": 0.2706853522283906,
+      "wasserstein": 53.80866790052076
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Spot",
+        "Netatmo Camera"
+      ],
+      "js": 0.2720587707325749,
+      "wasserstein": 264.3818317186539
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Studio",
+        "Arlo Q Camera"
+      ],
+      "js": 0.2750446870974149,
+      "wasserstein": 28.69419426344643
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Studio",
+        "Netatmo Camera"
+      ],
+      "js": 0.2844838705199059,
+      "wasserstein": 234.23361338985006
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Netatmo Camera"
+      ],
+      "js": 0.29166040496299733,
+      "wasserstein": 192.19007236028045
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Netatmo Camera"
+      ],
+      "js": 0.29212537279471384,
+      "wasserstein": 191.55537142626756
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Sonos One Speaker"
+      ],
+      "js": 0.296287262547187,
+      "wasserstein": 24.242622385301605
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Sonos One Speaker"
+      ],
+      "js": 0.29636499127433497,
+      "wasserstein": 23.60937273937773
+    },
+    {
+      "pair": [
+        "Arlo Q Camera",
+        "Netatmo Camera"
+      ],
+      "js": 0.30826908506309686,
+      "wasserstein": 212.53723264597528
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 1",
+        "Arlo Q Camera"
+      ],
+      "js": 0.3234876156186803,
+      "wasserstein": 33.05957632336157
+    },
+    {
+      "pair": [
+        "Amazon Alexa Echo Dot 2",
+        "Arlo Q Camera"
+      ],
+      "js": 0.32386480569647763,
+      "wasserstein": 32.551027080491444
+    }
+  ],
+  "recall": {
+    "C_to_C": {
+      "Amazon Alexa Echo Dot 1": 0.34524847428073235,
+      "Amazon Alexa Echo Dot 2": 0.5272391505078485,
+      "Amazon Alexa Echo Spot": 0.7287425149700599,
+      "Amazon Alexa Echo Studio": 0.7871698113207547,
+      "Arlo Base Station": 0.8145800316957211,
+      "Arlo Q Camera": 0.9730250481695568,
+      "Sonos One Speaker": 0.9853723404255319,
+      "Netatmo Camera": 0.9749552772808586,
+      "Smart Board": 0.3980891719745223
+    },
+    "C_to_D": {
+      "Amazon Alexa Echo Dot 1": 0.21970357454228423,
+      "Amazon Alexa Echo Dot 2": 0.6343490304709142,
+      "Amazon Alexa Echo Spot": 0.35508982035928144,
+      "Amazon Alexa Echo Studio": 0.8007547169811321,
+      "Arlo Base Station": 0.39461172741679873,
+      "Arlo Q Camera": 0.838150289017341,
+      "Sonos One Speaker": 0.8031914893617021,
+      "Netatmo Camera": 0.370304114490161,
+      "Smart Board": 0.37261146496815284
+    },
+    "D_to_D": {
+      "Amazon Alexa Echo Dot 1": 0.4882301656495205,
+      "Amazon Alexa Echo Dot 2": 0.5096952908587258,
+      "Amazon Alexa Echo Spot": 0.47964071856287427,
+      "Amazon Alexa Echo Studio": 0.5509433962264151,
+      "Arlo Base Station": 0.561014263074485,
+      "Arlo Q Camera": 0.9383429672447013,
+      "Sonos One Speaker": 0.9375,
+      "Netatmo Camera": 0.9427549194991055,
+      "Smart Board": 0.60828025477707
+    }
+  },
+  "confusion": {
+    "C_to_C": [
+      [
+        396,
+        584,
+        90,
+        54,
+        17,
+        1,
+        0,
+        0,
+        5
+      ],
+      [
+        340,
+        571,
+        96,
+        56,
+        14,
+        0,
+        0,
+        0,
+        6
+      ],
+      [
+        75,
+        48,
+        1217,
+        282,
+        21,
+        6,
+        10,
+        0,
+        11
+      ],
+      [
+        13,
+        5,
+        229,
+        1043,
+        27,
+        5,
+        0,
+        0,
+        3
+      ],
+      [
+        1,
+        3,
+        32,
+        50,
+        514,
+        6,
+        8,
+        1,
+        16
+      ],
+      [
+        0,
+        1,
+        7,
+        0,
+        0,
+        505,
+        5,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        5,
+        0,
+        1,
+        3,
+        741,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        14,
+        0,
+        0,
+        545,
+        0
+      ],
+      [
+        24,
+        5,
+        103,
+        14,
+        40,
+        1,
+        2,
+        0,
+        125
+      ]
+    ],
+    "C_to_D": [
+      [
+        252,
+        804,
+        21,
+        67,
+        3,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        174,
+        687,
+        96,
+        85,
+        34,
+        1,
+        0,
+        0,
+        6
+      ],
+      [
+        222,
+        434,
+        593,
+        402,
+        5,
+        0,
+        0,
+        0,
+        14
+      ],
+      [
+        39,
+        174,
+        50,
+        1061,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        32,
+        89,
+        157,
+        96,
+        249,
+        0,
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        3,
+        7,
+        4,
+        47,
+        435,
+        3,
+        0,
+        20
+      ],
+      [
+        2,
+        0,
+        76,
+        0,
+        54,
+        6,
+        604,
+        0,
+        10
+      ],
+      [
+        0,
+        5,
+        126,
+        3,
+        132,
+        0,
+        0,
+        207,
+        86
+      ],
+      [
+        56,
+        52,
+        41,
+        29,
+        19,
+        0,
+        0,
+        0,
+        117
+      ]
+    ],
+    "D_to_D": [
+      [
+        560,
+        477,
+        65,
+        31,
+        6,
+        1,
+        3,
+        1,
+        3
+      ],
+      [
+        183,
+        552,
+        207,
+        113,
+        19,
+        2,
+        1,
+        6,
+        0
+      ],
+      [
+        191,
+        312,
+        801,
+        83,
+        19,
+        15,
+        31,
+        6,
+        212
+      ],
+      [
+        69,
+        149,
+        310,
+        730,
+        17,
+        10,
+        2,
+        0,
+        38
+      ],
+      [
+        15,
+        40,
+        86,
+        28,
+        354,
+        16,
+        11,
+        2,
+        79
+      ],
+      [
+        0,
+        1,
+        11,
+        5,
+        6,
+        487,
+        8,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        38,
+        0,
+        8,
+        0,
+        705,
+        0,
+        0
+      ],
+      [
+        1,
+        3,
+        13,
+        3,
+        8,
+        0,
+        0,
+        527,
+        4
+      ],
+      [
+        14,
+        35,
+        27,
+        6,
+        32,
+        1,
+        8,
+        0,
+        191
+      ]
+    ]
+  },
+  "top_confusions": {
+    "C_to_C": [
+      {
+        "count": 584,
+        "true": "Amazon Alexa Echo Dot 1",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      },
+      {
+        "count": 340,
+        "true": "Amazon Alexa Echo Dot 2",
+        "predicted": "Amazon Alexa Echo Dot 1"
+      },
+      {
+        "count": 282,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Studio"
+      },
+      {
+        "count": 229,
+        "true": "Amazon Alexa Echo Studio",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 103,
+        "true": "Smart Board",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 96,
+        "true": "Amazon Alexa Echo Dot 2",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 90,
+        "true": "Amazon Alexa Echo Dot 1",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 75,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Dot 1"
+      }
+    ],
+    "C_to_D": [
+      {
+        "count": 804,
+        "true": "Amazon Alexa Echo Dot 1",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      },
+      {
+        "count": 434,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      },
+      {
+        "count": 402,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Studio"
+      },
+      {
+        "count": 222,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Dot 1"
+      },
+      {
+        "count": 174,
+        "true": "Amazon Alexa Echo Studio",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      },
+      {
+        "count": 174,
+        "true": "Amazon Alexa Echo Dot 2",
+        "predicted": "Amazon Alexa Echo Dot 1"
+      },
+      {
+        "count": 157,
+        "true": "Arlo Base Station",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 132,
+        "true": "Netatmo Camera",
+        "predicted": "Arlo Base Station"
+      }
+    ],
+    "D_to_D": [
+      {
+        "count": 477,
+        "true": "Amazon Alexa Echo Dot 1",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      },
+      {
+        "count": 312,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      },
+      {
+        "count": 310,
+        "true": "Amazon Alexa Echo Studio",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 212,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Smart Board"
+      },
+      {
+        "count": 207,
+        "true": "Amazon Alexa Echo Dot 2",
+        "predicted": "Amazon Alexa Echo Spot"
+      },
+      {
+        "count": 191,
+        "true": "Amazon Alexa Echo Spot",
+        "predicted": "Amazon Alexa Echo Dot 1"
+      },
+      {
+        "count": 183,
+        "true": "Amazon Alexa Echo Dot 2",
+        "predicted": "Amazon Alexa Echo Dot 1"
+      },
+      {
+        "count": 149,
+        "true": "Amazon Alexa Echo Studio",
+        "predicted": "Amazon Alexa Echo Dot 2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "lr": {
+    "ba": 0.1107083176591917,
+    "ba_from_recall": 0.1107083176591917,
+    "recall_sum": 0.9963748589327254,
+    "accuracy": 0.2959299039005088,
+    "classes_present": [
+      "Belkin wemo motion sensor",
+      "Belkin Wemo switch",
+      "Samsung SmartCam",
+      "Amazon Echo",
+      "Insteon Camera",
+      "Netatmo weather station",
+      "Triby Speaker",
+      "Withings Aura smart sleep sensor",
+      "Netatmo Welcome"
+    ],
+    "test_support": {
+      "Belkin wemo motion sensor": 25,
+      "Belkin Wemo switch": 31,
+      "Samsung SmartCam": 18,
+      "Amazon Echo": 982,
+      "Insteon Camera": 820,
+      "Netatmo weather station": 1059,
+      "Triby Speaker": 33,
+      "Withings Aura smart sleep sensor": 46,
+      "Netatmo Welcome": 524
+    },
+    "ba_ci": [
+      0.10865964876758828,
+      0.11347573789478729
+    ],
+    "per_class": {
+      "Belkin wemo motion sensor": {
+        "support": 25,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Belkin Wemo switch": {
+        "support": 31,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Samsung SmartCam": {
+        "support": 18,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Echo": {
+        "support": 982,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Insteon Camera": {
+        "support": 820,
+        "recall": 0.03414634146341464,
+        "ci": [
+          0.024475524475524476,
+          0.04797047970479705
+        ]
+      },
+      "Netatmo weather station": {
+        "support": 1059,
+        "recall": 0.9622285174693107,
+        "ci": [
+          0.9500645228576083,
+          0.9778420038535646
+        ]
+      },
+      "Triby Speaker": {
+        "support": 33,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Withings Aura smart sleep sensor": {
+        "support": 46,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Welcome": {
+        "support": 524,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "rf": {
+    "ba": 0.11138720428512519,
+    "ba_from_recall": 0.11138720428512519,
+    "recall_sum": 1.0024848385661267,
+    "accuracy": 0.29762577727529677,
+    "classes_present": [
+      "Belkin wemo motion sensor",
+      "Belkin Wemo switch",
+      "Samsung SmartCam",
+      "Amazon Echo",
+      "Insteon Camera",
+      "Netatmo weather station",
+      "Triby Speaker",
+      "Withings Aura smart sleep sensor",
+      "Netatmo Welcome"
+    ],
+    "test_support": {
+      "Belkin wemo motion sensor": 25,
+      "Belkin Wemo switch": 31,
+      "Samsung SmartCam": 18,
+      "Amazon Echo": 982,
+      "Insteon Camera": 820,
+      "Netatmo weather station": 1059,
+      "Triby Speaker": 33,
+      "Withings Aura smart sleep sensor": 46,
+      "Netatmo Welcome": 524
+    },
+    "ba_ci": [
+      0.10934295654821237,
+      0.11581784285016143
+    ],
+    "per_class": {
+      "Belkin wemo motion sensor": {
+        "support": 25,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Belkin Wemo switch": {
+        "support": 31,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Samsung SmartCam": {
+        "support": 18,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Echo": {
+        "support": 982,
+        "recall": 0.006109979633401222,
+        "ci": [
+          0.005194805194805195,
+          0.0071633237822349575
+        ]
+      },
+      "Insteon Camera": {
+        "support": 820,
+        "recall": 0.03414634146341464,
+        "ci": [
+          0.02386363636363638,
+          0.04797047970479705
+        ]
+      },
+      "Netatmo weather station": {
+        "support": 1059,
+        "recall": 0.9622285174693107,
+        "ci": [
+          0.9506292352371732,
+          0.9748549998209874
+        ]
+      },
+      "Triby Speaker": {
+        "support": 33,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Withings Aura smart sleep sensor": {
+        "support": 46,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Welcome": {
+        "support": 524,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "mlp": {
+    "ba": 0.1107083176591917,
+    "ba_from_recall": 0.1107083176591917,
+    "recall_sum": 0.9963748589327254,
+    "accuracy": 0.2959299039005088,
+    "classes_present": [
+      "Belkin wemo motion sensor",
+      "Belkin Wemo switch",
+      "Samsung SmartCam",
+      "Amazon Echo",
+      "Insteon Camera",
+      "Netatmo weather station",
+      "Triby Speaker",
+      "Withings Aura smart sleep sensor",
+      "Netatmo Welcome"
+    ],
+    "test_support": {
+      "Belkin wemo motion sensor": 25,
+      "Belkin Wemo switch": 31,
+      "Samsung SmartCam": 18,
+      "Amazon Echo": 982,
+      "Insteon Camera": 820,
+      "Netatmo weather station": 1059,
+      "Triby Speaker": 33,
+      "Withings Aura smart sleep sensor": 46,
+      "Netatmo Welcome": 524
+    },
+    "ba_ci": [
+      0.10882827641163387,
+      0.11385194740417298
+    ],
+    "per_class": {
+      "Belkin wemo motion sensor": {
+        "support": 25,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Belkin Wemo switch": {
+        "support": 31,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Samsung SmartCam": {
+        "support": 18,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Echo": {
+        "support": 982,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Insteon Camera": {
+        "support": 820,
+        "recall": 0.03414634146341464,
+        "ci": [
+          0.024475524475524476,
+          0.04797047970479705
+        ]
+      },
+      "Netatmo weather station": {
+        "support": 1059,
+        "recall": 0.9622285174693107,
+        "ci": [
+          0.9507852294881717,
+          0.975988917418888
+        ]
+      },
+      "Triby Speaker": {
+        "support": 33,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Withings Aura smart sleep sensor": {
+        "support": 46,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Welcome": {
+        "support": 524,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

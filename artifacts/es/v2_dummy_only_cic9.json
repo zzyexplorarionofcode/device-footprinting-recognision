@@ -1,0 +1,320 @@
+{
+  "lr": {
+    "ba": 0.1111111111111111,
+    "ba_from_recall": 0.1111111111111111,
+    "recall_sum": 1.0,
+    "accuracy": 0.143375,
+    "classes_present": [
+      "Amazon Alexa Echo Dot 1",
+      "Amazon Alexa Echo Dot 2",
+      "Amazon Alexa Echo Spot",
+      "Amazon Alexa Echo Studio",
+      "Arlo Base Station",
+      "Arlo Q Camera",
+      "Sonos One Speaker",
+      "Netatmo Camera",
+      "Smart Board"
+    ],
+    "test_support": {
+      "Amazon Alexa Echo Dot 1": 1147,
+      "Amazon Alexa Echo Dot 2": 1083,
+      "Amazon Alexa Echo Spot": 1670,
+      "Amazon Alexa Echo Studio": 1325,
+      "Arlo Base Station": 631,
+      "Arlo Q Camera": 519,
+      "Sonos One Speaker": 752,
+      "Netatmo Camera": 559,
+      "Smart Board": 314
+    },
+    "ba_ci": [
+      0.1111111111111111,
+      0.1111111111111111
+    ],
+    "per_class": {
+      "Amazon Alexa Echo Dot 1": {
+        "support": 1147,
+        "recall": 1.0,
+        "ci": [
+          1.0,
+          1.0
+        ]
+      },
+      "Amazon Alexa Echo Dot 2": {
+        "support": 1083,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Alexa Echo Spot": {
+        "support": 1670,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Alexa Echo Studio": {
+        "support": 1325,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Arlo Base Station": {
+        "support": 631,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Arlo Q Camera": {
+        "support": 519,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Sonos One Speaker": {
+        "support": 752,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Camera": {
+        "support": 559,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Smart Board": {
+        "support": 314,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "rf": {
+    "ba": 0.07920707768799985,
+    "ba_from_recall": 0.07920707768799985,
+    "recall_sum": 0.7128636991919987,
+    "accuracy": 0.102,
+    "classes_present": [
+      "Amazon Alexa Echo Dot 1",
+      "Amazon Alexa Echo Dot 2",
+      "Amazon Alexa Echo Spot",
+      "Amazon Alexa Echo Studio",
+      "Arlo Base Station",
+      "Arlo Q Camera",
+      "Sonos One Speaker",
+      "Netatmo Camera",
+      "Smart Board"
+    ],
+    "test_support": {
+      "Amazon Alexa Echo Dot 1": 1147,
+      "Amazon Alexa Echo Dot 2": 1083,
+      "Amazon Alexa Echo Spot": 1670,
+      "Amazon Alexa Echo Studio": 1325,
+      "Arlo Base Station": 631,
+      "Arlo Q Camera": 519,
+      "Sonos One Speaker": 752,
+      "Netatmo Camera": 559,
+      "Smart Board": 314
+    },
+    "ba_ci": [
+      0.07710160150088265,
+      0.08081086846763479
+    ],
+    "per_class": {
+      "Amazon Alexa Echo Dot 1": {
+        "support": 1147,
+        "recall": 0.6870095902353966,
+        "ci": [
+          0.6690016492555898,
+          0.6995169082125604
+        ]
+      },
+      "Amazon Alexa Echo Dot 2": {
+        "support": 1083,
+        "recall": 0.02585410895660203,
+        "ci": [
+          0.01987148913619502,
+          0.03151515151515152
+        ]
+      },
+      "Amazon Alexa Echo Spot": {
+        "support": 1670,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Alexa Echo Studio": {
+        "support": 1325,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Arlo Base Station": {
+        "support": 631,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Arlo Q Camera": {
+        "support": 519,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Sonos One Speaker": {
+        "support": 752,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Camera": {
+        "support": 559,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Smart Board": {
+        "support": 314,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "mlp": {
+    "ba": 0.09032041602857438,
+    "ba_from_recall": 0.09032041602857438,
+    "recall_sum": 0.8128837442571694,
+    "accuracy": 0.115875,
+    "classes_present": [
+      "Amazon Alexa Echo Dot 1",
+      "Amazon Alexa Echo Dot 2",
+      "Amazon Alexa Echo Spot",
+      "Amazon Alexa Echo Studio",
+      "Arlo Base Station",
+      "Arlo Q Camera",
+      "Sonos One Speaker",
+      "Netatmo Camera",
+      "Smart Board"
+    ],
+    "test_support": {
+      "Amazon Alexa Echo Dot 1": 1147,
+      "Amazon Alexa Echo Dot 2": 1083,
+      "Amazon Alexa Echo Spot": 1670,
+      "Amazon Alexa Echo Studio": 1325,
+      "Arlo Base Station": 631,
+      "Arlo Q Camera": 519,
+      "Sonos One Speaker": 752,
+      "Netatmo Camera": 559,
+      "Smart Board": 314
+    },
+    "ba_ci": [
+      0.08789479534440738,
+      0.09424694273179121
+    ],
+    "per_class": {
+      "Amazon Alexa Echo Dot 1": {
+        "support": 1147,
+        "recall": 0.7288578901482128,
+        "ci": [
+          0.7142732485664423,
+          0.7479520001573319
+        ]
+      },
+      "Amazon Alexa Echo Dot 2": {
+        "support": 1083,
+        "recall": 0.0840258541089566,
+        "ci": [
+          0.07276257549433275,
+          0.10065188470066519
+        ]
+      },
+      "Amazon Alexa Echo Spot": {
+        "support": 1670,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Amazon Alexa Echo Studio": {
+        "support": 1325,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Arlo Base Station": {
+        "support": 631,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Arlo Q Camera": {
+        "support": 519,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Sonos One Speaker": {
+        "support": 752,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Netatmo Camera": {
+        "support": 559,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "Smart Board": {
+        "support": 314,
+        "recall": 0.0,
+        "ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

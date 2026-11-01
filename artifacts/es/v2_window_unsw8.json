@@ -1,0 +1,31 @@
+{
+  "flows": 8000,
+  "source_events_mean": 23.605125,
+  "displaced_real": {
+    "mean": 0.78925,
+    "median": 0.0,
+    "p95": 5.0,
+    "max": 5,
+    "fraction_any": 0.18725
+  },
+  "retained_dummy": {
+    "mean": 5.0,
+    "median": 5.0,
+    "fraction_5": 1.0,
+    "fraction_lt5": 0.0,
+    "histogram": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 8000,
+      "6": 0
+    }
+  },
+  "emitted_dummy_mean": 5.0,
+  "config": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\configs\\methods\\fade_unsw8.json",
+  "dataset": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\data\\processed\\unsw_main8_v1\\flows_unsw_8class.npz",
+  "split": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\artifacts\\runs\\fade\\unsw_8class_main\\20261028T090552_310384Z_p_vjmhf_\\split_indices.npz",
+  "cap": 8000
+}

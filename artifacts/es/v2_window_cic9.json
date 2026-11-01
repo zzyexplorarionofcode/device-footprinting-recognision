@@ -1,0 +1,31 @@
+{
+  "flows": 8001,
+  "source_events_mean": 26.555805524309463,
+  "displaced_real": {
+    "mean": 2.7484064491938507,
+    "median": 5.0,
+    "p95": 5.0,
+    "max": 5,
+    "fraction_any": 0.604424446944132
+  },
+  "retained_dummy": {
+    "mean": 4.999625046869141,
+    "median": 5.0,
+    "fraction_5": 0.9998750156230471,
+    "fraction_lt5": 0.00012498437695288088,
+    "histogram": {
+      "0": 0,
+      "1": 0,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 8000,
+      "6": 0
+    }
+  },
+  "emitted_dummy_mean": 5.0,
+  "config": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\configs\\methods\\fade_cic9.json",
+  "dataset": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\data\\processed\\cic_v2\\flows_cic_active_9class.npz",
+  "split": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\artifacts\\runs\\fade_cic9\\split_indices.npz",
+  "cap": 8000
+}

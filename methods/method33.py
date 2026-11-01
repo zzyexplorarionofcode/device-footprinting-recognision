@@ -67,6 +67,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence, TypeAlias
 
+import hashlib
 import numpy as np
 from experiment_support.metrics import timing_metrics, store_timing
 
@@ -245,6 +246,32 @@ STAT_KEYS = (
     # Explicit name retained in the shared application-statistics contract.
     "dummy_gap_seconds",
 )
+
+
+def _flow_token(
+    lengths: np.ndarray,
+    gaps: np.ndarray,
+    directions: np.ndarray,
+    mask: np.ndarray,
+    sample: int,
+) -> int:
+    """Stable content fingerprint for the per-flow RNG.
+
+    Uses only the flow's own fixed-window content (never its label, mapping or
+    batch position), so chunking, reordering and parallel sub-batches produce
+    identical dummy plans.  Two byte-identical flows intentionally share a
+    token; callers that need distinct streams for duplicates must add a stable
+    dataset-level identifier before calling the method.
+    """
+
+    digest = hashlib.blake2b(digest_size=16)
+    # Trigger positions are all <= 16 in the registered configs; hashing only the
+    # first 20 events keeps the future-suffix property (changing events >= 20
+    # must not change the already-emitted prefix) while remaining independent of
+    # chunking, ordering and parallel sub-batches.
+    for values in (lengths, gaps, directions, mask):
+        digest.update(np.ascontiguousarray(values[sample, :20]).tobytes())
+    return int.from_bytes(digest.digest()[:8], "little")
 
 
 def _empty_stats(flow_count: int) -> dict[str, np.ndarray]:
@@ -608,12 +635,12 @@ def apply_method33_base(
     # 阶段 B：逐流执行。流之间没有共享可变预算或共享随机流。
     # -------------------------------------------------------------------------
     for sample in range(len(lengths)):
-        # SeedSequence isolates every flow.  Changing flow 0's length or number
-        # of random draws cannot shift the random stream used by flow 1.
-        # SeedSequence([批次 seed, 局部流序号]) 为每条流派生稳定子序列。
-        # 某一流多做一次随机抽样不会让后续流的随机性整体错位。
+        # 逐流随机性只依赖“该流自身的内容指纹”，不依赖批内下标。这样同一流
+        # 在 chunk、重排、并行子批中都会得到完全相同的 dummy 计划；标签不参与
+        # 指纹，因此 old→next 不会改变公共随机数。
+        flow_token = _flow_token(lengths, gaps, directions, mask, sample)
         flow_rng = np.random.default_rng(
-            np.random.SeedSequence([int(seed), int(sample)])
+            np.random.SeedSequence([int(seed), int(flow_token)])
         )
         dummy_plan = (
             _sample_dummy_plan(
@@ -1274,19 +1301,18 @@ def jitter_trigger_code(
     )
 
 
-def _flow_jitter_quantiles(seed: int, flow_index: int) -> tuple[float, float]:
+def _flow_jitter_quantiles(seed: int, flow_token: int) -> tuple[float, float]:
     """Draw two label-independent Method33 random numbers for one flow."""
 
     if int(seed) < 0:
         raise ValueError("Method33 seed must be non-negative")
-    # seed只使用批次seed、flow行号和固定域分隔，不使用label或mapping。
-    # 因此改变old→next不会偷偷改变公共随机数；改变某条流的码字也不会让
-    # 后续flow随机流错位。
+    # seed只使用批次seed、流内容指纹和固定域分隔，不使用label、mapping或
+    # 批内下标。因此改变old→next、chunk或顺序都不会改变公共随机数。
     rng = np.random.default_rng(
         np.random.SeedSequence(
             [
                 int(seed),
-                int(flow_index),
+                int(flow_token),
                 *_METHOD33_JITTER_SEED_DOMAIN,
             ]
         )
@@ -1417,9 +1443,11 @@ def apply_method33(
                 raise AssertionError("Method33 received an invalid Trigger code index")
             base_code = config.trigger_codes[trigger_code_index]
 
-            # 两个quantile由flow身份决定而非label/mapping决定；实现old/next公共
-            # 随机数。码字边界不同，所以最终delta可不同，但随机分位点完全配对。
-            length_q, gap_q = _flow_jitter_quantiles(seed, flow_index)
+            # 两个quantile由流内容指纹决定而非label/mapping/批内下标决定；
+            # 实现old/next公共随机数。码字边界不同，所以最终delta可不同，
+            # 但随机分位点完全配对。
+            flow_token = _flow_token(lengths, gaps, directions, mask, flow_index)
+            length_q, gap_q = _flow_jitter_quantiles(seed, flow_token)
             realized = jitter_trigger_code(
                 base_code,
                 config,

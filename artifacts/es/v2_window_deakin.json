@@ -1,0 +1,31 @@
+{
+  "flows": 7999,
+  "source_events_mean": 6.409801225153144,
+  "displaced_real": {
+    "mean": 0.1876484560570071,
+    "median": 0.0,
+    "p95": 0.0,
+    "max": 5,
+    "fraction_any": 0.043130391298912364
+  },
+  "retained_dummy": {
+    "mean": 5.0,
+    "median": 5.0,
+    "fraction_5": 1.0,
+    "fraction_lt5": 0.0,
+    "histogram": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 7999,
+      "6": 0
+    }
+  },
+  "emitted_dummy_mean": 5.0,
+  "config": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\configs\\methods\\fade_deakin.json",
+  "dataset": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\data\\processed\\deakin_v1\\flows_deakin_10class_full.npz",
+  "split": "D:\\claude-code\\device-footprinting-recognisition\\code打包\\artifacts\\runs\\fade_deakin_full\\split_indices.npz",
+  "cap": 8000
+}

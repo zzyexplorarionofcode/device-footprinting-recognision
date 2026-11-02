@@ -1,0 +1,386 @@
+{
+  "dataset_version": "unsw8_v1",
+  "cap": 8000,
+  "cells": {
+    "T0_W0": {
+      "trigger_on": 0,
+      "weakener_count": 0,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9417280927693386,
+          "clean_to_defended": 0.6291894702867251,
+          "drop_clean": 0.3475741940370909,
+          "recovery": 0.31253862248261344,
+          "adaptation": -0.03503557155447745
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9868438849318404,
+          "clean_to_defended": 0.7505219873679158,
+          "drop_clean": 0.24801458520847974,
+          "recovery": 0.23632189756392463,
+          "adaptation": -0.011692687644555111
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9905967200930108,
+          "clean_to_defended": 0.6728542594439847,
+          "drop_clean": 0.3237157086660273,
+          "recovery": 0.3177424606490261,
+          "adaptation": -0.005973248017001165
+        }
+      },
+      "cost": {
+        "real_added_bytes": 605.799375,
+        "dummy_bytes": 0.0,
+        "dummy_count": 0.0,
+        "retained_dummy_count": 0.0,
+        "displaced_real_packets": 0.0,
+        "total_added_bytes": 605.799375
+      }
+    },
+    "T0_W1": {
+      "trigger_on": 0,
+      "weakener_count": 1,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9523631750249328,
+          "clean_to_defended": 0.6681598627576995,
+          "drop_clean": 0.30860380156611655,
+          "recovery": 0.2842033122672334,
+          "adaptation": -0.024400489298883166
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9928501698815945,
+          "clean_to_defended": 0.8269467147678428,
+          "drop_clean": 0.17158985780855274,
+          "recovery": 0.1659034551137517,
+          "adaptation": -0.005686402694801029
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9961355614483277,
+          "clean_to_defended": 0.8168798280790859,
+          "drop_clean": 0.1796901400309261,
+          "recovery": 0.17925573336924183,
+          "adaptation": -0.00043440666168426123
+        }
+      },
+      "cost": {
+        "real_added_bytes": 510.380875,
+        "dummy_bytes": 101.321625,
+        "dummy_count": 1.0,
+        "retained_dummy_count": 1.0,
+        "displaced_real_packets": 0.037,
+        "total_added_bytes": 611.7025
+      }
+    },
+    "T0_W2": {
+      "trigger_on": 0,
+      "weakener_count": 2,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9499130211882427,
+          "clean_to_defended": 0.7256704313327131,
+          "drop_clean": 0.25109323299110287,
+          "recovery": 0.22424258985552958,
+          "adaptation": -0.026850643135573282
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9863437142076104,
+          "clean_to_defended": 0.7706175035551741,
+          "drop_clean": 0.2279190690212214,
+          "recovery": 0.21572621065243625,
+          "adaptation": -0.012192858368785142
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9899453488712493,
+          "clean_to_defended": 0.8151799852141492,
+          "drop_clean": 0.18138998289586272,
+          "recovery": 0.17476536365710005,
+          "adaptation": -0.0066246192387626746
+        }
+      },
+      "cost": {
+        "real_added_bytes": 415.18325,
+        "dummy_bytes": 203.616625,
+        "dummy_count": 2.0,
+        "retained_dummy_count": 2.0,
+        "displaced_real_packets": 0.075,
+        "total_added_bytes": 618.799875
+      }
+    },
+    "T0_W3": {
+      "trigger_on": 0,
+      "weakener_count": 3,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.947001035733556,
+          "clean_to_defended": 0.8583881105335136,
+          "drop_clean": 0.1183755537903024,
+          "recovery": 0.08861292520004238,
+          "adaptation": -0.02976262859026002
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9896377079015224,
+          "clean_to_defended": 0.8192845551857308,
+          "drop_clean": 0.17925201739066465,
+          "recovery": 0.17035315271579154,
+          "adaptation": -0.008898864674873108
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9906861715617479,
+          "clean_to_defended": 0.897295166437301,
+          "drop_clean": 0.09927480167271097,
+          "recovery": 0.09339100512444687,
+          "adaptation": -0.0058837965482640975
+        }
+      },
+      "cost": {
+        "real_added_bytes": 318.28375,
+        "dummy_bytes": 305.13725,
+        "dummy_count": 3.0,
+        "retained_dummy_count": 3.0,
+        "displaced_real_packets": 0.11425,
+        "total_added_bytes": 623.421
+      }
+    },
+    "T0_W4": {
+      "trigger_on": 0,
+      "weakener_count": 4,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9650511851421465,
+          "clean_to_defended": 0.8462671495655836,
+          "drop_clean": 0.13049651475823243,
+          "recovery": 0.11878403557656292,
+          "adaptation": -0.01171247918166951
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9924506982500315,
+          "clean_to_defended": 0.8012508673538561,
+          "drop_clean": 0.1972857052225394,
+          "recovery": 0.19119983089617543,
+          "adaptation": -0.0060858743263639825
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9928220053227319,
+          "clean_to_defended": 0.9335224536752227,
+          "drop_clean": 0.06304751443478929,
+          "recovery": 0.05929955164750922,
+          "adaptation": -0.003747962787280068
+        }
+      },
+      "cost": {
+        "real_added_bytes": 220.237375,
+        "dummy_bytes": 406.642,
+        "dummy_count": 4.0,
+        "retained_dummy_count": 4.0,
+        "displaced_real_packets": 0.1555,
+        "total_added_bytes": 626.879375
+      }
+    },
+    "T0_W5": {
+      "trigger_on": 0,
+      "weakener_count": 5,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9635754781553203,
+          "clean_to_defended": 0.7896681819833407,
+          "drop_clean": 0.18709548234047535,
+          "recovery": 0.17390729617197964,
+          "adaptation": -0.013188186168495708
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9939746261799163,
+          "clean_to_defended": 0.8109329615992408,
+          "drop_clean": 0.18760361097715472,
+          "recovery": 0.1830416645806755,
+          "adaptation": -0.004561946396479222
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9969807566205995,
+          "clean_to_defended": 0.8951224175503943,
+          "drop_clean": 0.10144755055961763,
+          "recovery": 0.10185833907020514,
+          "adaptation": 0.000410788510587512
+        }
+      },
+      "cost": {
+        "real_added_bytes": 120.63125,
+        "dummy_bytes": 507.797625,
+        "dummy_count": 5.0,
+        "retained_dummy_count": 5.0,
+        "displaced_real_packets": 0.202,
+        "total_added_bytes": 628.428875
+      }
+    },
+    "T1_W0": {
+      "trigger_on": 1,
+      "weakener_count": 0,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9441203735230955,
+          "clean_to_defended": 0.7760340365029116,
+          "drop_clean": 0.20072962782090442,
+          "recovery": 0.16808633702018394,
+          "adaptation": -0.03264329080072048
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.968259338181801,
+          "clean_to_defended": 0.8267631591259602,
+          "drop_clean": 0.17177341345043529,
+          "recovery": 0.14149617905584078,
+          "adaptation": -0.03027723439459451
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9921438453653484,
+          "clean_to_defended": 0.8418231260712927,
+          "drop_clean": 0.15474684203871925,
+          "recovery": 0.15032071929405566,
+          "adaptation": -0.004426122744663585
+        }
+      },
+      "cost": {
+        "real_added_bytes": 339.6405,
+        "dummy_bytes": 283.0,
+        "dummy_count": 2.0,
+        "retained_dummy_count": 2.0,
+        "displaced_real_packets": 0.075,
+        "total_added_bytes": 622.6405
+      }
+    },
+    "T1_W1": {
+      "trigger_on": 1,
+      "weakener_count": 1,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9688645814210577,
+          "clean_to_defended": 0.8681581314682356,
+          "drop_clean": 0.10860553285558039,
+          "recovery": 0.10070644995282207,
+          "adaptation": -0.007899082902758314
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9635223682330398,
+          "clean_to_defended": 0.8933229622545226,
+          "drop_clean": 0.10521361032187293,
+          "recovery": 0.07019940597851726,
+          "adaptation": -0.03501420434335567
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9924137162791757,
+          "clean_to_defended": 0.9636120596801987,
+          "drop_clean": 0.032957908429813276,
+          "recovery": 0.028801656598977043,
+          "adaptation": -0.004156251830836233
+        }
+      },
+      "cost": {
+        "real_added_bytes": 241.511875,
+        "dummy_bytes": 384.321625,
+        "dummy_count": 3.0,
+        "retained_dummy_count": 3.0,
+        "displaced_real_packets": 0.11425,
+        "total_added_bytes": 625.8335
+      }
+    },
+    "T1_W2": {
+      "trigger_on": 1,
+      "weakener_count": 2,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.9637078446437397,
+          "clean_to_defended": 0.80324975215572,
+          "drop_clean": 0.17351391216809597,
+          "recovery": 0.16045809248801968,
+          "adaptation": -0.013055819680076297
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9807921931661923,
+          "clean_to_defended": 0.8129685237717974,
+          "drop_clean": 0.1855680488045981,
+          "recovery": 0.16782366939439486,
+          "adaptation": -0.017744379410203237
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.993808118091764,
+          "clean_to_defended": 0.9125829351683857,
+          "drop_clean": 0.08398703294162624,
+          "recovery": 0.08122518292337821,
+          "adaptation": -0.0027618500182480243
+        }
+      },
+      "cost": {
+        "real_added_bytes": 141.6845,
+        "dummy_bytes": 486.616625,
+        "dummy_count": 4.0,
+        "retained_dummy_count": 4.0,
+        "displaced_real_packets": 0.1555,
+        "total_added_bytes": 628.301125
+      }
+    },
+    "T1_W3": {
+      "trigger_on": 1,
+      "weakener_count": 3,
+      "ba": {
+        "lr": {
+          "clean": 0.976763664323816,
+          "retrained": 0.963623765205254,
+          "clean_to_defended": 0.9318214071616462,
+          "drop_clean": 0.04494225716216982,
+          "recovery": 0.03180235804360776,
+          "adaptation": -0.01313989911856206
+        },
+        "rf": {
+          "clean": 0.9985365725763955,
+          "retrained": 0.9933567872999907,
+          "clean_to_defended": 0.8871122501893465,
+          "drop_clean": 0.11142432238704902,
+          "recovery": 0.10624453711064419,
+          "adaptation": -0.005179785276404836
+        },
+        "mlp": {
+          "clean": 0.996569968110012,
+          "retrained": 0.9933938724177802,
+          "clean_to_defended": 0.9717021327809474,
+          "drop_clean": 0.024867835329064558,
+          "recovery": 0.021691739636832796,
+          "adaptation": -0.003176095692231762
+        }
+      },
+      "cost": {
+        "real_added_bytes": 41.44025,
+        "dummy_bytes": 588.13725,
+        "dummy_count": 5.0,
+        "retained_dummy_count": 5.0,
+        "displaced_real_packets": 0.202,
+        "total_added_bytes": 629.5775
+      }
+    }
+  }
+}

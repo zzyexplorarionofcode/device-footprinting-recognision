@@ -1,5 +1,7 @@
 # Position Placebo：类—位置关联是否必要？
 
+> **重要修正（2026-11-02）**：后续 no-rotation 对照显示，**静态类位置是可学习的（retrained BA 0.96–0.99），几乎没有防御效果**；真正起作用的是 **position mapping rotation**。本页 A/B 对比仍然成立，但“active mechanism = class-specific placement”应改为“class-specific placement **under rotation**”。详见 [失败诊断与位置剂量](第二阶段_失败诊断与位置剂量.md)。
+
 ## 1. 设计
 
 四臂，全部 W=3、weakener 347 B / 1.05 s、同一批 8k train/test、同一位置池：

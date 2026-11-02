@@ -175,9 +175,26 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 11. 产物
+## 12. 序列重构审计（进行中）
 
-- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`
+按 canonical anchor 重插入 trigger、再截断到 32，Fixed identity 结果：
+
+| flows | max_abs_diff | nonzero |
+| ---: | ---: | ---: |
+| 200 | 5.72 | **80** |
+
+结论：
+
+- 当前序列重构 **没有通过 identity**；
+- 问题在 trace 事件顺序/特征行对齐，不是 mapping 逆；
+- 因此不能用于 Periodic，也不能计算 observed recovery；
+- 下一步必须先做 synthetic feature round-trip，锁定事件顺序与 gap 对齐。
+
+
+
+## 13. 产物
+
+- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`
 - 测试：`tests/test_canonicalization.py`
 - 结果：
   - `artifacts/es/online_canonical_fixed.json`

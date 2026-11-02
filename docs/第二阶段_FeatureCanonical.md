@@ -86,9 +86,63 @@ Oracle 上界使用：
 3. 合成 round-trip：`T^{-1}(T(x))=x`；
 4. 再测 Periodic 跨状态迁移。
 
-## 6. 产物
+## 6. Observed inverse pilot
 
-- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`
+### 实现
+
+- 从 trace 提取 trigger 的 event_position、code index、real anchor→event_position；
+- code-only：替换 trigger 行的 length/gap 为 reference code，位置不变；
+- both：再把 trigger 行移动到 reference anchor 对应的 slot。
+
+### 结果
+
+| 设置 | J(H) |
+| --- | ---: |
+| Periodic unaware（v2） | 0.673 |
+| Periodic identity（同脚本） | **0.708** |
+| Periodic code-only inverse | **0.700** |
+| Periodic code+position inverse | **0.687** |
+| Periodic oracle feature | 0.880 |
+
+Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史 cap 6000 vs 5000，不是精确同参）。
+
+### 判读
+
+1. **Observed inverse 没有超过同脚本 identity**：
+   - identity 0.708；
+   - code-only 0.700；
+   - code+position 0.687；
+   - 当前 observed inverse 是负收益。
+
+2. **Fixed identity 接近 baseline，但不精确**：
+   - 0.883 vs 0.862；
+   - 主要差异是 history cap/随机；
+   - 需要同参重跑才能作为严格恒等 benchmark。
+
+3. **Oracle 0.880 与 observed 0.687 的差距**：
+   - 不能解释为“位置不可逆”；
+   - 更可能是当前位置 slot 推导/序列重构不对；
+   - 也可能 code 识别/替换有误。
+
+## 7. 审计结论
+
+- Target-level Fixed 对照通过（0.865 vs 0.862）；
+- Synthetic round-trip 只验证了 mapping 的逆，不验证 feature transform；
+- Observed inverse **未通过** Fixed identity 严格 benchmark；
+- 因此 observed inverse 的 0.687 **不能**写成“rotation 不可逆”的证据。
+
+## 8. 下一步
+
+1. 同参重跑 Fixed identity（cap、模型、splits 完全一致）；
+2. 构造 synthetic feature round-trip：给定 x/trace，`T^{-1}(T(x))=x` 精确成立；
+3. 修正 position slot 推导（trigger 插入在 source event 之后，anchor+1；需验证 truncation）；
+4. 再测 code-only / position-only / combined 的增量。
+
+
+
+## 9. 产物
+
+- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`
 - 测试：`tests/test_canonicalization.py`
 - 结果：
   - `artifacts/es/online_canonical_fixed.json`

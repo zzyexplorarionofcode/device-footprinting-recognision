@@ -1,0 +1,97 @@
+# Target-level 审计与 Feature-level 上界
+
+## 1. Target-level 审计
+
+### Fixed 恒等对照
+
+| 流水线 | J(H) |
+| --- | ---: |
+| Fixed unaware（v2） | 0.862 |
+| Fixed target canonicalization | **0.865** |
+
+在 Fixed 上，target canonicalization 等价于原始标签流水线；差异在噪声范围内。
+
+结论：**映射索引和逆映射没有明显错误。**
+
+### Round-trip 单测
+
+`tests/test_canonicalization.py`：
+
+- `mapping` 是 0..K-1 的排列；
+- 对每个 class，`inverse[mapping[class]] == class`；
+- old/next 对每个 class 不同。
+
+2 项测试通过。
+
+### Periodic 的异常曲线
+
+target canonicalization 的 Periodic BA：
+
+`0.888, 0.000, 0.871, 0.156, 0.682, 0.294, 0.955, 0.329, ...`
+
+0.0/0.156 不是索引错误（Fixed 对照正常）；更像是：
+- 共享模型学的是 code index，而 code target 随 state 旋转；
+- 当模型在某 block 上偏向错误 code 区域时，逆映射会整体错位；
+- 不是“逆映射公式错”，而是“target 层无法对齐特征”。
+
+## 2. Oracle feature-level canonicalization
+
+为了判断“如果特征层能完全规范化，能否恢复”，做 oracle 上界：
+
+- 对每个 block，不按当前 mapping，而是统一用 reference mapping（old）重新生成 FADE 特征；
+- 标签仍为 class；
+- 累计训练/盲测协议相同。
+
+| 设置 | J(H) |
+| --- | ---: |
+| Fixed unaware | 0.862 |
+| Periodic target canonicalization | 0.568 |
+| Periodic unaware | 0.673 |
+| **Periodic oracle feature canonicalization** | **0.880** |
+
+结论：
+
+- oracle 特征规范化可以回到 Fixed 水平；
+- 因此 Periodic 的损失**主要是表示层/映射层**，不是源流量信息被不可逆破坏；
+- target-level 逆映射不够，必须做特征层变换。
+
+## 3. 重要 caveat
+
+Oracle 上界使用：
+- 原始流量；
+- reference mapping 重新生成；
+- 不是从观测到的 defended traffic 逆变换。
+
+因此它不是可实现的攻击者，只是**上界**。真正的 feature-level inverse 需要：
+1. 从 trace/码本识别 observed trigger code index；
+2. 用 `M^{-1}` 找到 class/canonical code；
+3. 把 trigger code/position 变换到 reference；
+4. 重构 32-event 序列（包括真实包位移）。
+
+## 4. 判断
+
+- 不能把 target-level 0.568 解释为“rotation 破坏源信息”；
+- 也不能把 oracle 0.880 解释为“攻击者已能恢复”；
+- 目前最准确的表述：
+
+> Target-level canonicalization 不足；oracle feature canonicalization 能恢复，说明表示层可逆性有希望；真正的 feature-level inverse 尚未实现。
+
+## 5. 下一步
+
+1. 实现 observed-feature inverse：
+   - 用码本识别 trigger code index；
+   - 用 `R[M^{-1}[k]]` 得到 canonical code；
+   - 在 32-event 序列中替换/移动 trigger 特征；
+2. 在 Fixed 上做恒等 inverse benchmark；
+3. 合成 round-trip：`T^{-1}(T(x))=x`；
+4. 再测 Periodic 跨状态迁移。
+
+## 6. 产物
+
+- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`
+- 测试：`tests/test_canonicalization.py`
+- 结果：
+  - `artifacts/es/online_canonical_fixed.json`
+  - `artifacts/es/online_canonical_periodic.json`
+  - `artifacts/es/feature_canonical_reference.json`
+- 分支：`stage2-coordination`

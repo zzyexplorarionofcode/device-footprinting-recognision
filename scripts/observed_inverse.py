@@ -105,6 +105,8 @@ def inverse_code(x, rows, code, state, anchors, mappings, project, mode="both"):
             target_slot = slot
         if target_slot != slot:
             out[[slot, target_slot]] = out[[target_slot, slot]]
+        if ref_code == code and target_slot == slot:
+            continue
         length, gap = ref_packets[j]
         sign = 1.0 if out[target_slot] >= 0 else -1.0
         out[target_slot] = sign * length / 1514.0
@@ -121,7 +123,7 @@ def main() -> None:
     parser.add_argument("--block-days", type=int, default=10)
     parser.add_argument("--period", type=int, default=2)
     parser.add_argument("--phase", type=int, default=0)
-    parser.add_argument("--mode", choices=("code", "both", "identity"), default="both")
+    parser.add_argument("--mode", choices=("code", "both", "identity", "oracle"), default="both")
     parser.add_argument("--policy", choices=("Fixed", "Periodic"), default="Periodic")
     args = parser.parse_args()
 
@@ -145,13 +147,18 @@ def main() -> None:
         hist_rows = sum([blocks[i]["rows"] for i in range(b)], [])
         hist_codes = sum([blocks[i]["codes"] for i in range(b)], [])
         hist_anchors = sum([blocks[i]["anchors"] for i in range(b)], [])
+        if args.mode == "oracle":
+            hist_codes = [int(mappings[int(s)][int(y)]) for s, y in zip(hist_state, hist_y)]
         canon = np.stack([
             inverse_code(hist_x[j], hist_rows[j], hist_codes[j], int(hist_state[j]), hist_anchors[j], mappings, project, args.mode)
             for j in range(len(hist_x))
         ])
         cur = blocks[b]
+        cur_codes = cur["codes"]
+        if args.mode == "oracle":
+            cur_codes = [int(mappings[int(s)][int(y)]) for s, y in zip(cur["state"], cur["y"])]
         canonical_cur = np.stack([
-            inverse_code(cur["x"][j], cur["rows"][j], cur["codes"][j], int(cur["state"][j]), cur["anchors"][j], mappings, project, args.mode)
+            inverse_code(cur["x"][j], cur["rows"][j], cur_codes[j], int(cur["state"][j]), cur["anchors"][j], mappings, project, args.mode)
             for j in range(len(cur["x"]))
         ])
         half = len(cur["y"]) // 2

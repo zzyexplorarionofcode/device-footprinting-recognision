@@ -140,9 +140,44 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 9. 产物
+## 10. Strict identity 与 Oracle detector
 
-- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`
+### Fixed identity（逐元素）
+
+| locator | flows | max_abs_diff | nonzero rows | detector errors |
+| --- | ---: | ---: | ---: | ---: |
+| Oracle（真实标签定 code） | 200 | **0.0** | **0** | 0 |
+| Observable（长度识别 code） | 200 | 5.43 | 13 | **48/200** |
+
+结论：
+
+- **逆变换数学在 code 已知时是精确的**；
+- slot/anchor 公式在 identity 路径上没有错；
+- 主要误差来自 code detector（48/200）；
+- 修掉“code 不变仍替换 jitter 值”后，observable mismatch 从 200/200 降到 13/200。
+
+### Full Periodic：Oracle code vs observable code
+
+| inverse | J(H) |
+| --- | ---: |
+| identity | 0.708 |
+| observable code-only | 0.700 |
+| observable code+position | 0.687 |
+| **oracle code + position** | **0.698** |
+| oracle feature（regenerate） | 0.880 |
+
+关键：
+
+- 用真实 code 后，inverse 仍然只有 0.698，和 code-only 0.700 基本一样；
+- 所以 **code detector 不是主要瓶颈**；
+- 当前位置 slot/序列重构不对：简单交换 trigger 行，无法复现 canonical anchor 下真实包位移/窗口截断；
+- Oracle regeneration 0.880 与 observed 0.698 的差距，主要来自**序列重构**，不是 code 识别。
+
+
+
+## 11. 产物
+
+- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`
 - 测试：`tests/test_canonicalization.py`
 - 结果：
   - `artifacts/es/online_canonical_fixed.json`

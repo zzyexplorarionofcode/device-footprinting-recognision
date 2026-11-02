@@ -40,7 +40,7 @@ def make_mappings(project, count=6):
     return mappings
 
 
-def build_policy_blocks(dataset, labels, groups, project, mappings, policy, block_days, period, rng):
+def build_policy_blocks(dataset, labels, groups, project, mappings, policy, block_days, period, phase, rng):
     days = np.sort(np.unique(groups))
     blocks = []
     for start in range(0, len(days), block_days):
@@ -53,7 +53,7 @@ def build_policy_blocks(dataset, labels, groups, project, mappings, policy, bloc
         if policy == "Fixed":
             state = np.zeros(len(idx), dtype=int)
         elif policy == "Periodic":
-            state = np.full(len(idx), (b // period) % len(mappings), dtype=int)
+            state = np.full(len(idx), ((b // period) + phase) % len(mappings), dtype=int)
         else:
             state = rng.integers(0, len(mappings), size=len(idx))
         x = np.zeros((len(idx), 64), dtype=float)
@@ -77,6 +77,41 @@ def fit_lr(x, y, weights=None):
     return SGDClassifier(loss="log_loss", max_iter=300, tol=1e-3, random_state=0).fit(x, y, sample_weight=weights)
 
 
+def first_hit(ba, threshold):
+    for index, value in enumerate(ba):
+        if value >= threshold:
+            return index
+    return None
+
+
+def sustained_hit(ba, threshold, consecutive=2):
+    run = 0
+    for index, value in enumerate(ba):
+        if value >= threshold:
+            run += 1
+            if run >= consecutive:
+                return index - consecutive + 1
+        else:
+            run = 0
+    return None
+
+
+def recovery_hits(ba, switches, threshold):
+    values = []
+    censored = 0
+    for switch in switches:
+        found = None
+        for index in range(switch, len(ba)):
+            if ba[index] >= threshold:
+                found = index - switch
+                break
+        if found is None:
+            censored += 1
+        else:
+            values.append(found)
+    return {"values": values, "censored": censored}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
@@ -85,7 +120,9 @@ def main() -> None:
     parser.add_argument("--dataset-version", required=True)
     parser.add_argument("--block-days", type=int, default=5)
     parser.add_argument("--period", type=int, default=2)
+    parser.add_argument("--phase", type=int, default=0)
     parser.add_argument("--ns", default="0,64,256,1024")
+    parser.add_argument("--policies", default="Fixed,Periodic,Per_flow")
     args = parser.parse_args()
 
     dataset = np.load(args.dataset, allow_pickle=False)
@@ -96,10 +133,10 @@ def main() -> None:
     ns = [int(v) for v in args.ns.split(",")]
     rng = np.random.default_rng(20261030)
 
-    policies = ("Fixed", "Periodic")
+    policies = tuple(args.policies.split(","))
     output = {"dataset_version": args.dataset_version, "ns": ns, "policies": {}}
     for policy in policies:
-        blocks = build_policy_blocks(dataset, labels, groups, project, mappings, policy, args.block_days, args.period, rng)
+        blocks = build_policy_blocks(dataset, labels, groups, project, mappings, policy, args.block_days, args.period, args.phase, rng)
         attackers = ("unaware",) if policy != "Periodic" else ("unaware", "schedule_known", "state_inferred")
         policy_out = {"attackers": {}}
         for attacker in attackers:
@@ -168,10 +205,29 @@ def main() -> None:
                         ntau["values"].append(min(eligible))
                     else:
                         ntau["censored"] += 1
+                metrics = {}
+                switches = []
+                if policy == "Periodic":
+                    for b in range(1, len(blocks)):
+                        before = ((b - 1) // args.period + args.phase) % len(mappings)
+                        after = (b // args.period + args.phase) % len(mappings)
+                        if before != after:
+                            switches.append(b - 1)
+                for n in ns:
+                    curve = curves[n]
+                    metrics[str(n)] = {
+                        "T_first_0.5": first_hit(curve, 0.5),
+                        "T_first_0.8": first_hit(curve, 0.8),
+                        "T_sustained_0.5": sustained_hit(curve, 0.5),
+                        "T_sustained_0.8": sustained_hit(curve, 0.8),
+                        "T_recovery_0.5": recovery_hits(curve, switches, 0.5),
+                        "T_recovery_0.8": recovery_hits(curve, switches, 0.8),
+                    }
                 methods_out[method] = {
                     "curves": {str(n): curves[n] for n in ns},
                     "J": {str(n): float(np.mean(curves[n])) if curves[n] else None for n in ns},
                     "N_tau": ntau,
+                    "T": metrics,
                 }
             policy_out["attackers"][attacker] = methods_out
             print(policy, attacker, "done", flush=True)

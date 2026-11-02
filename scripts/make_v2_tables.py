@@ -103,6 +103,26 @@ def main() -> None:
         )
     lines.append("")
 
+    lines += ["## 表 2d representation 审计（真实包 padding）", ""]
+    lines.append("| dataset | split | changed flows | changed events | mean added B | hist identical | count mismatch |")
+    lines.append("| --- | --- | ---: | ---: | ---: | ---: | ---: |")
+    for name, label in [
+        ("v2_representation_unsw8", "UNSW"),
+        ("v2_representation_cic9", "CIC"),
+        ("v2_representation_unsw2018", "UNSW2018"),
+        ("v2_representation_deakin60", "Deakin60"),
+    ]:
+        j = load(name + ".json")
+        for split in ("train", "test"):
+            s = j[split]
+            lines.append(
+                f"| {label} | {split} | {s['changed_flow_fraction']:.3f} | {s['changed_event_fraction']:.3f} | "
+                f"{s['real_added_bytes_mean']:.1f} | {s['hist_identical_fraction']:.3f} | {s['count_mismatch']} |"
+            )
+    lines.append("")
+    lines.append("控制：padding_prob=0 时，UNSW 8000/8000 流 hist 完全一致、changed_flows=0。")
+    lines.append("")
+
     lines += ["## 表 3 长度直方图（同一批 8k，16 bins，LR）", ""]
     lines.append("| version | C→C | C→D merged | D→D merged | C→D real | D→D real |")
     lines.append("| --- | ---: | ---: | ---: | ---: | ---: |")

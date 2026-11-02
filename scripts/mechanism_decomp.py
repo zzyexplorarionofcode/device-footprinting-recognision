@@ -7,6 +7,13 @@ Counterfactual chain (all with the same train/test sample and one batch):
     CD_visible     clean -> real packets still visible in the 32-event window
     CD_merged      clean -> all visible packets (real + dummy)
 
+The decomposition is sequential/path-dependent: CC -> CD_complete -> CD_visible ->
+CD_merged.  The three differences are not independent causal effects and must
+not be reordered.  All four views use the same train/test indices, the same
+classifier and the same prediction protocol.  `CD_complete` still differs from
+clean when the defense pads real packets; with padding_probability=0 the two
+histograms are identical (verified by scripts/representation_audit.py).
+
 Components (BA scale, positive = defense reduces attacker BA):
     representation = CC - CD_complete
     displacement   = CD_complete - CD_visible

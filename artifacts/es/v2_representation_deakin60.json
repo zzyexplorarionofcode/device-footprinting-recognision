@@ -1,0 +1,26 @@
+{
+  "train": {
+    "flows": 8000,
+    "count_mismatch": 0,
+    "changed_flows": 7646,
+    "changed_flow_fraction": 0.95575,
+    "changed_events": 7955,
+    "total_events": 51595,
+    "changed_event_fraction": 0.1541816067448396,
+    "real_added_bytes_mean": 39.9905,
+    "real_added_bytes_median": 33.0,
+    "hist_identical_fraction": 0.624875
+  },
+  "test": {
+    "flows": 7999,
+    "count_mismatch": 0,
+    "changed_flows": 7644,
+    "changed_flow_fraction": 0.955619452431554,
+    "changed_events": 7975,
+    "total_events": 53052,
+    "changed_event_fraction": 0.1503242102088517,
+    "real_added_bytes_mean": 40.06925865733216,
+    "real_added_bytes_median": 33.0,
+    "hist_identical_fraction": 0.6177022127765971
+  }
+}

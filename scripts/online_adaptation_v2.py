@@ -151,7 +151,7 @@ def main() -> None:
     n_states = len(mappings)
 
     results = {"policy": args.policy, "ns": ns, "blocks": len(blocks), "attackers": {}}
-    for attacker in ("unaware", "schedule_known", "state_inferred"):
+    for attacker in (("unaware",) if args.policy == "Per_flow" else ("unaware", "schedule_known", "state_inferred")):
         methods = ("permutation", "probe", "finetune")
         curves = {method: {n: [] for n in ns} for method in methods}
         tau = {method: {"values": [], "censored": 0} for method in methods}

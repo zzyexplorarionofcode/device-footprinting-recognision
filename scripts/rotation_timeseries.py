@@ -58,7 +58,14 @@ def block_features(dataset, indices, project, mapping_for_flow, mappings):
     return np.concatenate(xs), np.concatenate(ys)
 
 
-def ttau(ba, threshold, consecutive=2):
+def ttau_first(ba, threshold):
+    for index, value in enumerate(ba):
+        if value >= threshold:
+            return index
+    return None
+
+
+def ttau_sustained(ba, threshold, consecutive=2):
     run = 0
     for index, value in enumerate(ba):
         if value >= threshold:
@@ -123,14 +130,16 @@ def main() -> None:
         result["policies"][policy] = {
             "ba_curve": ba_curve,
             "J": float(np.mean(ba_curve)) if ba_curve else None,
-            "T_0.5": ttau(ba_curve, 0.5),
-            "T_0.8": ttau(ba_curve, 0.8),
-            "censored_0.5": ttau(ba_curve, 0.5) is None,
-            "censored_0.8": ttau(ba_curve, 0.8) is None,
+            "T_first_0.5": ttau_first(ba_curve, 0.5),
+            "T_first_0.8": ttau_first(ba_curve, 0.8),
+            "T_sustained_0.5": ttau_sustained(ba_curve, 0.5),
+            "T_sustained_0.8": ttau_sustained(ba_curve, 0.8),
+            "censored_first_0.5": ttau_first(ba_curve, 0.5) is None,
+            "censored_first_0.8": ttau_first(ba_curve, 0.8) is None,
         }
         print(policy, "J", round(result["policies"][policy]["J"], 3),
-              "T0.5", result["policies"][policy]["T_0.5"],
-              "T0.8", result["policies"][policy]["T_0.8"], flush=True)
+              "Tfirst0.5", result["policies"][policy]["T_first_0.5"],
+              "Tsust0.5", result["policies"][policy]["T_sustained_0.5"], flush=True)
 
     args.output_log.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

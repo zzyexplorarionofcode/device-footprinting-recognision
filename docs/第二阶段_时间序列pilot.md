@@ -14,11 +14,13 @@
 
 ## 2. 结果
 
-| policy | J(H) | T_0.5 | T_0.8 | censored 0.5/0.8 |
-| --- | ---: | ---: | ---: | --- |
-| Fixed | **0.965** | 0 | 1 | no/no |
-| Periodic | **0.828** | 2 | 2 | no/no |
-| Per-flow | **0.897** | 0 | 1 | no/no |
+| policy | J(H) | T_first_0.5 | T_first_0.8 | T_sustained_0.5 | T_sustained_0.8 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Fixed | **0.965** | 0 | 1 | 0 | 1 |
+| Periodic | **0.828** | 0 | 2 | 2 | 2 |
+| Per-flow | **0.897** | 0 | 1 | 0 | 1 |
+
+注意：之前报告的 Periodic `T_0.5=2` 实际是 **T_sustained**（连续 2 个 block 达标）；首次到达 `T_first_0.5=0`（第一个 block BA 0.783 已 ≥0.5）。两个指标必须分开命名，不能混用。
 
 BA 曲线（前 12 个测试 block）：
 

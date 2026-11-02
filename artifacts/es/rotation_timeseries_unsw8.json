@@ -43,7 +43,13 @@
       "T_0.5": 0,
       "T_0.8": 1,
       "censored_0.5": false,
-      "censored_0.8": false
+      "censored_0.8": false,
+      "T_first_0.5": 0,
+      "T_first_0.8": 1,
+      "T_sustained_0.5": 0,
+      "T_sustained_0.8": 1,
+      "censored_first_0.5": false,
+      "censored_first_0.8": false
     },
     "Periodic": {
       "ba_curve": [
@@ -85,7 +91,13 @@
       "T_0.5": 2,
       "T_0.8": 2,
       "censored_0.5": false,
-      "censored_0.8": false
+      "censored_0.8": false,
+      "T_first_0.5": 0,
+      "T_first_0.8": 2,
+      "T_sustained_0.5": 2,
+      "T_sustained_0.8": 2,
+      "censored_first_0.5": false,
+      "censored_first_0.8": false
     },
     "Per_flow": {
       "ba_curve": [
@@ -127,7 +139,13 @@
       "T_0.5": 0,
       "T_0.8": 1,
       "censored_0.5": false,
-      "censored_0.8": false
+      "censored_0.8": false,
+      "T_first_0.5": 0,
+      "T_first_0.8": 1,
+      "T_sustained_0.5": 0,
+      "T_sustained_0.8": 1,
+      "censored_first_0.5": false,
+      "censored_first_0.8": false
     }
   }
 }

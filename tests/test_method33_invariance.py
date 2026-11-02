@@ -56,6 +56,21 @@ def run(data, p, indices):
     )
 
 
+def run_trace(data, p, indices):
+    return core.apply_method33(
+        data["lengths"][indices],
+        data["gaps"][indices],
+        data["directions"][indices],
+        data["mask"][indices],
+        data["labels"][indices],
+        p.method33,
+        731800,
+        mapping="old",
+        include_event_trace=True,
+        jitter_config=p.trigger_jitter,
+    )
+
+
 class Method33InvarianceTests(unittest.TestCase):
     def setUp(self):
         self.p = project()
@@ -99,6 +114,28 @@ class Method33InvarianceTests(unittest.TestCase):
         two = run(data, self.p, np.asarray([1]))
         for index in range(4):
             np.testing.assert_array_equal(one[index], two[index])
+
+    def test_same_prefix_suffix_does_not_change_token_or_emitted_prefix(self):
+        first = synthetic()
+        second = {key: value.copy() for key, value in first.items()}
+        second["lengths"][:, 20:] += 100
+        second["gaps"][:, 20:] += 0.5
+        for row in range(8):
+            self.assertEqual(
+                core._flow_token(first["lengths"], first["gaps"], first["directions"], first["mask"], row),
+                core._flow_token(second["lengths"], second["gaps"], second["directions"], second["mask"], row),
+            )
+        a = run_trace(first, self.p, np.arange(8))
+        b = run_trace(second, self.p, np.arange(8))
+        for ra, rb in zip(a[6], b[6]):
+            def prefix(row):
+                result = []
+                for event in row["complete_event_trace"]:
+                    if event["role"] == "real" and event["source_index"] == 20:
+                        break
+                    result.append((event["role"], event["length_bytes"], event["gap_seconds"], event["direction"]))
+                return result
+            self.assertEqual(prefix(ra), prefix(rb))
 
 
 if __name__ == "__main__":

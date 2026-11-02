@@ -62,6 +62,47 @@ def main() -> None:
         lines.append(f"| {label} | " + " | ".join(cells) + " |")
     lines.append("")
 
+    lines += ["## 表 2b Held-out A retrained 配对 CI（Δ [95% CI]）", ""]
+    lines.append("| dataset/mechanism | LR | RF | MLP |")
+    lines.append("| --- | --- | --- | --- |")
+    for name, label in [
+        ("v2_heldout_unsw8_pos", "UNSW/position"),
+        ("v2_heldout_unsw8_gap", "UNSW/gap"),
+        ("v2_heldout_unsw8_len", "UNSW/length"),
+        ("v2_heldout_cic9_pos", "CIC/position"),
+        ("v2_heldout_cic9_gap", "CIC/gap"),
+        ("v2_heldout_unsw2018_pos", "UNSW2018/position"),
+        ("v2_heldout_unsw2018_gap", "UNSW2018/gap"),
+    ]:
+        j = load(name + ".json")
+        cells = []
+        for attacker in ("lr", "rf", "mlp"):
+            d = j["results"]["A"]["retrained"][attacker]["delta"]
+            cells.append(f"{d['delta_mean']:.4f} [{d['delta_ci_low']:.4f},{d['delta_ci_high']:.4f}]")
+        lines.append(f"| {label} | " + " | ".join(cells) + " |")
+    lines.append("")
+
+    lines += ["## 表 2c 机制分解（LR，同一批 8k；正 = 防御降低 BA）", ""]
+    lines.append("| dataset | CC | CD_complete | CD_visible | CD_merged | representation | displacement | dummy_mixing | total |")
+    lines.append("| --- | ---: | ---: | ---: | ---: | --- | --- | --- | --- |")
+    for name, label in [
+        ("v2_mechanism_unsw8", "UNSW"),
+        ("v2_mechanism_cic9", "CIC"),
+        ("v2_mechanism_unsw2018", "UNSW2018"),
+        ("v2_mechanism_deakin60", "Deakin60"),
+    ]:
+        j = load(name + ".json")
+        v = j["variants"]; c = j["components"]
+        def comp(key):
+            item = c[key]
+            return f"{item['value']:.4f} [{item['ci'][0]:.4f},{item['ci'][1]:.4f}]"
+        lines.append(
+            f"| {label} | {v['CC']['ba']:.4f} | {v['CD_complete']['ba']:.4f} | "
+            f"{v['CD_visible']['ba']:.4f} | {v['CD_merged']['ba']:.4f} | "
+            f"{comp('representation')} | {comp('displacement')} | {comp('dummy_mixing')} | {comp('total')} |"
+        )
+    lines.append("")
+
     lines += ["## 表 3 长度直方图（同一批 8k，16 bins，LR）", ""]
     lines.append("| version | C→C | C→D merged | D→D merged | C→D real | D→D real |")
     lines.append("| --- | ---: | ---: | ---: | ---: | ---: |")

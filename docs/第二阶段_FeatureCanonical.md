@@ -401,6 +401,26 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
+## 25. RF 的 phase 配对复验
+
+| 数据集 | phase | unaware | position | combined | oracle | position 恢复 | combined 恢复 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| UNSW | 0 | 0.868 | 0.910 | 0.962 | 0.960 | **0.46** | 1.02 |
+| UNSW | 1 | 0.851 | 0.925 | 0.960 | 0.960 | **0.68** | 1.00 |
+| CIC | 0 | 0.694 | 0.970 | 0.991 | 0.990 | **0.93** | 1.00 |
+| CIC | 1 | 0.694 | 0.953 | 0.991 | 0.990 | **0.88** | 1.00 |
+
+结论：
+
+- UNSW-RF position 恢复在 46–68% 之间波动；
+- CIC-RF 在 88–93% 之间；
+- **46% 和 93% 都不是稳定常数**；
+- combined 在两组都约 100%，稳定；
+- RF 的 code-position 交互是 **数据集 + phase 依赖**，不能写成模型固有属性；
+- 只有两个 phase，无法给可靠 paired CI；需要更多 phase/seed。
+
+
+
 ## 24. CIC + RF/MLP 与 detector 逐 flow
 
 ### CIC + RF
@@ -456,7 +476,7 @@ joint 仅 4→5 一次。
 
 
 
-## 25. 产物
+## 26. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

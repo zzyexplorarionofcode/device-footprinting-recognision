@@ -179,17 +179,17 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 按 canonical anchor 重插入 trigger、再截断到 32，Fixed identity 结果：
 
-| flows | max_abs_diff | nonzero |
-| ---: | ---: | ---: |
-| 200 | **0.0** | **0** |
+| 设置 | flows | max_abs_diff | nonzero |
+| --- | ---: | ---: | ---: |
+| identity shortcut | 200 | **0.0** | **0** |
+| no shortcut（真实重插入） | 200 | 4.72 | **77** |
 
 说明：
 
-- 已加入 identity 短路（canonical code == actual code 时逐元素返回）；
-- 同时定位到短流 fallback：计划 anchor=10、但流中无第 10 个真实包时，FADE 会把 trigger fallback 到末尾；
-- 修复 fallback 前有 80/200 mismatch，identity 短路后为 0。
-
-但 identity 短路只验证恒等路径；跨状态重构仍需 synthetic round-trip。
+- identity 短路（canonical code == actual code 时逐元素返回）通过；
+- 关闭短路后，真实重插入仍有 77/200 mismatch；
+- 短流 fallback 已加入，但仍不是唯一差异；
+- 事件顺序/weakener 插入/特征行对齐仍未完全对齐。
 
 
 

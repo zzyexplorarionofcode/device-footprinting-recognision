@@ -17,8 +17,8 @@ from scripts.fold_review import take  # noqa: E402
 from scripts.position_placebo import features  # noqa: E402
 
 
-def reconstruct(row, project, ref_code, actual_code, x):
-    if ref_code == actual_code:
+def reconstruct(row, project, ref_code, actual_code, x, shortcut=True):
+    if shortcut and ref_code == actual_code:
         return x.copy()
     trace = row["complete_event_trace"]
     anchors = set(int(v) for v in project.method33.trigger_positions[ref_code])
@@ -43,6 +43,12 @@ def reconstruct(row, project, ref_code, actual_code, x):
                 rows.append(("raw", inserted))
             inserted += 1
     out = np.zeros(64)
+    if inserted < len(packets):
+        for j in range(inserted, len(packets)):
+            if actual_code == ref_code and j < len(observed_trigger_rows):
+                rows.append(observed_trigger_rows[j])
+            else:
+                rows.append(("raw", j))
     for i, item in enumerate(rows[:32]):
         if isinstance(item, tuple):
             length, gap = packets[item[1]]
@@ -70,7 +76,7 @@ def main() -> None:
     diffs = []
     for i in range(len(indices)):
         actual = int(project.method33.old_mapping[int(labels[indices[i]])])
-        rebuilt = reconstruct(app[6][i], project, actual, actual, x[i])
+        rebuilt = reconstruct(app[6][i], project, actual, actual, x[i], shortcut=False)
         diffs.append(float(np.max(np.abs(rebuilt - x[i]))))
     diffs = np.asarray(diffs)
     print("flows", len(diffs), "max_abs_diff", float(diffs.max()), "nonzero", int(np.sum(diffs > 0)))

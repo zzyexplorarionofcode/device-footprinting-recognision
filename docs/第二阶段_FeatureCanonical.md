@@ -690,7 +690,52 @@ Oracle canonical BA：0.885。
 
 
 
-## 39. 产物
+## 40. Pairwise distance + class-filtered continuous score
+
+### 6×6 pairwise（20-day block，50 flows）
+
+| block | true state | min off-diagonal | oracle distance true | oracle distance others |
+| ---: | ---: | ---: | ---: | --- |
+| 0 | 0 | 2.46 | 0.0 | 4.71–7.29 |
+| 3 | 1 | **0.00** | 0.0 | 7.07–8.27 |
+| 5 | 2 | **0.00** | 0.0 | 5.88–8.49 |
+| 7 | 3 | 5.15 | 0.0 | 5.84–7.71 |
+
+结论：
+
+- 真实 state 到 Oracle 距离恒为 0；
+- 其他 state 距离 4.7–8.5；
+- 但 block3/5 存在 **state 对 canonical feature 完全重合**（min pairwise=0）；
+- 因此“所有 state 两两可区分”不成立，可辨识性依赖 block 的类别集合。
+
+### Class-filtered continuous score
+
+只评估 `E_b = C_b ∩ H_b`，同一冻结历史 LR：
+
+| block | n | actual classes | rank_LL | rank_margin | G_LL | G_margin |
+| ---: | ---: | --- | ---: | ---: | ---: | ---: |
+| 3 | 64 | 1 | 1 | 1 | 0.000 | 0.000 |
+| 3 | 256 | 2 | 1 | 1 | 0.068 | 0.011 |
+| 3 | 1024 | 6 | 1 | 1 | 0.051 | 0.003 |
+| 5 | 64 | 1 | 1 | 1 | 4.727 | 0.713 |
+| 5 | 256 | 2 | 1 | 1 | 3.914 | 0.599 |
+| 5 | 1024 | 5 | 1 | 1 | 2.247 | 0.348 |
+| 7 | 64 | 1 | 1 | 1 | 7.260 | 0.613 |
+| 7 | 256 | 2 | 1 | 1 | 6.938 | 0.570 |
+| 7 | 1024 | 5 | 1 | 1 | 4.715 | 0.375 |
+
+观察：
+
+- 真实 state 在连续评分上 rank=1；
+- G_LL>0 表示真实 state 的 log-loss 优于所有错误 state；
+- G_margin>0 同样成立；
+- block3 的 n=64 只有 1 类，G_LL=0，不能过度解释；
+- n=1024 多类下仍 rank1，但 G_LL 随类别覆盖增加而下降；
+- 结论：**在类别覆盖足够的 block 上，历史 LR 可以识别真实 state；但并非所有 state 对都可区分，且小 n 的类别覆盖不足。**
+
+
+
+## 41. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

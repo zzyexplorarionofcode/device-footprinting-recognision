@@ -20,6 +20,7 @@ from methods import method33_tools  # noqa: E402
 from methods.method33 import apply_method33  # noqa: E402
 from scripts.fold_review import take  # noqa: E402
 from scripts.position_placebo import features  # noqa: E402
+from scripts.reconstruct_audit import reconstruct  # noqa: E402
 
 
 def fit_model(x, y):
@@ -78,7 +79,7 @@ def build(dataset, labels, groups, project, mappings, block_days, period, phase,
             lengths = [x[i, e["event_position"]] * 1514.0 for e in trig][:2]
             codes.append(code_index(np.abs(lengths), int(state[i]), mappings, project))
             anchors.append({int(e["source_index"]): int(e["event_position"]) for e in trace if e["role"] == "real"})
-        blocks.append({"x": x, "y": labels[idx], "state": state, "rows": rows, "codes": codes, "anchors": anchors})
+        blocks.append({"x": x, "y": labels[idx], "state": state, "rows": rows, "codes": codes, "anchors": anchors, "trace": [app[6][i] for i in range(len(idx))]})
     return blocks
 
 
@@ -146,11 +147,18 @@ def main() -> None:
         hist_state = np.concatenate([blocks[i]["state"] for i in range(b)])
         hist_rows = sum([blocks[i]["rows"] for i in range(b)], [])
         hist_codes = sum([blocks[i]["codes"] for i in range(b)], [])
-        hist_anchors = sum([blocks[i]["anchors"] for i in range(b)], [])
+        hist_traces = sum([blocks[i]["trace"] for i in range(b)], [])
         if args.mode == "oracle":
             hist_codes = [int(mappings[int(s)][int(y)]) for s, y in zip(hist_state, hist_y)]
+
+        def canonical(x, trace, code, state):
+            inverse = {c: cls for cls, c in enumerate(mappings[int(state)])}
+            cls = inverse[int(code)]
+            ref_code = int(project.method33.old_mapping[cls])
+            return reconstruct(trace, project, ref_code, int(code), x, shortcut=(args.mode == "identity"))
+
         canon = np.stack([
-            inverse_code(hist_x[j], hist_rows[j], hist_codes[j], int(hist_state[j]), hist_anchors[j], mappings, project, args.mode)
+            canonical(hist_x[j], hist_traces[j], hist_codes[j], int(hist_state[j]))
             for j in range(len(hist_x))
         ])
         cur = blocks[b]
@@ -158,7 +166,7 @@ def main() -> None:
         if args.mode == "oracle":
             cur_codes = [int(mappings[int(s)][int(y)]) for s, y in zip(cur["state"], cur["y"])]
         canonical_cur = np.stack([
-            inverse_code(cur["x"][j], cur["rows"][j], cur_codes[j], int(cur["state"][j]), cur["anchors"][j], mappings, project, args.mode)
+            canonical(cur["x"][j], cur["trace"][j], cur_codes[j], int(cur["state"][j]))
             for j in range(len(cur["x"]))
         ])
         half = len(cur["y"]) // 2

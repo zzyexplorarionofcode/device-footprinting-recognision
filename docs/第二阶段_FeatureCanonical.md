@@ -234,7 +234,49 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 14. 产物
+## 15. Stage 4/5：正确序列重构后的恢复
+
+### Oracle code
+
+| 设置 | J(H) |
+| --- | ---: |
+| Periodic unaware | 0.673 |
+| Periodic oracle code + reconstruction | **0.884** |
+| Fixed unaware | 0.862 |
+| Oracle feature regenerate | 0.880 |
+
+### Observable detector
+
+| 设置 | J(H) |
+| --- | ---: |
+| Periodic observable code + reconstruction | **0.748** |
+
+### 恢复比例
+
+\[
+\Delta_{\mathrm{total}} = 0.884 - 0.673 = 0.211
+\]
+
+\[
+\Delta_{\mathrm{observed}} = 0.748 - 0.673 = 0.075
+\]
+
+\[
+\text{recovered fraction}
+= \frac{0.075}{0.211}
+= 0.355
+\]
+
+结论：
+
+- 已知 mapping + 正确序列重构可以恢复到 Fixed 水平（0.884）；
+- 实际 observed detector 只恢复约 **35.5%**；
+- 剩余 ~64.5% 损失来自 code detector（48/200 错误）和不可观测/截断事件；
+- 这条分解现在可以正式报告。
+
+
+
+## 16. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

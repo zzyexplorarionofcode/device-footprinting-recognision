@@ -26,7 +26,8 @@ def reconstruct(row, project, ref_code, actual_code, x, shortcut=True):
     observed_trigger_rows = [e["event_position"] - 1 for e in trace if e["role"] == "trigger_dummy"]
     rows = []
     inserted = 0
-    for event in trace:
+    last_real_event = max(i for i, e in enumerate(trace) if e["role"] == "real")
+    for event_index, event in enumerate(trace):
         if event["role"] == "trigger_dummy":
             continue
         slot = int(event["event_position"]) - 1
@@ -39,16 +40,16 @@ def reconstruct(row, project, ref_code, actual_code, x, shortcut=True):
             if actual_code == ref_code and inserted < len(observed_trigger_rows):
                 rows.append(observed_trigger_rows[inserted])
             else:
-                # Placeholder: raw code row is appended at the anchor position.
                 rows.append(("raw", inserted))
             inserted += 1
+        if event_index == last_real_event and inserted < len(packets):
+            for j in range(inserted, len(packets)):
+                if actual_code == ref_code and j < len(observed_trigger_rows):
+                    rows.append(observed_trigger_rows[j])
+                else:
+                    rows.append(("raw", j))
+            inserted = len(packets)
     out = np.zeros(64)
-    if inserted < len(packets):
-        for j in range(inserted, len(packets)):
-            if actual_code == ref_code and j < len(observed_trigger_rows):
-                rows.append(observed_trigger_rows[j])
-            else:
-                rows.append(("raw", j))
     for i, item in enumerate(rows[:32]):
         if isinstance(item, tuple):
             length, gap = packets[item[1]]
@@ -57,6 +58,8 @@ def reconstruct(row, project, ref_code, actual_code, x, shortcut=True):
         else:
             out[i] = x[item]
             out[32 + i] = x[32 + item]
+    if len(rows):
+        out[32] = 0.0
     return out
 
 

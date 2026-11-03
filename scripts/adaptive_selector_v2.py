@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import balanced_accuracy_score, log_loss
+from sklearn.metrics import balanced_accuracy_score, log_loss, recall_score
 from sklearn.preprocessing import StandardScaler
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +88,7 @@ def main() -> None:
         x_cal, y_cal = x[:ncal], labels[cal]
         x_blind, y_blind = x[ncal:], labels[blind]
         true_cal = np.stack([canonical(x_cal[i], true_state, mappings, project) for i in range(len(x_cal))])
+        true_blind = np.stack([canonical(x_blind[i], true_state, mappings, project) for i in range(len(x_blind))])
         entry = {"block": b, "true_state": true_state}
         if history_x and len(np.unique(y_cal)) >= 2:
             hx, hy = np.concatenate(history_x), np.concatenate(history_y)
@@ -99,6 +100,7 @@ def main() -> None:
             entry["history_classes"] = history_classes
             entry["unknown_cal"] = int(len(y_cal) - len(cal_allowed))
             entry["unknown_blind"] = int(len(y_blind) - len(blind_allowed))
+            entry["unknown_blind_ratio"] = float((len(y_blind) - len(blind_allowed)) / max(1, len(y_blind)))
             if len(cal_allowed) >= 50 and len(blind_allowed) >= 50:
                 draw = stratified(y_cal[cal_allowed], max(ns), rng)
                 nout = {}
@@ -125,13 +127,27 @@ def main() -> None:
                         np.concatenate([hy, y_cal[cal_allowed][sub]]),
                         sample_weight=np.concatenate([np.ones(len(hx)), np.full(len(sub), weight)]),
                     )
+                    probe_pred = probe.predict(blind_canon)
+                    before_pred = frozen.predict(scaler.transform(blind_canon))
+                    fin_pred = fin.predict(scaler.transform(blind_canon))
+                    known_pred = frozen.predict(scaler.transform(true_blind[blind_allowed]))
+                    labels_eval = y_blind[blind_allowed]
+                    classes_eval = sorted(set(labels_eval.tolist()))
                     nout[str(n)] = {
                         "scores": scores,
                         "selected": selected,
                         "gap": gap,
                         "ambiguous": bool(gap < args.ambiguity),
-                        "probe_ba": float(balanced_accuracy_score(y_blind[blind_allowed], probe.predict(blind_canon))),
-                        "finetune_ba": float(balanced_accuracy_score(y_blind[blind_allowed], fin.predict(scaler.transform(blind_canon)))),
+                        "probe_ba": float(balanced_accuracy_score(labels_eval, probe_pred)),
+                        "finetune_ba": float(balanced_accuracy_score(labels_eval, fin_pred)),
+                        "before_ba": float(balanced_accuracy_score(labels_eval, before_pred)),
+                        "known_ba": float(balanced_accuracy_score(labels_eval, known_pred)),
+                        "probe_recall": {str(c): float(v) for c, v in zip(classes_eval, recall_score(labels_eval, probe_pred, labels=classes_eval, average=None, zero_division=0))},
+                        "finetune_recall": {str(c): float(v) for c, v in zip(classes_eval, recall_score(labels_eval, fin_pred, labels=classes_eval, average=None, zero_division=0))},
+                        "before_recall": {str(c): float(v) for c, v in zip(classes_eval, recall_score(labels_eval, before_pred, labels=classes_eval, average=None, zero_division=0))},
+                        "known_recall": {str(c): float(v) for c, v in zip(classes_eval, recall_score(labels_eval, known_pred, labels=classes_eval, average=None, zero_division=0))},
+                        "probe_log_loss": float(log_loss(y_cal[cal_allowed][sub], probe.predict_proba(train_canon), labels=sorted(set(y_cal[cal_allowed][sub].tolist())))),
+                        "finetune_train_log_loss": float(log_loss(y_cal[cal_allowed][sub], fin.predict_proba(train_canon), labels=history_classes)),
                     }
                 entry["ns"] = nout
         history_x.append(true_cal)

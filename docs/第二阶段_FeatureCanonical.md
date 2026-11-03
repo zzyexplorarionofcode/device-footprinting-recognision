@@ -775,7 +775,54 @@ Oracle canonical BA：0.885。
 
 
 
-## 43. 产物
+## 44. 2 phase × 3 seed selector 汇总
+
+6 组，20-day block，n=64/256/1024。
+
+### Selector
+
+| 预算 | 可评估单元 | Top-1 | mean gap | min gap | ambiguous |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 64 | 0 | — | — | — | — |
+| 256 | 18 | **18/18** | 3.204 | 0.013 | 0 |
+| 1024 | 48 | **47/48** | 2.914 | 0.0016 | 1 |
+
+- 总：**65/66**；
+- 唯一失败：p1_s2 block6 n=1024，true=4，selected=5，gap=0.382；
+- 唯一 ambiguous：p1_s1 block1 n=1024，gap=0.0016；
+- n=64 全部因单类子集不可评估，不计为 selector 失败。
+
+### Probe / Finetune
+
+| 预算 | Probe mean | Finetune mean | before mean | known BA | paired FT−Probe mean | min / max |
+| ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 256 | 0.577 | **0.882** | 0.798 | 0.798 | **+0.305** | −0.238 / +0.658 |
+| 1024 | 0.801 | **0.916** | 0.841 | 0.848 | **+0.116** | −0.226 / +0.555 |
+
+### 负迁移
+
+5 个单元出现 Finetune < before（下降 0.016–0.032）：
+
+- p0_s0 block6 n=1024
+- p0_s2 block7 n=256
+- p1_s0 block6 n=1024
+- p1_s0 block7 n=256
+- p1_s2 block7 n=256
+
+幅度较小，但说明微调并非总为正收益。
+
+### 解释
+
+- Selector 在多 phase/seed 下稳定：n=256 全对，n=1024 47/48；
+- n=64 不可评估，不是 selector 失败；
+- Finetune 平均显著优于 Probe，尤其 n=256（+0.305）；
+- paired 差异存在负值，说明 Probe 在某些 block 反而更好；
+- known-mapping matched BA 约 0.798（n256）/0.848（n1024），低于 oracle 0.884，说明 adaptive 仍有差距；
+- 负迁移集中在 block 6/7，需结合 per-class recall 进一步分析。
+
+
+
+## 45. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

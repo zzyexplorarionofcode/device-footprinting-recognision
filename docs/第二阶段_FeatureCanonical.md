@@ -276,7 +276,49 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 17. Detector 四臂分解
+## 18. Streaming 四臂与模块增量
+
+### 四臂
+
+| arm | code | position | J(H) |
+| --- | --- | --- | ---: |
+| 1 | Oracle | Oracle | 0.884 |
+| 2 | Weak detector | Oracle | 0.748 |
+| 3 | Oracle | Detected | 0.884 |
+| 4 | **Joint detector** | **Detected** | **0.882** |
+
+说明：
+
+- 0.748 使用的是 naive `code_index`（从 trace 位置取长度），不是真实可观测上限；
+- 联合检测 code/position 后，Arm4 = 0.882，几乎等于 oracle；
+- 因此 code detector 的真实损失很小；之前 0.136 主要是 detector 实现差异。
+
+### 模块增量（Oracle code/rows）
+
+| variant | J(H) | 相对 unaware |
+| --- | ---: | ---: |
+| Periodic unaware | 0.673 | 0 |
+| Code-only | 0.711 | +0.038 |
+| Position-only | 0.877 | +0.204 |
+| Combined | 0.884 | +0.211 |
+
+结论：
+
+- **Position-only 恢复约 97% 的 oracle 增益**；
+- Code-only 只增加约 0.038；
+- 位置/序列重构是主要可逆成分，code 内容只是小增量；
+- Combined 与 Oracle 基本一致。
+
+### 恢复比例（用 Arm4）
+
+\[
+\frac{0.882-0.673}{0.884-0.673}=0.991
+\]
+
+即联合 detector + 正确重构恢复约 **99%** 的 oracle 增益。  
+但这依赖 detector 实现；naive detector 只有 0.748。
+
+
 
 | arm | code | position | J(H) |
 | --- | --- | --- | ---: |
@@ -294,7 +336,7 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 18. 产物
+## 19. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

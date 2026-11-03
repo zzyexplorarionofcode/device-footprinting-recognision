@@ -735,7 +735,47 @@ Oracle canonical BA：0.885。
 
 
 
-## 41. 产物
+## 42. Label-based selector v2（20-day）
+
+### 关键结果
+
+只在 `E_b=C_b∩H_b` 且 n 子集至少 2 类时评估：
+
+| block | n | selected | true | gap | ambiguous | probe BA | finetune BA |
+| ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: |
+| 1 | 1024 | 0 | 0 | 1.12 | no | 1.000 | 1.000 |
+| 2 | 1024 | 1 | 1 | 0.25 | no | 0.516 | 0.865 |
+| 3 | 256 | 1 | 1 | 0.065 | no | 1.000 | 0.762 |
+| 3 | 1024 | 1 | 1 | 0.066 | no | 0.997 | 0.996 |
+| 4 | 1024 | 2 | 2 | 1.82 | no | 0.500 | 0.957 |
+| 5 | 256 | 2 | 2 | 4.15 | no | 0.333 | 0.971 |
+| 5 | 1024 | 2 | 2 | 2.28 | no | 0.991 | 0.994 |
+| 6 | 1024 | 3 | 3 | 6.03 | no | 0.396 | 0.901 |
+| 7 | 256 | 3 | 3 | 7.27 | no | 0.400 | 0.908 |
+| 7 | 1024 | 3 | 3 | 4.66 | no | 0.997 | 0.952 |
+| 8 | 1024 | 4 | 4 | 16.60 | no | 1.000 | 0.774 |
+
+### 观察
+
+1. **Selector 在所有可评估单元都选中真实 state**；
+2. gap 全为正，最小 0.065，最大 16.6；
+3. 没有 ambiguous；
+4. n=64 全部被跳过：子集只有 1 类，无法稳定评分；
+5. n=256 部分可用，n=1024 全部可用；
+6. Probe 在 n=256 时常常很差（0.33–0.40），因为标签类别覆盖不足；
+7. Finetune 在 n=256 更稳（0.76–0.97），说明历史初始化在小标签下更鲁棒；
+8. n=1024 时 Probe 多数接近 1.0，但 block2/4/6 仍偏低，说明类别覆盖/未知类仍影响。
+
+### 解释边界
+
+- Selector 可行，但只在 `E_b` 覆盖足够、n 子集多类时；
+- n=64 在当前 20-day block 下不可用；
+- Probe 与 Finetune 的差异与小 n 类别覆盖强相关；
+- 不能把 n=256 Probe 的低 BA 解释为“从头训练差”，它同时缺少类别锚点。
+
+
+
+## 43. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

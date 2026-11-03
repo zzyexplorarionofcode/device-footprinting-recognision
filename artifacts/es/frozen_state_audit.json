@@ -1,0 +1,307 @@
+{
+  "ns": {
+    "64": {
+      "top1": 14,
+      "mean_rank": 1.0,
+      "mean_margin": 0.0,
+      "rows": [
+        {
+          "block": 1,
+          "true_state": 0,
+          "best_state": 0,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 2,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 0.96875,
+          "best_score": 0.96875,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 3,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 4,
+          "true_state": 2,
+          "best_state": 1,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 5,
+          "true_state": 2,
+          "best_state": 2,
+          "true_score": 0.8333333333333333,
+          "best_score": 0.8333333333333333,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 6,
+          "true_state": 3,
+          "best_state": 0,
+          "true_score": 0.0,
+          "best_score": 0.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 7,
+          "true_state": 3,
+          "best_state": 3,
+          "true_score": 0.96875,
+          "best_score": 0.96875,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 8,
+          "true_state": 4,
+          "best_state": 4,
+          "true_score": 0.703125,
+          "best_score": 0.703125,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 9,
+          "true_state": 4,
+          "best_state": 4,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 10,
+          "true_state": 5,
+          "best_state": 5,
+          "true_score": 0.96875,
+          "best_score": 0.96875,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 11,
+          "true_state": 5,
+          "best_state": 5,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 12,
+          "true_state": 0,
+          "best_state": 0,
+          "true_score": 0.921875,
+          "best_score": 0.921875,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 13,
+          "true_state": 0,
+          "best_state": 0,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 14,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 0.96875,
+          "best_score": 0.96875,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 15,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 16,
+          "true_state": 2,
+          "best_state": 2,
+          "true_score": 0.796875,
+          "best_score": 0.796875,
+          "margin": 0.0,
+          "rank": 1
+        }
+      ]
+    },
+    "256": {
+      "top1": 15,
+      "mean_rank": 1.0,
+      "mean_margin": 0.0,
+      "rows": [
+        {
+          "block": 1,
+          "true_state": 0,
+          "best_state": 0,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 2,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 0.90625,
+          "best_score": 0.90625,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 3,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 4,
+          "true_state": 2,
+          "best_state": 2,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 5,
+          "true_state": 2,
+          "best_state": 2,
+          "true_score": 0.8333333333333333,
+          "best_score": 0.8333333333333333,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 6,
+          "true_state": 3,
+          "best_state": 1,
+          "true_score": 0.12109375,
+          "best_score": 0.12109375,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 7,
+          "true_state": 3,
+          "best_state": 3,
+          "true_score": 0.98828125,
+          "best_score": 0.98828125,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 8,
+          "true_state": 4,
+          "best_state": 4,
+          "true_score": 0.67578125,
+          "best_score": 0.67578125,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 9,
+          "true_state": 4,
+          "best_state": 4,
+          "true_score": 0.9921875,
+          "best_score": 0.9921875,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 10,
+          "true_state": 5,
+          "best_state": 5,
+          "true_score": 0.9609375,
+          "best_score": 0.9609375,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 11,
+          "true_state": 5,
+          "best_state": 5,
+          "true_score": 0.99609375,
+          "best_score": 0.99609375,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 12,
+          "true_state": 0,
+          "best_state": 0,
+          "true_score": 0.9453125,
+          "best_score": 0.9453125,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 13,
+          "true_state": 0,
+          "best_state": 0,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 14,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 0.95703125,
+          "best_score": 0.95703125,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 15,
+          "true_state": 1,
+          "best_state": 1,
+          "true_score": 1.0,
+          "best_score": 1.0,
+          "margin": 0.0,
+          "rank": 1
+        },
+        {
+          "block": 16,
+          "true_state": 2,
+          "best_state": 2,
+          "true_score": 0.8203125,
+          "best_score": 0.8203125,
+          "margin": 0.0,
+          "rank": 1
+        }
+      ]
+    }
+  },
+  "oracle_ba": 0.8852132161458333
+}

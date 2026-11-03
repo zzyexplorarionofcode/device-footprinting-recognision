@@ -547,7 +547,37 @@ joint 仅 4→5 一次。
 
 
 
-## 31. 产物
+## 32. Frozen historical classifier audit
+
+| n | top1（best==true） | mean rank | mean margin |
+| ---: | ---: | ---: | ---: |
+| 64 | 14/16 | 1.00 | **0.00** |
+| 256 | 15/16 | 1.00 | **0.00** |
+
+Oracle canonical BA：0.885。
+
+问题：
+
+- 多个 candidate 的 frozen accuracy 完全相同（常见 1.0 或同一低值）；
+- `best_state` 与 true 不同时，score 也相同，rank 仍为 1；
+- mean margin 恒为 0；
+- 说明这个评分函数**饱和/打平**，不能区分正确与错误 canonicalization。
+
+解释：
+
+- 仅用 frozen accuracy on n labels 不够；
+- 需要连续分数（log-loss / confidence margin / likelihood），而不是硬 accuracy；
+- 也需要检查 trace-free canonicalization 是否对不同 state 产生足够差异。
+
+结论：
+
+- 当前 frozen-classifier selector **未通过**；
+- 不能据此判断 mapping state 是否可识别；
+- 下一步应改用连续评分并检查 canonicalization 的 state sensitivity。
+
+
+
+## 33. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

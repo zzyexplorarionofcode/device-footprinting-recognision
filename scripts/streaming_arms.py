@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import balanced_accuracy_score
 from sklearn.preprocessing import StandardScaler
@@ -111,6 +113,14 @@ def build_canonical(dataset, labels, groups, project, mappings, block_days, vari
     return blocks
 
 
+def make_model(model):
+    if model == "rf":
+        return RandomForestClassifier(n_estimators=80, n_jobs=4, random_state=0)
+    if model == "mlp":
+        return MLPClassifier(hidden_layer_sizes=(128,), max_iter=200, random_state=0)
+    return SGDClassifier(loss="log_loss", max_iter=500, tol=1e-3, random_state=0)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
@@ -120,6 +130,7 @@ def main() -> None:
     parser.add_argument("--block-days", type=int, default=10)
     parser.add_argument("--phase", type=int, default=0)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--model", choices=("lr", "rf", "mlp"), default="lr")
     args = parser.parse_args()
 
     dataset = np.load(args.dataset, allow_pickle=False)
@@ -134,7 +145,7 @@ def main() -> None:
         x_train = np.concatenate([blocks[i]["x"] for i in range(b)])
         y_train = np.concatenate([blocks[i]["y"] for i in range(b)])
         scaler = StandardScaler().fit(x_train)
-        model = SGDClassifier(loss="log_loss", max_iter=500, tol=1e-3, random_state=0).fit(scaler.transform(x_train), y_train)
+        model = make_model(args.model).fit(scaler.transform(x_train), y_train)
         half = len(blocks[b]["y"]) // 2
         blind = np.arange(half, len(blocks[b]["y"]))
         pred = model.predict(scaler.transform(blocks[b]["x"][blind]))

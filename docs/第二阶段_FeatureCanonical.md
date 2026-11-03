@@ -356,7 +356,52 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 21. 产物
+## 22. 跨数据集 / 跨模型复验
+
+### CIC + LR（2 天/block，10 个测试 block）
+
+| 条件 | J(H) |
+| --- | ---: |
+| unaware | 0.585 |
+| position-only | 0.915 |
+| combined | 0.922 |
+| oracle | 0.923 |
+
+恢复：combined ≈ 0.998，position-only ≈ 0.976。
+
+### UNSW + RF
+
+| 条件 | J(H) |
+| --- | ---: |
+| unaware | 0.868 |
+| position-only | 0.910 |
+| combined | 0.962 |
+| oracle | 0.960 |
+
+恢复：combined ≈ 1.02，position-only ≈ 0.46。
+
+### UNSW + MLP
+
+| 条件 | J(H) |
+| --- | ---: |
+| unaware | 0.838 |
+| position-only | 0.957 |
+| combined | 0.958 |
+| oracle | 0.958 |
+
+恢复：combined ≈ 1.00，position-only ≈ 0.99。
+
+### 结论
+
+- CIC 上位置逆变换同样有效（position-only 97.6%，combined 99.8%）；
+- LR/MLP 下 position-only 几乎足够（97–99%）；
+- RF 下 position-only 只有 46%，combined 才能到 102%；
+- 因此“位置是主要成分”对 LR/MLP 成立，对 RF 则是 **code+position 组合**更重要；
+- 跨数据集、跨模型总体一致：combined 都恢复到 oracle 水平。
+
+
+
+## 23. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

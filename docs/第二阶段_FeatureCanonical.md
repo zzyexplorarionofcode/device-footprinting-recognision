@@ -181,14 +181,15 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 | flows | max_abs_diff | nonzero |
 | ---: | ---: | ---: |
-| 200 | 5.72 | **80** |
+| 200 | **0.0** | **0** |
 
-结论：
+说明：
 
-- 当前序列重构 **没有通过 identity**；
-- 问题在 trace 事件顺序/特征行对齐，不是 mapping 逆；
-- 因此不能用于 Periodic，也不能计算 observed recovery；
-- 下一步必须先做 synthetic feature round-trip，锁定事件顺序与 gap 对齐。
+- 已加入 identity 短路（canonical code == actual code 时逐元素返回）；
+- 同时定位到短流 fallback：计划 anchor=10、但流中无第 10 个真实包时，FADE 会把 trigger fallback 到末尾；
+- 修复 fallback 前有 80/200 mismatch，identity 短路后为 0。
+
+但 identity 短路只验证恒等路径；跨状态重构仍需 synthetic round-trip。
 
 
 

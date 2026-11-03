@@ -18,6 +18,8 @@ from scripts.position_placebo import features  # noqa: E402
 
 
 def reconstruct(row, project, ref_code, actual_code, x):
+    if ref_code == actual_code:
+        return x.copy()
     trace = row["complete_event_trace"]
     anchors = set(int(v) for v in project.method33.trigger_positions[ref_code])
     packets = project.method33.trigger_codes[ref_code]

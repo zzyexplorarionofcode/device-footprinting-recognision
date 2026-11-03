@@ -604,7 +604,45 @@ Oracle canonical BA：0.885。
 
 
 
-## 35. 产物
+## 36. Block coverage audit
+
+### 汇总
+
+| block 天数 | block 数 | ≥3 类 | ≥5 类 | 全部 8 类 |
+| ---: | ---: | ---: | ---: | ---: |
+| 10 | 18 | 17 | 7 | 0 |
+| 20 | 9 | 9 | 4 | 0 |
+| 30 | 6 | 6 | 5 | 0 |
+
+### 观察
+
+- **没有任何方案让 calibration pool 覆盖全部 8 类**；
+- class 4 在多数 block 前半段完全缺席；
+- 有些 block 的少数类只有 2–3 条样本；
+- 10 天 block 多，但类别支持弱；
+- 30 天 block 类别覆盖最好，但只有 6 个 block；
+- 20 天是折中：9 个 block，4 个 ≥5 类。
+
+### 重要含义
+
+这验证了 Adaptation Cost 的第二个维度：
+
+\[
+\text{Adaptation Cost}=f(\text{Label Budget},\text{Label Acquisition Time})
+\]
+
+某些设备在 calibration window 内根本没有出现，攻击者无法获得语义锚点。这不是样本量不足，而是时间窗口内没有观测支持。
+
+### 后续建议
+
+- 先用 20 天 block 做 selector audit（9 block，保留 phase/seed 重复）；
+- 只保留 calibration pool ≥3 类或 ≥5 类的 block，并明确报告筛选；
+- 标签预算按每类可用样本上限截断；
+- 不要假装全覆盖；报告每类实际样本数。
+
+
+
+## 37. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

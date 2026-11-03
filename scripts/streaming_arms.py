@@ -23,9 +23,9 @@ from scripts.position_placebo import features  # noqa: E402
 from scripts.reconstruct_audit import reconstruct  # noqa: E402
 
 
-def make_mappings(project):
+def make_mappings(project, seed=0):
     out = [list(project.method33.old_mapping), list(project.method33.next_mapping)]
-    rng = np.random.default_rng(123)
+    rng = np.random.default_rng(seed)
     while len(out) < 6:
         perm = list(rng.permutation(len(out[0])))
         if perm not in out:
@@ -73,7 +73,7 @@ def code_only(x, rows, ref_code, project):
     return out
 
 
-def build_canonical(dataset, labels, groups, project, mappings, block_days, variant):
+def build_canonical(dataset, labels, groups, project, mappings, block_days, variant, phase=0):
     days = np.sort(np.unique(groups))
     raw_blocks = []
     for start in range(0, len(days), block_days):
@@ -83,32 +83,29 @@ def build_canonical(dataset, labels, groups, project, mappings, block_days, vari
             raw_blocks.append(idx)
     blocks = []
     for b, idx in enumerate(raw_blocks):
-        state = np.full(len(idx), (b // 2) % len(mappings), dtype=int)
+        state = np.full(len(idx), ((b // 2) + phase) % len(mappings), dtype=int)
+        mapping = list(project.method33.old_mapping) if variant == "oracle_regen" else mappings[int(state[0])]
         application = list(take(dataset, idx))
         application[0] = np.minimum(application[0], 1514.0)
         app = apply_method33(
             *application, project.method33, 731800,
-            mapping=mappings[int(state[0])], jitter_config=project.trigger_jitter,
+            mapping=mapping, jitter_config=project.trigger_jitter,
             include_event_trace=True,
         )
         x = features(app)
-        canonical = np.zeros_like(x)
-        for i in range(len(idx)):
-            trace = app[6][i]
-            oracle_code = int(mappings[int(state[i])][int(labels[idx[i]])])
-            if variant == "arm4":
-                code, rows = detect_code_rows(x[i], int(state[i]), mappings, project)
-            else:
-                code = oracle_code
-                rows = [e["event_position"] - 1 for e in trace["complete_event_trace"] if e["role"] == "trigger_dummy"]
-            cls = int(labels[idx[i]])
-            ref_code = int(project.method33.old_mapping[cls])
-            if variant == "code_only":
-                canonical[i] = code_only(x[i], rows, ref_code, project)
-            elif variant == "position_only":
-                canonical[i] = reconstruct(trace, project, ref_code, code, x[i], shortcut=False, actual_rows=rows, replace_code=False)
-            else:
-                canonical[i] = reconstruct(trace, project, ref_code, code, x[i], shortcut=False, actual_rows=rows, replace_code=True)
+        canonical = x.copy()
+        if variant in ("position_only", "combined", "arm4"):
+            for i in range(len(idx)):
+                trace = app[6][i]
+                oracle_code = int(mappings[int(state[i])][int(labels[idx[i]])])
+                if variant == "arm4":
+                    code, rows = detect_code_rows(x[i], int(state[i]), mappings, project)
+                else:
+                    code = oracle_code
+                    rows = [e["event_position"] - 1 for e in trace["complete_event_trace"] if e["role"] == "trigger_dummy"]
+                cls = int(labels[idx[i]])
+                ref_code = int(project.method33.old_mapping[cls])
+                canonical[i] = reconstruct(trace, project, ref_code, code, x[i], shortcut=False, actual_rows=rows, replace_code=(variant != "position_only"))
         blocks.append({"x": canonical, "y": labels[idx]})
         del app, application, x
     return blocks
@@ -119,16 +116,18 @@ def main() -> None:
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output-log", type=Path, required=True)
-    parser.add_argument("--variant", choices=("arm4", "code_only", "position_only", "combined"), required=True)
+    parser.add_argument("--variant", choices=("arm4", "code_only", "position_only", "combined", "unaware", "oracle_regen"), required=True)
     parser.add_argument("--block-days", type=int, default=10)
+    parser.add_argument("--phase", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
     dataset = np.load(args.dataset, allow_pickle=False)
     labels = np.asarray(dataset["labels"])
     groups = np.asarray(dataset["groups"]).astype(str)
     project = method33_tools.load_config(args.config)
-    mappings = make_mappings(project)
-    blocks = build_canonical(dataset, labels, groups, project, mappings, args.block_days, args.variant)
+    mappings = make_mappings(project, args.seed)
+    blocks = build_canonical(dataset, labels, groups, project, mappings, args.block_days, args.variant, args.phase)
 
     curves = []
     for b in range(1, len(blocks)):

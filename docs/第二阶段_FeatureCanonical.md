@@ -336,7 +336,27 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 19. 产物
+## 20. Multi-phase / seed 稳定性
+
+四条件：unaware / position-only / combined / oracle-regenerate。
+
+| 设置 | unaware | position-only | combined | oracle | combined 恢复 | position 恢复 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| phase0 seed0 | 0.706 | 0.877 | 0.884 | 0.883 | 1.01 | 0.97 |
+| phase1 seed0 | 0.701 | 0.880 | 0.882 | 0.883 | 1.00 | 0.98 |
+| phase0 seed1 | 0.737 | 0.876 | 0.884 | 0.883 | 1.01 | 0.95 |
+
+结论：
+
+- oracle 始终 0.883；
+- combined 始终 0.882–0.884；
+- position-only 始终 0.876–0.880；
+- 恢复比例在不同 phase/seed 下稳定：combined≈100%，position-only≈95–98%；
+- 没有观察到某个 mapping 相位特别有利/不利。
+
+
+
+## 21. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

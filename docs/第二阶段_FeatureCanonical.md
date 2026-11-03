@@ -193,10 +193,51 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 13. 产物
+## 13. Synthetic round-trip（Stage 2/3）
 
-- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`
-- 测试：`tests/test_canonicalization.py`
+新增 `scripts/event_canonical.py` + `tests/test_event_canonical.py`。
+
+### Stage 2：无截断
+
+- 构造 24 个真实事件 + 2 trigger + 2 weakener（<=32）；
+- forward：reference anchors [3,9] → actual [7,15]；
+- inverse：actual → reference；
+- 断言 `event_id`、`role`、`attrs`、顺序完全一致；
+- `lost=[]`。
+
+结果：**通过**。
+
+### Stage 3：有截断
+
+- 32 个真实事件 + trigger，actual anchors [30,31]；
+- forward 产生 lost 事件；
+- 断言：
+  - lost 与 retained 的 event_id 不相交；
+  - 如果 trigger 本身被截断，不强行做完整 inverse；
+  - 可恢复部分 <=32。
+
+结果：**通过**。
+
+### Fallback 回归
+
+- 只有 5 个真实事件，trigger anchor=10 不存在；
+- 断言 trigger 仍在、`fallback_slots=[10]`。
+
+结果：**通过**。
+
+### 边界
+
+以上验证的是 **event-level 参考变换**：
+- 事件顺序、属性、截断标记正确；
+- 还没有接回真实 FADE 的 64 维特征；
+- 真实 trace 的 gap/索引对齐仍待 Stage 4 前修。
+
+
+
+## 14. 产物
+
+- 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
+- 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`
 - 结果：
   - `artifacts/es/online_canonical_fixed.json`
   - `artifacts/es/online_canonical_periodic.json`

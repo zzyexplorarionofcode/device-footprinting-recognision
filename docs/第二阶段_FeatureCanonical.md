@@ -401,7 +401,62 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 23. 产物
+## 24. CIC + RF/MLP 与 detector 逐 flow
+
+### CIC + RF
+
+| 条件 | J(H) |
+| --- | ---: |
+| unaware | 0.694 |
+| position-only | 0.970 |
+| combined | 0.991 |
+| oracle | 0.990 |
+
+恢复：position ≈ 0.932，combined ≈ 1.003。
+
+### CIC + MLP
+
+| 条件 | J(H) |
+| --- | ---: |
+| unaware | 0.707 |
+| position-only | 0.974 |
+| combined | 0.975 |
+| oracle | 0.976 |
+
+恢复：position ≈ 0.994，combined ≈ 0.996。
+
+### RF 的模型/数据集交互
+
+| 数据集 | RF position-only | RF combined |
+| --- | ---: | ---: |
+| UNSW | 0.46 | 1.02 |
+| CIC | 0.93 | 1.00 |
+
+结论：RF 的 code-position 交互是 **数据集依赖**，不是模型固有属性。UNSW RF 需要 combined，CIC RF 位置已足够。
+
+### Detector 逐 flow
+
+300 条分层随机 flow：
+
+| detector | 错误数 | 错误率 |
+| --- | ---: | ---: |
+| naive `code_index` | 39 | 13.0% |
+| joint `detect_code_rows` | **1** | **0.3%** |
+
+naive 混淆：
+
+- 1→4：15
+- 2→3：14
+- 3→2：9
+- 5→2：1
+
+joint 仅 4→5 一次。
+
+这解释了 0.748 → 0.882：naive 在 code 1/2/3 上系统错分；joint 联合搜索 code 与位置，几乎消除错误。
+
+
+
+## 25. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

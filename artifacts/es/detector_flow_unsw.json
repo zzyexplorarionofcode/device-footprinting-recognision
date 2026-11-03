@@ -1,0 +1,51 @@
+{
+  "n": 300,
+  "naive_errors": 39,
+  "joint_errors": 1,
+  "per_class": {
+    "0": {
+      "n": 228,
+      "naive": 15,
+      "joint": 0
+    },
+    "1": {
+      "n": 27,
+      "naive": 14,
+      "joint": 0
+    },
+    "2": {
+      "n": 24,
+      "naive": 9,
+      "joint": 0
+    },
+    "3": {
+      "n": 12,
+      "naive": 0,
+      "joint": 1
+    },
+    "4": {
+      "n": 3,
+      "naive": 1,
+      "joint": 0
+    },
+    "5": {
+      "n": 4,
+      "naive": 0,
+      "joint": 0
+    },
+    "7": {
+      "n": 2,
+      "naive": 0,
+      "joint": 0
+    }
+  },
+  "naive_confusions": {
+    "1->4": 15,
+    "2->3": 14,
+    "3->2": 9,
+    "5->2": 1
+  },
+  "joint_confusions": {
+    "4->5": 1
+  }
+}

@@ -526,7 +526,28 @@ joint 仅 4→5 一次。
 
 
 
-## 30. 产物
+## 30. Candidate-state CV audit
+
+17 个有效 block（按类分层抽 64 标签）：
+
+| 指标 | 值 |
+| --- | ---: |
+| true state top1 | **5 / 17（29%）** |
+| mean rank | **1.71** |
+| true score 范围 | 0.906–1.000 |
+| best score 范围 | 0.921–1.000 |
+
+结论：
+
+- 64 标签只能弱区分 state；
+- 大多数候选 state 的 CV 分数都接近 1.0，差距很小；
+- true state 通常在前 2，但不稳定 top1；
+- **label-based selector 需要更大 n（256/1024）或更强的 canonicalization**；
+- 这也解释了为什么无标签 state inference 会退化为 state0。
+
+
+
+## 31. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

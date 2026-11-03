@@ -577,7 +577,34 @@ Oracle canonical BA：0.885。
 
 
 
-## 33. 产物
+## 34. State sensitivity / continuous-score audit（未运行成功）
+
+尝试：
+
+- 每个 block 前 50% 为 calibration pool；
+- pool 内按类分层嵌套标签；
+- 对每个 candidate state 计算 canonical feature distance、log-loss、Brier、margin。
+
+结果：
+
+- UNSW 10 天 block 的前 50% flow 经常只有单一类别；
+- `len(unique(y_pool)) < 3`，所有 block 被跳过；
+- 17 个 block 没有得到有效 continuous-score 样本；
+- 因此没有 log-loss/Brier/margin 结果。
+
+结论：
+
+- 这不是 selector 失败，而是 **block/calibration pool 设计问题**；
+- 时间前 50% 与类别覆盖在 UNSW 上冲突；
+- 必须先重新定义 block：
+  - 更大 block（30 天）；
+  - 或按时间切分后做跨天分层；
+  - 或选择类别覆盖足够的 block；
+- 在 pool 满足类别覆盖前，不能评估 continuous selector。
+
+
+
+## 35. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

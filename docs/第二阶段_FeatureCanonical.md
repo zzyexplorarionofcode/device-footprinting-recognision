@@ -642,7 +642,55 @@ Oracle canonical BA：0.885。
 
 
 
-## 37. 产物
+## 38. 20-day projection & feature sensitivity
+
+### Block 覆盖
+
+| block | cal flows | classes | counts（非零） |
+| ---: | ---: | ---: | --- |
+| 0 | 2816 | 5 | 31,892,1721,40,132 |
+| 1 | 2718 | 3 | 898,1795,25 |
+| 2 | 1951 | 4 | 430,21,230,1270 |
+| 3 | 8461 | 7 | 2485,3045,1234,876,155,358,308 |
+| 4 | 7710 | 3 | 6209,436,1065 |
+| 5 | 85514 | 5 | 75018,9517,264,672,43 |
+| 6 | 7271 | 4 | 6505,2,99,665 |
+| 7 | 27656 | 5 | 15200,6867,1931,2804,854 |
+| 8 | 3325 | 3 | 3156,31,138 |
+
+### Projection equivalence
+
+所有 block 的候選 state 等价组均为 **singleton**：
+
+- 在出现的类别集合上，6 个 state 的 `(code, position)` 投影互不相同；
+- 因此 state 在原理上可区分，至少不是投影等价。
+
+### Feature sensitivity
+
+对 50 条 calibration flow，canonicalized feature 到 state0 的平均 L2：
+
+| block | state1 | state2 | state3 | state4 | state5 |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 7.28 | 5.10 | 7.29 | 5.18 | 4.71 |
+| 1 | 5.81 | 8.57 | 5.81 | 5.81 | 7.15 |
+| 2 | 5.63 | 8.44 | 5.63 | 5.63 | 7.05 |
+| 3 | 8.03 | 6.29 | 7.59 | 7.24 | 6.50 |
+| 4 | 8.13 | 6.62 | 7.72 | 7.09 | 6.25 |
+| 5 | 7.70 | 6.50 | 7.41 | 7.06 | 6.10 |
+| 6 | 8.23 | 6.58 | 7.74 | 7.10 | 7.06 |
+| 7 | 8.22 | 6.84 | 7.70 | 7.35 | 7.03 |
+| 8 | 7.78 | 6.10 | 7.51 | 7.24 | 6.55 |
+
+结论：
+
+- Canonicalization 对 state **有明显敏感性**（距离 4.7–8.6）；
+- 之前 selector 饱和不是“特征不变”；
+- 问题更可能在历史模型评分/标签量，而不是表示层不可区分；
+- 下一步可在 20 天、≥5 类的 block（0/3/5/7）做 continuous-score 诊断。
+
+
+
+## 39. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

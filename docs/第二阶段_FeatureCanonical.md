@@ -493,7 +493,40 @@ joint 仅 4→5 一次。
 
 
 
-## 28. 产物
+## 29. Adaptive Periodic pilot（未通过）
+
+### 结果
+
+| attacker | n=0 | n=64 | n=256 | n=1024 |
+| --- | ---: | ---: | ---: | ---: |
+| probe | 0.817 | 0.685 | 0.638 | 0.639 |
+| finetune | 0.817 | 0.820 | 0.809 | 0.818 |
+
+### 问题
+
+1. **state inference 始终为 0**：
+   - 位置似然在 mapping 置换下边际不变；
+   - 无标签数据无法识别置换；
+   - 当前 canonicalization 用的是错误 state。
+2. **probe 标签抽样未按类分层**：
+   - n 增大反而更差；
+   - 不是 adaptive 能力，而是抽样偏差。
+3. **finetune ≈0.82 不能解释**：
+   - 它是在错误 canonicalization 上微调；
+   - 不能当 adaptive 结果。
+
+### 结论
+
+- adaptive 分支 **未通过语义验证**；
+- 不能报告 Adaptive-Probe / Adaptive-Finetune 的恢复率；
+- 下一步必须用 **标签做 state selection**：
+  - 每个候选 state 下 canonicalize calibration 样本；
+  - 用 n 标签做 cross-validation，选最优 state；
+  - n=0 时只能使用先验/identity，并明确标记为无自适应能力。
+
+
+
+## 30. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

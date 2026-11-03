@@ -276,7 +276,25 @@ Fixed identity 对照：**0.883**（baseline v2 Fixed 0.862；差异来自历史
 
 
 
-## 16. 产物
+## 17. Detector 四臂分解
+
+| arm | code | position | J(H) |
+| --- | --- | --- | ---: |
+| 1 | Oracle | Oracle | **0.884** |
+| 2 | Detected | Oracle | **0.748** |
+| 3 | Oracle | Detected | **0.884** |
+| 4 | Detected | Detected | 未完成（内存） |
+
+结论：
+
+- **Arm 1 = Arm 3 = 0.884**：position detector 在本任务上没有损失；
+- **Arm 1 − Arm 2 = 0.136**：全部来自 code detector；
+- 所以当前恢复差距的主因是 code 识别，不是位置重构；
+- Arm 4 和 code-only/position-only 仍需在降低内存后补跑。
+
+
+
+## 18. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

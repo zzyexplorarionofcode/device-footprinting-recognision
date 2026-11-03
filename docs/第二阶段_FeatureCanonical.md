@@ -476,7 +476,24 @@ joint 仅 4→5 一次。
 
 
 
-## 26. 产物
+## 27. Known-mapping 三 Policy
+
+| policy | J(H) |
+| --- | ---: |
+| Fixed | 0.884 |
+| Periodic | 0.884 |
+| Per-flow | 0.883 |
+
+结论：
+
+- 在 oracle trigger + 正确序列重构下，三种 policy 的 BA 几乎相同；
+- **Known-mapping 上界对 policy 不敏感**；
+- Periodic/Per-flow 的劣势只出现在 mapping 未知或 detector 有误差时；
+- 因此后续 adaptive 实验的核心是“推断 mapping 的成本”，不是逆变换本身。
+
+
+
+## 28. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

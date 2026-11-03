@@ -75,7 +75,7 @@ def code_only(x, rows, ref_code, project):
     return out
 
 
-def build_canonical(dataset, labels, groups, project, mappings, block_days, variant, phase=0):
+def build_canonical(dataset, labels, groups, project, mappings, block_days, variant, phase=0, policy="Periodic", seed=0):
     days = np.sort(np.unique(groups))
     raw_blocks = []
     for start in range(0, len(days), block_days):
@@ -83,22 +83,36 @@ def build_canonical(dataset, labels, groups, project, mappings, block_days, vari
         idx = np.where(np.isin(groups, list(chosen)))[0]
         if len(idx) >= 100:
             raw_blocks.append(idx)
+    rng = np.random.default_rng(seed)
     blocks = []
     for b, idx in enumerate(raw_blocks):
-        state = np.full(len(idx), ((b // 2) + phase) % len(mappings), dtype=int)
-        mapping = list(project.method33.old_mapping) if variant == "oracle_regen" else mappings[int(state[0])]
-        application = list(take(dataset, idx))
-        application[0] = np.minimum(application[0], 1514.0)
-        app = apply_method33(
-            *application, project.method33, 731800,
-            mapping=mapping, jitter_config=project.trigger_jitter,
-            include_event_trace=True,
-        )
-        x = features(app)
+        if policy == "Fixed":
+            state = np.zeros(len(idx), dtype=int)
+        elif policy == "Per_flow":
+            state = rng.integers(0, len(mappings), size=len(idx))
+        else:
+            state = np.full(len(idx), ((b // 2) + phase) % len(mappings), dtype=int)
+        x = np.zeros((len(idx), 64))
+        traces = [None] * len(idx)
+        for state_id in np.unique(state):
+            rows = np.where(state == state_id)[0]
+            subset = idx[rows]
+            mapping = list(project.method33.old_mapping) if variant == "oracle_regen" else mappings[int(state_id)]
+            application = list(take(dataset, subset))
+            application[0] = np.minimum(application[0], 1514.0)
+            app = apply_method33(
+                *application, project.method33, 731800,
+                mapping=mapping, jitter_config=project.trigger_jitter,
+                include_event_trace=True,
+            )
+            x[rows] = features(app)
+            for local, row in enumerate(rows):
+                traces[row] = app[6][local]
+            del app, application
         canonical = x.copy()
         if variant in ("position_only", "combined", "arm4"):
             for i in range(len(idx)):
-                trace = app[6][i]
+                trace = traces[i]
                 oracle_code = int(mappings[int(state[i])][int(labels[idx[i]])])
                 if variant == "arm4":
                     code, rows = detect_code_rows(x[i], int(state[i]), mappings, project)
@@ -109,7 +123,7 @@ def build_canonical(dataset, labels, groups, project, mappings, block_days, vari
                 ref_code = int(project.method33.old_mapping[cls])
                 canonical[i] = reconstruct(trace, project, ref_code, code, x[i], shortcut=False, actual_rows=rows, replace_code=(variant != "position_only"))
         blocks.append({"x": canonical, "y": labels[idx]})
-        del app, application, x
+        del x, traces
     return blocks
 
 
@@ -131,6 +145,7 @@ def main() -> None:
     parser.add_argument("--phase", type=int, default=0)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--model", choices=("lr", "rf", "mlp"), default="lr")
+    parser.add_argument("--policy", choices=("Fixed", "Periodic", "Per_flow"), default="Periodic")
     args = parser.parse_args()
 
     dataset = np.load(args.dataset, allow_pickle=False)
@@ -138,7 +153,7 @@ def main() -> None:
     groups = np.asarray(dataset["groups"]).astype(str)
     project = method33_tools.load_config(args.config)
     mappings = make_mappings(project, args.seed)
-    blocks = build_canonical(dataset, labels, groups, project, mappings, args.block_days, args.variant, args.phase)
+    blocks = build_canonical(dataset, labels, groups, project, mappings, args.block_days, args.variant, args.phase, args.policy, args.seed)
 
     curves = []
     for b in range(1, len(blocks)):

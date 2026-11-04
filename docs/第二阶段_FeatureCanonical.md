@@ -1029,7 +1029,54 @@ Oracle canonical BA：0.885。
 
 
 
-## 55. 产物
+## 56. Per-flow Predicted-state Canonicalization
+
+20-day block，每 block 1000 flows；同一 blind、同一 device classifier、同一 state classifier。
+
+### 结果
+
+| block | state top1 | state top2 | no-canon | predicted top1 | oracle | top2 fusion |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 0.654 | 0.843 | 0.697 | 0.770 | 0.853 | 0.827 |
+| 2 | 0.588 | 0.779 | 0.554 | 0.613 | 0.747 | 0.637 |
+| 3 | 0.300 | 0.451 | 0.610 | 0.643 | 0.808 | 0.666 |
+| 4 | 0.265 | 0.489 | 0.721 | 0.598 | 0.978 | 0.651 |
+| 5 | 0.446 | 0.670 | 0.528 | 0.685 | 0.992 | 0.786 |
+| 6 | 0.437 | 0.669 | 0.325 | 0.473 | 0.664 | 0.514 |
+| 7 | 0.469 | 0.663 | 0.547 | 0.491 | 0.869 | 0.526 |
+| 8 | 0.607 | 0.781 | 0.387 | 0.539 | 0.767 | 0.554 |
+
+均值：
+
+| 条件 | BA |
+| --- | ---: |
+| No-canonicalization | 0.546 |
+| Predicted Top-1 | 0.601 |
+| Top-2 fusion | 0.645 |
+| Oracle state | **0.835** |
+
+### 恢复比例
+
+\[
+\frac{0.601-0.546}{0.835-0.546}=0.190
+\]
+
+\[
+\frac{0.645-0.546}{0.835-0.546}=0.343
+\]
+
+- Predicted Top-1 只恢复约 **19%** oracle 增益；
+- Top-2 fusion 约 **34%**；
+- 剩余损失主要来自单流 state inference（top1 0.471，top2 0.668）。
+
+### 结论
+
+- Per-flow 下，即使训练监督 state classifier，实际 canonicalization 收益有限；
+- Top-2 fusion 比 Top-1 好，但仍远低于 oracle；
+- Per-flow 的防御力主要来自逐流 state inference 成本；
+- Oracle-state 仍是无标签攻击者上界。
+
+## 57. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

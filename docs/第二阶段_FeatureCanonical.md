@@ -997,7 +997,39 @@ Oracle canonical BA：0.885。
 
 
 
-## 53. 产物
+## 54. Per-flow state inference audit
+
+20-day block，每 block 随机抽 2000 flows，每条 flow 独立随机 state；不使用设备标签。
+
+| block | flows | Observable acc | Label-assisted acc | Label-assisted top2 |
+| ---: | ---: | ---: | ---: | ---: |
+| 0 | 2000 | 0.180 | — | — |
+| 1 | 2000 | 0.178 | 0.649 | 0.844 |
+| 2 | 1951 | 0.164 | 0.628 | 0.811 |
+| 3 | 2000 | 0.168 | 0.278 | 0.457 |
+| 4 | 2000 | 0.149 | 0.271 | 0.506 |
+| 5 | 2000 | 0.164 | 0.441 | 0.688 |
+| 6 | 2000 | 0.174 | 0.402 | 0.662 |
+| 7 | 2000 | 0.152 | 0.481 | 0.654 |
+| 8 | 2000 | 0.179 | 0.670 | 0.814 |
+
+- 6 类 chance = 0.167；
+- Observable likelihood **接近 chance**；
+- 所有 flow 几乎都被判为 state0（confusion 全部 `*->0`）；
+- Label-assisted state classifier 平均约 **0.48**，top2 约 **0.68**；
+- 远低于 Oracle（逐流真实 state = 1.0）。
+
+### 结论
+
+- 单条 flow 的可观测特征不足以稳定识别独立随机 state；
+- 监督 state classifier 能学到一些信号，但离可用还很远；
+- Per-flow 的防御力主要来自**逐流 state inference 成本**；
+- 不能把 Periodic 的 block-level selector 直接套到 Per-flow；
+- 所有 state inference 都未使用待测 flow 的设备标签。
+
+
+
+## 55. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

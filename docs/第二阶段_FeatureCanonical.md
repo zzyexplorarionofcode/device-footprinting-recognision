@@ -904,7 +904,42 @@ Oracle canonical BA：0.885。
 
 
 
-## 49. 产物
+## 50. Common-class BA + finetune 变体（p0_s0 验证）
+
+### 关键对比
+
+| block | n | common classes | probe common | before common | baseline full/common | L2 full/common | balanced full/common |
+| ---: | ---: | --- | ---: | ---: | --- | --- | --- |
+| 3 | 1024 | 1,2 | 0.996 | 0.615 | 0.998/0.998 | 0.985/0.985 | 0.999/0.999 |
+| 5 | 1024 | 0,2,6 | 0.991 | 0.971 | 0.993/0.993 | 0.995/0.995 | 0.994/0.994 |
+| 6 | 1024 | 0,3 | 0.991 | 0.988 | 0.916/**0.988** | 0.875/**0.986** | 0.934/**0.989** |
+| 7 | 256 | 0,2 | 1.000 | 0.902 | 0.909/**0.960** | 0.909/**0.963** | 0.884/0.840 |
+| 7 | 1024 | 0,2,3,4,5 | 0.997 | 0.887 | 0.955/0.955 | 0.957/0.957 | 0.933/0.933 |
+
+### 发现
+
+1. **Block6 的 full-class 负迁移主要是类别覆盖**：
+   - full BA 0.916；
+   - common BA 0.988；
+   - cal 缺失 class 2/5/7，blind 有这些类，Full-class 必然低。
+2. **Block7 common BA 0.955–0.963**，高于 before 0.887；
+3. **Probe 在 common classes 上很高**（0.99+），说明之前低 BA 是类别空间问题；
+4. **L2/balanced 与 baseline 接近**，小 n 下 balanced 在 block7 反而更差；
+5. **early-stop 变体当前只训练 n 标签、不继承 history**：
+   - Full-class 崩到 0.395/0.4/0.5；
+   - 不是公平 Finetune 对照；
+   - 必须改成“历史 + n 标签 + 内部验证选 C”。
+
+### 结论
+
+- Common-class BA 是必要的；
+- Block6/7 的负迁移在 common classes 上基本消失；
+- early-stop 实现需修正后才能比较；
+- L2/balanced 没有稳定优势，暂不替代 baseline。
+
+
+
+## 51. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

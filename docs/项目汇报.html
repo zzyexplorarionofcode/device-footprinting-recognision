@@ -72,6 +72,8 @@ footer{border-top:1px solid var(--line);padding:22px 24px 40px;color:var(--muted
   <a href="#reversible">可逆性</a>
   <a href="#online">在线适应</a>
   <a href="#perflow">Per-flow</a>
+  <a href="#panorama">实验全景</a>
+  <a href="#failures">失败与修正</a>
   <a href="#conclusion">总结</a>
 </div></nav>
 
@@ -322,8 +324,104 @@ footer{border-top:1px solid var(--line);padding:22px 24px 40px;color:var(--muted
   </div>
 </section>
 
+<section id="panorama">
+  <h2>十、实验全景：主线之外还做了什么</h2>
+  <p>主报告只展开因果链上的关键实验。实际工作量还包括支撑性对照、稳健性检查和失败后重构协议。下面这张表用于说明覆盖面，不替代主线叙事。</p>
+
+  <table>
+    <tr><th>研究问题</th><th>实验</th><th>结论</th><th>在汇报中的位置</th></tr>
+    <tr><td>等成本下哪个扰动有效</td><td>position / length / gap 搜索，四数据集</td><td>位置最稳；长度不稳；gap 依赖数据集</td><td>主线</td></tr>
+    <tr><td>为什么有效</td><td>机制分解、histogram、窗口位移</td><td>dummy mixing 主导；位移与 padding 次要</td><td>主线</td></tr>
+    <tr><td>trigger 是否值得</td><td>T1_W3 vs T0_W5</td><td>同样 5 事件，trigger 明显更强</td><td>主线</td></tr>
+    <tr><td>是 code 吗</td><td>Real vs Placebo code</td><td>不是；code/mapping 贡献很小</td><td>主线</td></tr>
+    <tr><td>是位置吗</td><td>Position placebo、no-rotation、rotation α</td><td>静态位置可学习；rotation 才是核心</td><td>主线</td></tr>
+    <tr><td>位置要多稳定</td><td>K=1/2/4/8，displacement 分层</td><td>K=1 最强；K 增大单调削弱</td><td>主线</td></tr>
+    <tr><td>rotation 可逆吗</td><td>target-level / oracle / observed inverse、序列重构</td><td>feature-level 可逆；位置是主成分</td><td>主线</td></tr>
+    <tr><td>detector 是否影响结论</td><td>naive vs joint code+position detector</td><td>早期 0.748 是 detector 产物</td><td>支撑</td></tr>
+    <tr><td>跨数据集/模型是否一致</td><td>CIC、RF、MLP、多 phase</td><td>总体一致；RF 有 dataset-dependent 交互</td><td>支撑</td></tr>
+    <tr><td>时间上是否稳定</td><td>Fixed/Periodic/Per-flow 的 J、T_first、T_sustained</td><td>Periodic 有一次性下降，可恢复</td><td>支撑</td></tr>
+    <tr><td>需要多少标签</td><td>permutation / probe / finetune 校准曲线</td><td>permutation 不够；数百标签可恢复</td><td>支撑</td></tr>
+    <tr><td>Periodic 能否选 state</td><td>log-loss selector、2 phase×3 seed</td><td>65/66；类别覆盖决定可用性</td><td>主线</td></tr>
+    <tr><td>类别覆盖是否影响结论</td><td>block/support audit、Common-class BA</td><td>Full-class 低 BA 很多来自覆盖不足</td><td>支撑</td></tr>
+    <tr><td>Per-flow 能否逐流推断</td><td>observable likelihood、监督 state classifier</td><td>Top-1 0.458，接近不可用</td><td>主线</td></tr>
+    <tr><td>更强攻击者能否突破</td><td>Top-1 / Top-2 / Top-6 / gate / oracle</td><td>Top-6 最好，仅恢复约 31%</td><td>主线</td></tr>
+    <tr><td>失败与协议修正</td><td>adaptive pilot、硬准确率 selector、标签分层</td><td>多项早期结论被推翻并重建</td><td>下一节</td></tr>
+  </table>
+
+  <div class="callout info">
+    <b>如何读这张表：</b>“主线”是理解机制必需的证据；“支撑”用于排除替代解释、检查稳健性或说明工程变量。两者都不是“凑实验”，但汇报时不应平均用力。
+  </div>
+</section>
+
+<section id="failures">
+  <h2>十一、失败与修正：哪些结论被推翻了</h2>
+  <p>这项研究并不是一条直线。下面这些失败直接改变了后续协议；把它们讲清楚，比只报成功结果更能说明结论的可信度。</p>
+
+  <table>
+    <tr><th>早期现象</th><th>问题</th><th>修正</th><th>修正后的结论</th></tr>
+    <tr>
+      <td>“observable inverse 能到 0.748”</td>
+      <td>naive code detector 误检率高，39/300</td>
+      <td>改为 joint code+position detector，错误降到 1/300</td>
+      <td>可到 0.882；早期数字是 detector 产物</td>
+    </tr>
+    <tr>
+      <td>Adaptive-Probe 的 state 推断恒为 state0</td>
+      <td>只用无标签特征做 block-level 似然；mapping 置换保持边际分布，state 不可识别</td>
+      <td>引入历史监督 state classifier；明确不做无标签 block 推断</td>
+      <td>早期 adaptive pilot 无效，不能作为结论</td>
+    </tr>
+    <tr>
+      <td>硬准确率 selector 所有候选都接近 1.0</td>
+      <td>准确率饱和，候选之间无区分</td>
+      <td>改用连续 log-loss / margin / Brier</td>
+      <td>连续评分才能区分真实 state</td>
+    </tr>
+    <tr>
+      <td>标签预算 n 越大，Adaptive-Probe 反而越差</td>
+      <td>标签未按类别分层，n 增大后类别分布更偏</td>
+      <td>嵌套分层抽样；固定 blind</td>
+      <td>早期的“标签越多越差”是抽样 bug</td>
+    </tr>
+    <tr>
+      <td>State sensitivity audit 全部 block 被跳过</td>
+      <td>calibration pool 不足 3 类</td>
+      <td>先做 block coverage audit，再选 20-day、≥5 类 block</td>
+      <td>类别覆盖是硬约束，不是模型失败</td>
+    </tr>
+    <tr>
+      <td>Probe 的 Full-class BA 很低</td>
+      <td>blind 中有 calibration 未出现的类别；Probe 无法学习</td>
+      <td>增加 Common-class BA；单独报告 unknown 比例</td>
+      <td>Probe 在共同类别上可达 0.999；低 BA 主因是覆盖</td>
+    </tr>
+    <tr>
+      <td>Finetune 在 Block6/7 出现负迁移</td>
+      <td>Full-class 中混入了 cal 缺失类别</td>
+      <td>逐类 recall + support audit</td>
+      <td>负迁移集中在少数类；Common-class 下基本消失</td>
+    </tr>
+    <tr>
+      <td>Per-flow 硬选 Top-1 反而低于 No-canon</td>
+      <td>错误 state 的逆变换会伤害分类（错误 state BA 0.440）</td>
+      <td>Top-2 / Top-6 概率边缘化</td>
+      <td>Top-6 最好，但仍只恢复约 31%</td>
+    </tr>
+    <tr>
+      <td>置信度门控几乎不生效</td>
+      <td>历史阈值迁移到当前 block 后覆盖率只有 12–33%</td>
+      <td>不在 blind 上调阈值；把门控失败作为审计结果报告</td>
+      <td>门控在当前协议下不可用</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <b>这些失败带来的方法学原则：</b>同一 blind、同一类别集合、同一分类器；detector 必须审计；标签必须分层；calibration 不能包含未来；state 推断不能使用待测 flow 的设备标签。
+  </div>
+</section>
+
 <section id="conclusion">
-  <h2>十、总体结论</h2>
+  <h2>十二、总体结论</h2>
   <ol>
     <li><b>Mapping rotation 是可逆的表示扰动。</b> 已知 mapping 且重构正确时，Fixed、Periodic、Per-flow 都回到约 0.884，接近彼此。</li>
     <li><b>位置是主要可逆成分。</b> Position-only 恢复到 0.877；code-only 只有 0.711；combined 接近 oracle。</li>

@@ -873,7 +873,38 @@ Oracle canonical BA：0.885。
 
 
 
-## 47. 产物
+## 48. Block 6/7 support audit
+
+| block | class | cal | blind | history |
+| ---: | ---: | ---: | ---: | ---: |
+| 6 | 0 | 6505 | 17131 | 83712 |
+| 6 | 1 | 2 | 0 | 13029 |
+| 6 | 2 | **0** | 253 | 4783 |
+| 6 | 3 | 99 | 812 | 5662 |
+| 6 | 4 | 665 | 763 | 0 |
+| 6 | 5 | **0** | 476 | 913 |
+| 6 | 6 | 0 | 0 | 631 |
+| 6 | 7 | **0** | 234 | 440 |
+| 7 | 0 | 15200 | 8944 | 90217 |
+| 7 | 1 | 0 | 0 | 13031 |
+| 7 | 2 | 6867 | 339 | 4783 |
+| 7 | 3 | 1931 | 107 | 5761 |
+| 7 | 4 | 2804 | 197 | 665 |
+| 7 | 5 | 854 | 67 | 913 |
+| 7 | 6 | 0 | 0 | 631 |
+| 7 | 7 | 0 | 0 | 440 |
+
+### 关键发现
+
+- Block6 的 class 2/5/7 在 calibration 中为 **0**，但 blind 分别有 253/476/234；
+- 这些类 Probe 根本不可能学到，Finetune 只能靠历史；
+- Block6 的 class7 负迁移（0.73→0.65）不是“少数类过拟合”，而是 **calibration 窗口无该类支持**；
+- Block7 的 class4 在 cal 有 2804、blind 只有 197，不是 cal 少数类，但 blind 稀疏；
+- 因此 Full-class BA 混合了“类别覆盖不足”和“微调负迁移”，必须补 Common-class BA。
+
+
+
+## 49. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

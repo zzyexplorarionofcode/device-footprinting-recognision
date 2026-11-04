@@ -1,0 +1,92 @@
+[
+  {
+    "block": 6,
+    "classes": {
+      "0": {
+        "cal": 6505,
+        "blind": 17131,
+        "history": 83712
+      },
+      "1": {
+        "cal": 2,
+        "blind": 0,
+        "history": 13029
+      },
+      "2": {
+        "cal": 0,
+        "blind": 253,
+        "history": 4783
+      },
+      "3": {
+        "cal": 99,
+        "blind": 812,
+        "history": 5662
+      },
+      "4": {
+        "cal": 665,
+        "blind": 763,
+        "history": 0
+      },
+      "5": {
+        "cal": 0,
+        "blind": 476,
+        "history": 913
+      },
+      "6": {
+        "cal": 0,
+        "blind": 0,
+        "history": 631
+      },
+      "7": {
+        "cal": 0,
+        "blind": 234,
+        "history": 440
+      }
+    }
+  },
+  {
+    "block": 7,
+    "classes": {
+      "0": {
+        "cal": 15200,
+        "blind": 8944,
+        "history": 90217
+      },
+      "1": {
+        "cal": 0,
+        "blind": 0,
+        "history": 13031
+      },
+      "2": {
+        "cal": 6867,
+        "blind": 339,
+        "history": 4783
+      },
+      "3": {
+        "cal": 1931,
+        "blind": 107,
+        "history": 5761
+      },
+      "4": {
+        "cal": 2804,
+        "blind": 197,
+        "history": 665
+      },
+      "5": {
+        "cal": 854,
+        "blind": 67,
+        "history": 913
+      },
+      "6": {
+        "cal": 0,
+        "blind": 0,
+        "history": 631
+      },
+      "7": {
+        "cal": 0,
+        "blind": 0,
+        "history": 440
+      }
+    }
+  }
+]

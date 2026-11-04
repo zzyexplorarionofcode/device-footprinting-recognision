@@ -822,7 +822,58 @@ Oracle canonical BA：0.885。
 
 
 
-## 45. 产物
+## 46. Block 6/7 负迁移逐类分析
+
+### 聚合
+
+| n | cells | before | finetune | probe | FT−before mean | min | 负值数 |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 256 | 6 | 0.832 | 0.820 | 0.400 | **−0.012** | −0.032 | **5/6** |
+| 1024 | 12 | 0.838 | 0.876 | 0.696 | **+0.039** | −0.016 | 3/12 |
+
+### 逐类 recall（block6）
+
+| class | before | finetune | Δ |
+| ---: | ---: | ---: | ---: |
+| 0 | 0.975 | 0.994 | +0.019 |
+| 2 | 0.950 | 0.953 | +0.003 |
+| 3 | 0.762 | 0.890 | +0.128 |
+| 5 | 0.805 | 0.798 | −0.007 |
+| 7 | 0.726 | 0.653 | **−0.073** |
+
+### 逐类 recall（block7）
+
+| class | before | finetune | Δ |
+| ---: | ---: | ---: | ---: |
+| 0 | 0.980 | 0.969 | −0.011 |
+| 2 | 0.887 | 0.941 | +0.054 |
+| 3 | 0.886 | 0.904 | +0.018 |
+| 4 | 0.449 | 0.512 | +0.063（n1024 拉高；n256 下降） |
+| 5 | 0.955 | 0.961 | +0.006 |
+
+### Probe 的类别空间问题
+
+- n=256 时，Probe 训练标签常只覆盖 2 类；
+- 未覆盖类别的 recall=0；
+- 因此 Probe macro BA 被压低，不能直接解释为“从头训练差”；
+- 必须报告 Probe 实际覆盖类别，或在共同类别空间上比较。
+
+### 训练轨迹
+
+- Finetune calibration loss 常为 **0.0**；
+- 但 blind BA 在 n256 少数类上下降；
+- 说明是过拟合/少数类牺牲，不是训练不足。
+
+### 结论
+
+- 负迁移不是全局现象，集中在 n=256 和少数类（block6 class7、block7 class4）；
+- n=1024 平均正迁移，负值少；
+- Probe 比较必须限制在共同类别空间；
+- 下一步：per-class support 计数、Probe 共同类别 BA、finetune 正则化/早停。
+
+
+
+## 47. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

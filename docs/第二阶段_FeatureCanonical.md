@@ -1076,7 +1076,70 @@ Oracle canonical BA：0.885。
 - Per-flow 的防御力主要来自逐流 state inference 成本；
 - Oracle-state 仍是无标签攻击者上界。
 
-## 57. 产物
+## 58. Per-flow 强攻击者 A–F（UNSW/LR，p0_s0）
+
+同一 blind flows、同一 device classifier、同一 state classifier；校准数据只来自历史 held-out，blind 只评估。
+
+### 平均 BA（blocks 1–8）
+
+| 条件 | BA | Δ vs No-canon | recovery vs Oracle |
+| --- | ---: | ---: | ---: |
+| A No-canonicalization | 0.578 | — | — |
+| B Predicted Top-1 | 0.565 | **−0.014** | **−5.4%** |
+| C Top-2 fusion（校准） | 0.605 | +0.027 | 10.6% |
+| D Top-6 全边缘化 | **0.658** | **+0.079** | **31.4%** |
+| E 置信度门控 | 0.587 | +0.008 | 3.3% |
+| F Oracle state | **0.831** | +0.253 | 100% |
+
+注意：本次 A 的 No-canon 0.578 与早期 0.546 不同；因为本次 state 抽样 RNG 被 calibration split 改变。配对比较只用本次 A–F 同一 run。
+
+### 逐 block ΔBA vs No-canon
+
+| block | Top-1 | Top-2 | Top-6 | Gate |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | +0.049 | +0.111 | +0.112 | +0.028 |
+| 2 | +0.026 | +0.005 | +0.037 | −0.017 |
+| 3 | −0.029 | −0.011 | +0.015 | −0.023 |
+| 4 | −0.146 | −0.063 | +0.067 | +0.001 |
+| 5 | −0.176 | −0.059 | +0.150 | +0.049 |
+| 6 | +0.159 | +0.172 | +0.149 | +0.052 |
+| 7 | −0.108 | −0.060 | −0.007 | −0.043 |
+| 8 | +0.116 | +0.119 | +0.112 | +0.020 |
+
+### State 指标
+
+- Top-1：0.458
+- Top-2：0.666
+- NLL：1.683
+- ECE：0.147（block3 最差 0.371）
+- 温度：1.0–1.5
+- 门控阈值：0.572–0.875
+- 门控实际覆盖率：**0.120–0.333**（历史阈值迁移后，67–88% flow 回退 No-canon）
+
+### 正确/错误 State
+
+- Top-1 正确 flow 的平均 BA：**0.850**
+- Top-1 错误 flow 的平均 BA：**0.440**
+- 错误 state 会严重破坏设备识别，部分 block 低于 No-canon。
+
+### 数据来源审计
+
+- State classifier：历史 blocks 的 `(x, true_state)`；
+- 温度与门控阈值：历史内部 80/20 split 的 held-out；
+- Device classifier：历史 true-canonicalized flows；
+- Blind：只用于最终 BA/State 指标，不参与温度、阈值、C 选择；
+- 设备类别标签与真实 State 标签严格分开：State 只用于校准/评估，不作为设备分类器输入。
+
+### 结论
+
+1. **校准后的 Top-1 没有改善**，平均甚至低于 No-canon；
+2. **Top-2 小幅有效**（+0.027，约 10.6% recovery）；
+3. **Top-6 全边缘化最有效**（+0.079，约 31.4% recovery），说明候选截断损失明显；
+4. **置信度门控失效**：历史阈值迁移，实际覆盖仅 12–33%，大多数 flow 回退；
+5. Oracle 仍 0.831，Per-flow 与 Oracle 差距约 **0.25 BA**；
+6. Per-flow 的主要瓶颈是 state inference，不是 canonicalization 本身。
+
+
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

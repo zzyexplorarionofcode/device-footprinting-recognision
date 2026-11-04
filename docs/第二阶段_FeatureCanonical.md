@@ -939,7 +939,65 @@ Oracle canonical BA：0.885。
 
 
 
-## 51. 产物
+## 52. 6 组 Common-class + finetune 变体汇总
+
+6 组：phase 0/1 × seed 0/1/2；20-day block。
+
+### Full vs Common
+
+| n | cells | Probe full | Probe common | Baseline full | Baseline common | Before full | Before common |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 64 | 0 | — | — | — | — | — | — |
+| 256 | 18 | 0.577 | **0.999** | 0.872 | **0.900** | 0.798 | 0.789 |
+| 1024 | 48 | 0.801 | **0.980** | 0.916 | **0.946** | 0.841 | 0.839 |
+
+结论：
+
+- Probe 的 Full-class 低 BA 几乎完全来自类别覆盖；
+- Common-class 下 Probe 在 n256 达到 0.999；
+- Finetune baseline common 0.900/0.946，高于 before；
+- Full-class 仍保留以报告真实混合场景。
+
+### Selector
+
+- 总 **65/66** Top-1；
+- n256 18/18；n1024 47/48；
+- n64 不可评估。
+
+### Finetune 变体（相对 baseline）
+
+| n | L2 mean/min | balanced mean/min | early mean/min |
+| ---: | ---: | ---: | ---: |
+| 256 | **+0.021** / −0.029 | −0.001 / −0.079 | −0.010 / −0.105 |
+| 1024 | 0.000 / −0.149 | +0.003 / −0.054 | −0.001 / −0.163 |
+
+结论：
+
+- L2 在 n256 平均略正，但不稳定；
+- balanced 基本无收益；
+- early-stop 没有改善，且最差单元下降明显；
+- 没有证据支持替换 baseline。
+
+### 负迁移（block6/7 baseline vs before）
+
+仍有 4 个单元 Full-class 下降，但 Common-class 很高：
+
+| group | block | n | before full | baseline full | baseline common |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| p0s1 | 6 | 1024 | 0.898 | 0.886 | **0.965** |
+| p0s2 | 7 | 256 | 0.813 | 0.783 | **0.881** |
+| p1s0 | 6 | 1024 | 0.886 | 0.866 | **0.914** |
+| p1s0 | 7 | 256 | 0.888 | 0.878 | **0.960** |
+
+结论：
+
+- 负迁移主要是 Full-class 中盲区类别；
+- Common-class 下仍保持 0.88–0.96；
+- 不是全局模型退化。
+
+
+
+## 53. 产物
 
 - 脚本：`scripts/online_canonical.py`、`scripts/feature_canonical.py`、`scripts/observed_inverse.py`、`scripts/audit_identity.py`、`scripts/reconstruct_audit.py`、`scripts/event_canonical.py`
 - 测试：`tests/test_canonicalization.py`、`tests/test_event_canonical.py`

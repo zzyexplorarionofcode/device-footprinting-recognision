@@ -74,15 +74,30 @@ def fit_variant(x, y, hy, hx, variant, rng):
             np.concatenate([hx, x]), np.concatenate([hy, y]),
             sample_weight=np.concatenate([np.ones(len(hx)), np.full(len(x), w)]),
         )
-    # early stop: choose C on calibration validation only
+    # early stop: choose C on an inner split of the n current labels,
+    # while always keeping the historical model/data.
     tr, va = split_train_val(y, rng)
+    w_tr = len(hx) / max(1, len(tr))
     best_c, best_loss = 1.0, np.inf
     for c in (0.01, 0.1, 1.0):
-        model = LogisticRegression(max_iter=300, C=c).fit(x[tr], y[tr])
-        loss = log_loss(y[va], model.predict_proba(x[va]), labels=sorted(set(y.tolist())))
+        model = LogisticRegression(max_iter=300, C=c).fit(
+            np.concatenate([hx, x[tr]]),
+            np.concatenate([hy, y[tr]]),
+            sample_weight=np.concatenate([np.ones(len(hx)), np.full(len(tr), w_tr)]),
+        )
+        loss = log_loss(y[va], model.predict_proba(x[va]), labels=history_classes_for(model))
         if loss < best_loss:
             best_c, best_loss = c, loss
-    return LogisticRegression(max_iter=300, C=best_c, class_weight="balanced").fit(x, y)
+    w_all = len(hx) / max(1, len(x))
+    return LogisticRegression(max_iter=300, C=best_c).fit(
+        np.concatenate([hx, x]),
+        np.concatenate([hy, y]),
+        sample_weight=np.concatenate([np.ones(len(hx)), np.full(len(x), w_all)]),
+    )
+
+
+def history_classes_for(model):
+    return sorted(int(c) for c in model.classes_)
 
 
 def common_ba(y, pred, classes, base_pred=None):

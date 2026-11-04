@@ -1,0 +1,665 @@
+[
+  {
+    "block": 0,
+    "true_state": 1
+  },
+  {
+    "block": 1,
+    "true_state": 1,
+    "unknown_blind_ratio": 0.0,
+    "ns": {
+      "1024": {
+        "selected": 1,
+        "gap": 0.06974849053709084,
+        "ambiguous": false,
+        "before_full": 0.9986655155905971,
+        "known_full": 0.9986655155905971,
+        "probe_full": 0.9986655155905971,
+        "probe_common": 0.9986655155905971,
+        "before_common": 0.9986655155905971,
+        "known_common": 0.9986655155905971,
+        "common_classes": [
+          2,
+          3,
+          5
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9988991058732414,
+            "common_ba": 0.9988991058732414,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 0.0003220596132413905
+          },
+          "l2": {
+            "full_ba": 0.9995328194347115,
+            "common_ba": 0.9995328194347115,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 0.0019622348707874905
+          },
+          "balanced": {
+            "full_ba": 0.9979647447426644,
+            "common_ba": 0.9979647447426644,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 0.0005892708014912723
+          },
+          "early": {
+            "full_ba": 0.9988991058732414,
+            "common_ba": 0.9988991058732414,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 0.0003220596132413905
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 2,
+    "true_state": 2,
+    "unknown_blind_ratio": 0.08988599824612686,
+    "ns": {
+      "1024": {
+        "selected": 2,
+        "gap": 0.09016014968915485,
+        "ambiguous": false,
+        "before_full": 0.6955899598610922,
+        "known_full": 0.6955899598610922,
+        "probe_full": 0.5741935483870968,
+        "probe_common": 0.956989247311828,
+        "before_common": 0.7947619624865768,
+        "known_common": 0.7947619624865768,
+        "common_classes": [
+          2,
+          3,
+          5
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.7979435324859259,
+            "common_ba": 0.9667286606629525,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 7.454691718656868e-05
+          },
+          "l2": {
+            "full_ba": 0.784351223035845,
+            "common_ba": 0.9454522220478041,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 0.0004955957114946731
+          },
+          "balanced": {
+            "full_ba": 0.8009508452883628,
+            "common_ba": 0.9662312067937361,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 0.00012251015425554892
+          },
+          "early": {
+            "full_ba": 0.7979435324859259,
+            "common_ba": 0.9667286606629525,
+            "common_classes": [
+              2,
+              3,
+              5
+            ],
+            "train_loss": 7.454691718656868e-05
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 3,
+    "true_state": 2,
+    "unknown_blind_ratio": 0.204642694583523,
+    "ns": {
+      "256": {
+        "selected": 2,
+        "gap": 0.072693420650843,
+        "ambiguous": false,
+        "before_full": 0.8816953465826467,
+        "known_full": 0.8816953465826467,
+        "probe_full": 0.9997576345128454,
+        "probe_common": 0.9997576345128454,
+        "before_common": 0.8816953465826467,
+        "known_common": 0.8816953465826467,
+        "common_classes": [
+          1,
+          2
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9419833242550384,
+            "common_ba": 0.9419833242550384,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.0001373681938555602
+          },
+          "l2": {
+            "full_ba": 0.9394692195831313,
+            "common_ba": 0.9394692195831313,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.0008969438852825139
+          },
+          "balanced": {
+            "full_ba": 0.9382266592041417,
+            "common_ba": 0.9382266592041417,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.00029391369490701824
+          },
+          "early": {
+            "full_ba": 0.8621546291808047,
+            "common_ba": 0.8621546291808047,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.004610055396025176
+          }
+        }
+      },
+      "1024": {
+        "selected": 2,
+        "gap": 0.2735842965605099,
+        "ambiguous": false,
+        "before_full": 0.8816953465826467,
+        "known_full": 0.8816953465826467,
+        "probe_full": 0.9979091604159691,
+        "probe_common": 0.9979091604159691,
+        "before_common": 0.8816953465826467,
+        "known_common": 0.8816953465826467,
+        "common_classes": [
+          1,
+          2
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9742785254183928,
+            "common_ba": 0.9742785254183928,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.0017179419162300018
+          },
+          "l2": {
+            "full_ba": 0.9615850702859913,
+            "common_ba": 0.9615850702859913,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.007230535852919646
+          },
+          "balanced": {
+            "full_ba": 0.9798507453363383,
+            "common_ba": 0.9798507453363383,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.0013937187450216734
+          },
+          "early": {
+            "full_ba": 0.9615850702859913,
+            "common_ba": 0.9615850702859913,
+            "common_classes": [
+              1,
+              2
+            ],
+            "train_loss": 0.007230535852919646
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 4,
+    "true_state": 3,
+    "unknown_blind_ratio": 0.0,
+    "ns": {
+      "1024": {
+        "selected": 3,
+        "gap": 3.5192120042533945,
+        "ambiguous": false,
+        "before_full": 0.8746476617987494,
+        "known_full": 0.8746476617987494,
+        "probe_full": 0.5,
+        "probe_common": 1.0,
+        "before_common": 0.7543419074484305,
+        "known_common": 0.7543419074484305,
+        "common_classes": [
+          0,
+          2
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9255065972005713,
+            "common_ba": 0.8583222216909883,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 0.00013629099843332426
+          },
+          "l2": {
+            "full_ba": 0.9540052380666924,
+            "common_ba": 0.9168722984542864,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 0.0005212283502743908
+          },
+          "balanced": {
+            "full_ba": 0.8853237768632044,
+            "common_ba": 0.7767919847429625,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 0.0002053359255918231
+          },
+          "early": {
+            "full_ba": 0.9677738830693311,
+            "common_ba": 0.9554671051117096,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 0.00279189312730686
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 5,
+    "true_state": 3,
+    "unknown_blind_ratio": 0.0,
+    "ns": {
+      "256": {
+        "selected": 3,
+        "gap": 1.8344228996270795,
+        "ambiguous": false,
+        "before_full": 0.9728835169406939,
+        "known_full": 0.9728835169406939,
+        "probe_full": 0.33331584332450087,
+        "probe_common": null,
+        "before_common": null,
+        "known_common": null,
+        "common_classes": [
+          0
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9627312326767344,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 8.282350126387477e-06
+          },
+          "l2": {
+            "full_ba": 0.9798075610649422,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 2.3174220858238723e-05
+          },
+          "balanced": {
+            "full_ba": 0.979226018271263,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 3.199675237753692e-06
+          },
+          "early": {
+            "full_ba": 0.9627312326767344,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 8.282350126387477e-06
+          }
+        }
+      },
+      "1024": {
+        "selected": 3,
+        "gap": 1.0643875419983395,
+        "ambiguous": false,
+        "before_full": 0.9728835169406939,
+        "known_full": 0.9728835169406939,
+        "probe_full": 0.9921692924541222,
+        "probe_common": 0.9921692924541222,
+        "before_common": 0.9728835169406939,
+        "known_common": 0.9728835169406939,
+        "common_classes": [
+          0,
+          2,
+          6
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9863237009107279,
+            "common_ba": 0.9863237009107279,
+            "common_classes": [
+              0,
+              2,
+              6
+            ],
+            "train_loss": 0.00015173823421044369
+          },
+          "l2": {
+            "full_ba": 0.9897427756830459,
+            "common_ba": 0.9897427756830459,
+            "common_classes": [
+              0,
+              2,
+              6
+            ],
+            "train_loss": 0.0007020496342520693
+          },
+          "balanced": {
+            "full_ba": 0.9832674328444698,
+            "common_ba": 0.9832674328444698,
+            "common_classes": [
+              0,
+              2,
+              6
+            ],
+            "train_loss": 0.00016428983453844678
+          },
+          "early": {
+            "full_ba": 0.9897427756830459,
+            "common_ba": 0.9897427756830459,
+            "common_classes": [
+              0,
+              2,
+              6
+            ],
+            "train_loss": 0.0007020496342520693
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 6,
+    "true_state": 4,
+    "unknown_blind_ratio": 0.03879200772789669,
+    "ns": {
+      "1024": {
+        "selected": 4,
+        "gap": 16.36912978748331,
+        "ambiguous": false,
+        "before_full": 0.8860459199677312,
+        "known_full": 0.8860459199677312,
+        "probe_full": 0.39795950820006826,
+        "probe_common": 0.9948987705001706,
+        "before_common": 0.9083124448433155,
+        "known_common": 0.9083124448433155,
+        "common_classes": [
+          0,
+          3
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.8655023951866955,
+            "common_ba": 0.913559608614349,
+            "common_classes": [
+              0,
+              3
+            ],
+            "train_loss": 0.00013922289551084293
+          },
+          "l2": {
+            "full_ba": 0.863719222900279,
+            "common_ba": 0.9400666279809051,
+            "common_classes": [
+              0,
+              3
+            ],
+            "train_loss": 0.00024536230417344023
+          },
+          "balanced": {
+            "full_ba": 0.8942563935739118,
+            "common_ba": 0.876309778056259,
+            "common_classes": [
+              0,
+              3
+            ],
+            "train_loss": 0.0001712221374863634
+          },
+          "early": {
+            "full_ba": 0.7913054574119417,
+            "common_ba": 0.965371307108106,
+            "common_classes": [
+              0,
+              3
+            ],
+            "train_loss": 0.0010219619135667323
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 7,
+    "true_state": 4,
+    "unknown_blind_ratio": 0.0,
+    "ns": {
+      "256": {
+        "selected": 4,
+        "gap": 16.61022144710773,
+        "ambiguous": false,
+        "before_full": 0.888204595955915,
+        "known_full": 0.888204595955915,
+        "probe_full": 0.39997763864042934,
+        "probe_common": 0.9999440966010733,
+        "before_common": 0.954251230864217,
+        "known_common": 0.954251230864217,
+        "common_classes": [
+          0,
+          2
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.8777028905741748,
+            "common_ba": 0.9601854013962987,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 8.151485185705215e-06
+          },
+          "l2": {
+            "full_ba": 0.8902317384882888,
+            "common_ba": 0.970277861330547,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 8.088222495879359e-06
+          },
+          "balanced": {
+            "full_ba": 0.900243023994619,
+            "common_ba": 0.8857657743230907,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 1.5131231473349687e-05
+          },
+          "early": {
+            "full_ba": 0.8777028905741748,
+            "common_ba": 0.9601854013962987,
+            "common_classes": [
+              0,
+              2
+            ],
+            "train_loss": 8.151485185705215e-06
+          }
+        }
+      },
+      "1024": {
+        "selected": 4,
+        "gap": 6.383927514555572,
+        "ambiguous": false,
+        "before_full": 0.888204595955915,
+        "known_full": 0.888204595955915,
+        "probe_full": 0.9927196706890342,
+        "probe_common": 0.9927196706890342,
+        "before_common": 0.888204595955915,
+        "known_common": 0.888204595955915,
+        "common_classes": [
+          0,
+          2,
+          3,
+          4,
+          5
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.9300713058218715,
+            "common_ba": 0.9300713058218715,
+            "common_classes": [
+              0,
+              2,
+              3,
+              4,
+              5
+            ],
+            "train_loss": 0.00026861297872057257
+          },
+          "l2": {
+            "full_ba": 0.945843157484098,
+            "common_ba": 0.945843157484098,
+            "common_classes": [
+              0,
+              2,
+              3,
+              4,
+              5
+            ],
+            "train_loss": 0.0007016113297589853
+          },
+          "balanced": {
+            "full_ba": 0.9349858083904099,
+            "common_ba": 0.9349858083904099,
+            "common_classes": [
+              0,
+              2,
+              3,
+              4,
+              5
+            ],
+            "train_loss": 0.00035909123758451225
+          },
+          "early": {
+            "full_ba": 0.9505869017317059,
+            "common_ba": 0.9505869017317059,
+            "common_classes": [
+              0,
+              2,
+              3,
+              4,
+              5
+            ],
+            "train_loss": 0.0028705798150333627
+          }
+        }
+      }
+    }
+  },
+  {
+    "block": 8,
+    "true_state": 5,
+    "unknown_blind_ratio": 0.0,
+    "ns": {
+      "1024": {
+        "selected": 5,
+        "gap": 13.504347057579892,
+        "ambiguous": false,
+        "before_full": 0.9061428125974431,
+        "known_full": 0.9061428125974431,
+        "probe_full": 1.0,
+        "probe_common": null,
+        "before_common": null,
+        "known_common": null,
+        "common_classes": [
+          0
+        ],
+        "variants": {
+          "baseline": {
+            "full_ba": 0.961646398503274,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 6.457310027159855e-05
+          },
+          "l2": {
+            "full_ba": 0.961646398503274,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 0.00018881672016057648
+          },
+          "balanced": {
+            "full_ba": 0.9600873090115373,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 0.00032813234850512235
+          },
+          "early": {
+            "full_ba": 0.961646398503274,
+            "common_ba": null,
+            "common_classes": [
+              0
+            ],
+            "train_loss": 0.0006422675303594824
+          }
+        }
+      }
+    }
+  }
+]

@@ -61,14 +61,8 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <section id="summary" class="opening">
 <h2>研究概览与主要发现</h2>
 <p class="lead">核心问题：在相同通信预算与逐日标签到达规则下，持续刷新合法扰动分布，能否让持续学习的设备指纹攻击者反复付出适应成本？已有静态扰动主要检验一次变换后的识别下降；这里进一步评价攻击者持续更新后的全期 Post BA。</p>
-<div class="result-grid" role="table" aria-label="四项核心研究判断">
-  <div class="result-head" role="row"><span>研究维度</span><span>代表性结果</span><span>解释边界</span></div>
-  <div class="result-row" role="row"><strong>动态刷新与在线适应</strong><b>0.8054 → 0.7683</b><span>UNSW8 累计 LR；Full New5 相对固定码本 + 逐流 IID</span></div>
-  <div class="result-row" role="row"><strong>跨数据集与模型观察</strong><b>0.6295 → 0.5730</b><span>Deakin10 累计 RF；该攻击设置下观察到收益</span></div>
-  <div class="result-row" role="row"><strong>残余可识别信息</strong><b>BA 0.9647</b><span>UNSW8 无序可观测视图 C，仍保留很强的设备识别信号</span></div>
-  <div class="result-row" role="row"><strong>学习型策略的增量</strong><b>尚无稳定增量</b><span>已测排序、联合控制与历史感知规则未优于简单随机方案</span></div>
-</div>
-<p class="small">以上均为已参与研究判断的开发回放。UNSW8 采用 150 观测日，Deakin10 采用 50 观测日；不同数据集的绝对 BA 不直接比较。完整配对口径见下方实验档案。</p>
+<p>阶段性结果显示，随机刷新码本并保持逐流随机 Mapping，可以降低部分持续学习攻击者的识别表现。但攻击者改用顺序无关的可观测统计后，仍能识别设备；已测试的学习型调度也未显示稳定的额外收益。下文依次说明防御机制、配对结果和证据边界。</p>
+<p class="small">UNSW8 与 Deakin10 均为已参与研究判断的开发回放，观察期分别为 150 与 50 日；不同数据集的绝对识别率不直接比较。</p>
 </section>
 <section id="method">
 <h2>实际实现：双时间尺度 Full New5</h2>

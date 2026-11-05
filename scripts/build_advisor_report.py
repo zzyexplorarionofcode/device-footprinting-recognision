@@ -63,14 +63,14 @@ conclusion = conclusion.replace('13.1 当前阶段表述', '当前阶段表述')
 sections["conclusion"] = conclusion
 
 summary = '''<section id="summary" class="opening">
-<h2>给导师的四个答案</h2>
+<h2>研究概览与主要发现</h2>
 <p class="lead">核心问题：在相同通信预算与逐日标签到达规则下，持续刷新合法扰动分布，能否让持续学习的设备指纹攻击者反复付出适应成本？已有静态扰动主要检验一次变换后的识别下降；这里进一步评价攻击者持续更新后的全期 Post BA。</p>
 <div class="result-grid" role="table" aria-label="四项核心研究判断">
-  <div class="result-head" role="row"><span>导师首先要判断</span><span>关键结果</span><span>目前解释</span></div>
-  <div class="result-row" role="row"><strong>动态更新有效吗？</strong><b>0.8054 → 0.7683</b><span>UNSW8 累计 LR；Full New5 相对固定码本 + 逐流 IID</span></div>
-  <div class="result-row" role="row"><strong>能跨模型复现吗？</strong><b>0.6295 → 0.5730</b><span>Deakin10 累计 RF；该攻击设置下观察到收益</span></div>
-  <div class="result-row" role="row"><strong>身份已充分隐藏吗？</strong><b>BA 0.9647</b><span>UNSW8 无序可观测视图 C，残余识别信息很强</span></div>
-  <div class="result-row" role="row"><strong>学习型控制更好吗？</strong><b>尚无稳定增量</b><span>已测排序、联合控制与历史感知规则未优于简单随机方案</span></div>
+  <div class="result-head" role="row"><span>研究维度</span><span>代表性结果</span><span>解释边界</span></div>
+  <div class="result-row" role="row"><strong>动态刷新与在线适应</strong><b>0.8054 → 0.7683</b><span>UNSW8 累计 LR；Full New5 相对固定码本 + 逐流 IID</span></div>
+  <div class="result-row" role="row"><strong>跨数据集与模型观察</strong><b>0.6295 → 0.5730</b><span>Deakin10 累计 RF；该攻击设置下观察到收益</span></div>
+  <div class="result-row" role="row"><strong>残余可识别信息</strong><b>BA 0.9647</b><span>UNSW8 无序可观测视图 C，仍保留很强的设备识别信号</span></div>
+  <div class="result-row" role="row"><strong>学习型策略的增量</strong><b>尚无稳定增量</b><span>已测排序、联合控制与历史感知规则未优于简单随机方案</span></div>
 </div>
 <p class="small">以上均为已参与研究判断的开发回放。UNSW8 采用 150 观测日，Deakin10 采用 50 观测日；不同数据集的绝对 BA 不直接比较。完整配对口径见下方实验档案。</p>
 </section>'''
@@ -117,7 +117,7 @@ residual = '''<section id="residual">
 </section>'''
 
 decision = '''<section id="decision">
-<h2>请导师决定的下一步</h2>
+<h2>下一阶段研究建议</h2>
 <div class="card"><p>当前已完成动态码本调度、更新周期、State 数量、组件消融及学习型选择的开发性验证。证据支持固定预算下的随机动态刷新能够干扰部分持续学习攻击者，同时显示顺序无关特征仍保留显著识别能力。</p>
 <p><b>建议：</b>暂时停止码本调度与 PPO 优化，把下一阶段重点放在真实流量残余信息与防御动作权限的关系。优先冻结隔离捕获与攻击协议，补齐 <code>C_clean</code> 对 <code>C_FullNew5</code> 的配对比较，再判断是否需要设计新的防御操作。</p>
 <p>需要导师判断的是：在既定研究周期与部署约束下，是否启动改变残余信息的新机制；如要继续，允许调整哪些真实包和下行特征？</p></div>
@@ -138,7 +138,7 @@ source = source.replace('FADE：动态码本的收益、残余泄漏与安全边
 source = source.replace('动态码本设备指纹防御：收益与残余信息', '面向持续学习攻击者的动态设备指纹防御：机制、效果与残余泄漏')
 source = source.replace('阶段性研究汇报 · 按研究演进整理 · 开发证据与安全边界', '阶段性导师汇报 · 动态防御、在线学习与残余信息')
 source = source.replace('从等预算扰动、映射适应到双时间尺度随机化：为什么既定攻击器会失配，为什么设备身份仍可识别？', '固定预算下的随机动态刷新能带来多少长期收益？哪些身份信息仍然可见？')
-source = re.sub(r'<nav>.*?</nav>', '<nav><div class="wrap"><a href="#summary">四个答案</a><a href="#method">防御机制</a><a href="#core">核心结果</a><a href="#residual">残余信息</a><a href="#decision">导师决策</a><a href="#archive">实验档案</a></div></nav>', source, count=1, flags=re.S)
+source = re.sub(r'<nav>.*?</nav>', '<nav><div class="wrap"><a href="#summary">研究概览</a><a href="#method">防御机制</a><a href="#core">核心结果</a><a href="#residual">残余信息</a><a href="#decision">后续方向</a><a href="#archive">实验档案</a></div></nav>', source, count=1, flags=re.S)
 source = source.replace('位置池大小 k_pos</td>', '位置池大小 <code>k_pos</code></td>')
 source = source.replace('State数量K=3/6/12', 'State数量 K_state=3/6/12')
 source = source.replace('K=3/6/12', 'K_state=3/6/12')
@@ -151,3 +151,4 @@ source = source.replace('@media(max-width:820px){.two{grid-template-columns:1fr}
 
 REPORT.write_text(source, encoding="utf-8")
 PAGE.write_text(source.replace('.md"', '.html"'), encoding="utf-8")
+

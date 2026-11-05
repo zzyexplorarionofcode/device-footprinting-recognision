@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FADE：动态码本的收益、残余泄漏与安全边界</title>
+<style>
+:root{
+  --navy:#14273d; --blue:#23527c; --teal:#0f766e; --ink:#202936;
+  --muted:#5d6b7c; --line:#dbe3ec; --bg:#f5f7fa; --card:#fff;
+  --amber:#92400e; --green:#166534; --red:#991b1b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",sans-serif;line-height:1.8}
+header{background:linear-gradient(135deg,#14273d,#23527c);color:#fff;padding:52px 24px 40px}
+.wrap{max-width:1080px;margin:0 auto}
+header .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.72}
+header h1{font-size:32px;line-height:1.3;margin:12px 0 10px;font-weight:750}
+header .sub{font-size:16px;opacity:.9;max-width:860px}
+header .meta{margin-top:16px;font-size:13px;opacity:.72}
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+nav .wrap{display:flex;gap:18px;overflow-x:auto;padding:11px 24px;white-space:nowrap}
+nav a{color:var(--blue);text-decoration:none;font-size:13px;font-weight:600}
+main{padding:34px 24px 60px}
+section{margin:0 0 34px}
+h2{font-size:22px;color:var(--navy);border-left:5px solid var(--teal);padding-left:12px;margin:32px 0 12px}
+h3{font-size:17px;color:var(--blue);margin:20px 0 8px}
+p{margin:9px 0}
+.lead{font-size:16px;color:#334155}
+.small{font-size:13px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:14px 0;box-shadow:0 2px 10px rgba(20,39,61,.04)}
+.callout{border-radius:10px;padding:14px 16px;margin:14px 0;border:1px solid;font-size:14.5px}
+.callout.good{background:#f0fdf4;border-color:#bbf7d0;color:#14532d}
+.callout.warn{background:#fffbeb;border-color:#fde68a;color:#78350f}
+.callout.info{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:13.5px;margin:12px 0}
+th{background:#eaf1f8;color:var(--navy);text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);font-weight:700}
+td{padding:8px 10px;border-bottom:1px solid #eef3f8;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.figure{margin:18px 0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.figure img{width:100%;height:auto;display:block;border-radius:6px}
+.figure .cap{font-size:12.5px;color:var(--muted);margin-top:8px}
+ul,ol{margin:8px 0 8px 22px;padding:0}
+li{margin:5px 0}
+code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5px;font-size:12.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#e0f2fe;color:#075985;margin-right:4px}
+footer{border-top:1px solid var(--line);padding:22px 24px 40px;color:var(--muted);font-size:12px}
+@media(max-width:820px){.two{grid-template-columns:1fr}header h1{font-size:25px}}
+@media print{nav{display:none}body{background:#fff}.card,.figure{box-shadow:none}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="kicker">阶段性研究汇报 · 按研究演进整理 · 开发证据与安全边界</div>
+<h1>动态码本设备指纹防御：收益与残余信息</h1>
+<div class="sub">从等预算扰动、映射适应到双时间尺度随机化：为什么既定攻击器会失配，为什么设备身份仍可识别？</div>
+<div class="meta">整理：2026-11-05 · UNSW8 150观测日 / Deakin10 50观测日为在线开发回放 · 早期CIC/UNSW2018/Mon为机制补充</div></div></header>
+<nav><div class="wrap"><a href="#summary">摘要</a><a href="#roadmap">演进顺序</a><a href="#protocol">协议与权限</a><a href="#early">早期机制</a><a href="#mapping">映射适应</a><a href="#dynamic">动态生成</a><a href="#history">历史价值</a><a href="#learning">学习型选择</a><a href="#refresh">周期与组件</a><a href="#controls">控制与否证</a><a href="#lower">日级下界</a><a href="#residual">残余信息</a><a href="#branch">T2支线</a><a href="#conclusion">结论边界</a><a href="#reproduce">复现索引</a></div></nav>
+<main class="wrap">
+<section id="summary">
+<h2>研究摘要与当前判断</h2>
+
+<p class="lead">在固定通信预算下，持续生成新 Trigger 码本并保持逐流随机 Mapping，能否让设备指纹攻击者持续付出适应成本？研究从组件优化、映射逆变换推进到在线回放，最后通过攻击表示切换检验残余信息。</p>
+<div class="card"><h3>已观察到的收益</h3><p>随机动态码本降低了部分既定 LR/RF/MLP 攻击器的全期 Post BA，收益依赖数据集、模型和历史使用方式。位置刷新在已测条件中有重要贡献，长度与 Gap 对 Deakin RF 提供附加收益。</p>
+<h3>改变中心结论的新证据</h3><p>Full New5 完全冻结后，UNSW8 的可观测顺序无关组合使累计 RF 达到 <b>0.9647 BA</b>，高于原64维攻击器的0.8818。Deakin同一视图在累计 RF 下为0.5561，接近原64维的0.5730。攻击表示的选择显著影响防御评价。</p>
+<h3>阶段性结论</h3><p><b>扰动某种序列表示，不等于充分隐藏设备身份。</b> 动态更新的既有收益仍成立，但现有 T1_W3 留下了可跨码本利用的观测信息。该实验说明这些信息足以支持识别，尚未证明原模型的因果依赖或固定预算的不可突破下界。</p></div>
+<div class="callout warn"><b>证据定位：</b>本报告为已见开发数据上的阶段性研究汇报。UNSW8 与 Deakin 均参与多轮设计判断，无全新隔离捕获上的最终验证。冻结码本调度、参数及学习型选择搜索，保留 Full New5 与 Position5 为研究基线。</div>
+
+</section>
+<section id="roadmap">
+<h2>一、研究演进：每一阶段解决了什么</h2>
+
+<p>下表按实际研究推进的先后排列；后文按相同逻辑展开。实验日期与流量日期不是同一概念，未记录的实施日期不作补写。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>顺序</th><th>问题与实验</th><th>得到的证据</th><th>下一步为何发生</th></tr></thead><tbody>
+<tr><td>1</td><td>等成本位置／长度／Gap搜索；真实包与dummy分解</td><td>位置维度值得研究，早期已发现包长直方图残余</td><td>拆分Trigger、Weakener与位置效应</td></tr>
+<tr><td>2</td><td>Placebo、类内位置池、Oracle逆变换</td><td>静态位置可学习，映射改变产生可恢复的表示失配</td><td>研究未知State时的适应成本</td></tr>
+<tr><td>3</td><td>Periodic／Per-flow；统一权限配对</td><td>共享State易恢复，逐流推断限制当前逆变换攻击</td><td>转向真正随时间变化的防御</td></tr>
+<tr><td>4</td><td>固定库非平稳调度→新码本→逐流IID</td><td>单换混合概率没有稳定长期增益；新码本+逐流随机对部分攻击有效</td><td>跨数据集、历史价值及可学习选择</td></tr>
+<tr><td>5</td><td>Deakin验证；历史替代与边际价值；静态／历史条件选择</td><td>旧标签相对价值下降；尚无可靠可迁移选择信号</td><td>回到简单更新规则与组件</td></tr>
+<tr><td>6</td><td>5/10/25/50周期、复用、组件、RF/MLP、联合控制</td><td>5日成为既有参照，Position5不能普遍替代Full</td><td>检验State数、差异生成与更短周期</td></tr>
+<tr><td>7</td><td>K=3/6/12、Novelty、1/2日、可观测残余视图</td><td>细调无统一优势，无序统计保留较强识别信息</td><td>冻结码本优化，限定防御安全主张</td></tr>
+<tr><td>8</td><td>T2_W1 vs T1_W3小支线</td><td>单Seed结果随数据和视图变化，UNSW无序泄漏仍高</td><td>保留探索记录，不恢复配比搜索</td></tr>
+</tbody></table></div>
+<p class="small">阅读路线：二为协议；三至四为早期机制；五至六为动态防御及历史解释；七至十为优化与否证；十一为最新残余诊断；T2支线按主题并入三；十二给出最终主张与审稿边界。</p>
+</section>
+<section id="protocol">
+<h2>二、统一定义、威胁模型与评价协议</h2>
+
+<h3>2.1 防御的实际操作与权限</h3><p>输入为前32个真实事件；当前方法仅对上行真实包做有限 padding 和增量延迟，插入上行 dummy，保持真实包方向和相对顺序，最后取前32个输出事件。截断是攻击者观察窗口的裁剪，不是网络丢包。下行真实包长度不被padding，插入事件仍可能改变其可见覆盖。</p>
+<p>T表示Trigger<b>对数</b>。标准T1_W3为两Trigger包加三Weakener包；硬上限630 B／1.5 s／最多6 dummy，标准分账Trigger 283 B／0.45 s、Weakener 347 B／1.05 s。预算上限不等于实际开销；已做实际成本配对的实验在各自记录中注明，T2_W1仅等上限。</p>
+<p>防御者按类别选择码字，实验假设部署端可由可信设备身份确定类别；尚未验证身份未知或共享网关条件下的可实现性。在线防御不读取攻击者模型、当前BA或Blind标签。流量重放属于特征级模拟，未证明端到端网络部署效果。</p>
+<h3>2.2 名词避免混用</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>名词</th><th>本报告中的定义</th></tr></thead><tbody>
+<tr><td>码本</td><td>每个code的Trigger位置、长度与Gap组合；生成新码本会改变这些参数</td></tr>
+<tr><td>Mapping State</td><td>类别到code的置换；六个State不是六个设备类别，也不是六套新码本</td></tr>
+<tr><td>Fixed Mapping</td><td>早期统一配对中的长期共享单一State</td></tr>
+<tr><td>固定码本 + IID</td><td>后期Fixed基线：保留首套码本，每条流仍独立抽State；与Fixed Mapping不同</td></tr>
+<tr><td>位置池大小 k_pos</td><td>早期每类可用位置对数1/2/4/8；与后期State数量K=3/6/12不同</td></tr>
+<tr><td>Full New5 / Position5</td><td>每5个观测日更新全码本／只更新位置，均保持K=6均匀逐流IID</td></tr>
+</tbody></table></div>
+<h3>2.3 攻击者信息权限</h3><p>普通在线攻击器读取防御后32个带方向包长与32个log Gap，仅用已到达的设备标签更新。真实State标签、内部role和真实包索引不可作为普通攻击输入。Oracle逆变换和历史监督State分类器为特权诊断，单独标注；Oracle受重构和分类器限制，是参考性能而非理论上界。</p>
+<h3>2.4 两类协议不可混表</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>协议</th><th>训练与评分</th><th>统计口径</th></tr></thead><tbody>
+<tr><td>早期机制／块级适应</td><td>capture或时间块划分；当块Calibration先于Blind；标签预算、类别支持按原实验</td><td>原表保留自身划分；部分有按天配对bootstrap；不能与在线J直接比较</td></tr>
+<tr><td>在线UNSW8开发</td><td>20观测日热身抽4000标签；随后150观测日，2016-10-20至2017-04-12；17259 Blind</td><td>每日8新标签、最多128 Blind；三Seed共用日期与样本清单</td></tr>
+<tr><td>在线Deakin10开发</td><td>按实际UTC重建时间，排除6条跨午夜流；20观测日热身4000标签；50观测日，2023-07-10至09-03；6400 Blind</td><td>400个在线新标签，热身覆盖7类；不是全新最终测试</td></tr>
+</tbody></table></div>
+<p>每天先用严格早于当日的标签训练并评分当日Blind，再释放当日8个Calibration标签。Post是使用此前已到达标签的每日模型，<b>不包含当天新标签</b>；Pre在每个调度段首日拟合后整段冻结。Blind标签只用于评分或事后诊断。滑动窗按前14个日历日取标签，样本不足两类时回退热身模型并记录；码本周期按观测日计。</p>
+<p>在线LR：StandardScaler仅拟合热身特征，LogisticRegression最多500迭代、seed=0。RF：64树、深度12、叶节点最少2、seed=7500。Deakin MLP为64/32隐层、固定30轮，仅作补充压力测试；早期机制实验的模型参数以原记录为准。</p>
+<h3>2.5 主指标、配对与不确定性</h3><p>每日BA对当日Blind实际出现的设备类等权，历史未知类计零召回。J<sub>H</sub>为H个观测日BA的等权平均，再对配对Seed等权；不是所有流合并后的BA，也不要求各日出现同一类集合。相同日期跨臂使用相同原始流，因此跨臂差值配对有效，跨日期曲线仍受类别集合变化影响。J<sub>150</sub>与J<sub>50</sub>分别报告。</p>
+<p>在线主表是描述性均值，未统一执行显著性／等效性检验。三Seed不等于三套独立设备捕获；未提供CI的表不作“显著”宣称。切换冲击、前三日BA、T<sub>0.70</sub>、State准确率与历史价值是辅助诊断；阈值可能有天花板效应，低固定预算BA不能直接解释为适应时间延长。State RNG与样本划分分离；早期受Calibration split影响的A–F绝对BA只在同run内比较。</p>
+<p class="small">来源：<a href="非平稳动态防御.html">在线时间边界审计</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="第二阶段_MappingPolicy配对.html">块级权限与配对审计</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="学习型码本搜索与外部时间数据.html">UTC清单与开发数据边界</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="early">
+<h2>三、早期机制：组件效果与表示失配</h2>
+<h3>3.1 等成本单组件搜索与早期包长残余</h3>
+  
+  <p>我们先固定总预算，只改变一个组件，比较攻击者 BA 的变化。这个阶段的目标不是找“最强攻击”，而是判断哪个设计维度值得继续投入。</p>
+
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>组件</th><th class="num">UNSW</th><th class="num">CIC</th><th class="num">UNSW2018</th><th class="num">Mon</th></tr>
+    <tr><td>位置搜索 ΔBA</td><td class="num">0.052</td><td class="num">0.062</td><td class="num">0.082</td><td class="num">0.009</td></tr>
+    <tr><td>长度搜索 ΔBA</td><td class="num">0.003</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr><td>gap 搜索 ΔBA</td><td class="num">0.016</td><td class="num">0.003</td><td class="num">0.044</td><td class="num">—</td></tr>
+  </table></div>
+
+  <div class="figure">
+    <img src="figures/phase1/fig1_search.png" alt="位置、长度、gap 搜索结果">
+    <div class="cap"><b>图 1.</b> 等成本下三个组件的 ΔBA。这些是开发搜索均值；held-out结果依赖数据集与分类器，不能视为统一泛化收益；长度搜索在 held-out 上不稳定；gap 只在部分数据集有效。</div>
+  </div>
+
+  <p>进一步把总效应拆成 representation、displacement、dummy mixing：</p>
+  <div class="figure">
+    <img src="figures/phase1/fig4_mechanism.png" alt="机制分解">
+    <div class="cap"><b>图 2.</b> 机制分解。dummy mixing 是主项；真实包位移和真实包 padding 的贡献较小。</div>
+  </div>
+
+  <div class="callout good">
+    <b>阶段结论：</b>在这些搜索与clean→defended分解中，位置维度值得继续研究，dummy混入解释了主要路径差值；不代表动态在线防御或所有攻击者都由同一机制主导。
+  </div>
+<h3>3.2 Trigger／Weakener与Placebo对照</h3>
+  
+  <p>Stage A 固定 5 个 dummy 事件，比较两种分配：</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>设置</th><th>组成</th><th class="num">UNSW LR</th><th class="num">CIC LR</th></tr>
+    <tr><td>T1_W3</td><td>2 个 trigger + 3 个 weakener</td><td class="num">0.261</td><td class="num">0.138</td></tr>
+    <tr><td>T0_W5</td><td>0 个 trigger + 5 个 weakener</td><td class="num">0.967</td><td class="num">0.722</td></tr>
+  </table></div>
+  <p>同样 5 个事件、同样约 630 B，trigger 的存在带来巨大差异。这说明“trigger 层”值得研究。</p>
+
+  <p>但这里有一个明显的混淆：T1 与 T0 不只差 code，还差位置、事件结构和预算分配。于是我们继续拆。</p>
+
+  <div id="branch">
+<h3>T2_W1与T1_W3：固定五事件的后续在线对照</h3>
+<p class="small">后续支线，按主题集中展示：以下使用Full New5在线协议，与上方早期Stage A划分、攻击者训练和统计口径不同，不能直接比较绝对BA或合并计算增益。</p>
+
+
+<p>本节是残余诊断之后的探索，不改变此前冻结决定。两个数据集各单Seed=0；两臂共享原始流、标签和共同T1_W3热身历史。T2为四Trigger包，保持每对283 B／0.45 s，合计566 B／0.9 s；一个Weakener剩64 B／0.6 s，固定60 B dummy，真实包padding最多4 B。两臂均五个事件、同硬上限，<b>不保证实际成本相等</b>。</p>
+<p>第二对独立随机生成，冲突锚点按最近未使用位置确定性消解；未搜索。每五观测日更新，均匀逐流IID。表内T1为同Seed值，不是前面三Seed均值。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>数据</th><th>视图</th><th>模型</th><th>更新</th><th>T1_W3</th><th>T2_W1</th><th>T2−T1</th></tr></thead><tbody>
+<tr><td>UNSW8</td><td>D</td><td>LR</td><td>累计</td><td class="num">0.7746</td><td class="num">0.7408</td><td class="num">-0.0338</td></tr>
+<tr><td>UNSW8</td><td>D</td><td>LR</td><td>滑动</td><td class="num">0.7302</td><td class="num">0.7200</td><td class="num">-0.0101</td></tr>
+<tr><td>UNSW8</td><td>D</td><td>RF</td><td>累计</td><td class="num">0.8893</td><td class="num">0.8483</td><td class="num">-0.0409</td></tr>
+<tr><td>UNSW8</td><td>D</td><td>RF</td><td>滑动</td><td class="num">0.7577</td><td class="num">0.7465</td><td class="num">-0.0112</td></tr>
+<tr><td>UNSW8</td><td>C</td><td>LR</td><td>累计</td><td class="num">0.9544</td><td class="num">0.9534</td><td class="num">-0.0009</td></tr>
+<tr><td>UNSW8</td><td>C</td><td>LR</td><td>滑动</td><td class="num">0.8944</td><td class="num">0.8921</td><td class="num">-0.0023</td></tr>
+<tr><td>UNSW8</td><td>C</td><td>RF</td><td>累计</td><td class="num">0.9647</td><td class="num">0.9653</td><td class="num">+0.0006</td></tr>
+<tr><td>UNSW8</td><td>C</td><td>RF</td><td>滑动</td><td class="num">0.8524</td><td class="num">0.8542</td><td class="num">+0.0018</td></tr>
+</tbody></table></div><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>数据</th><th>视图</th><th>模型</th><th>更新</th><th>T1_W3</th><th>T2_W1</th><th>T2−T1</th></tr></thead><tbody>
+<tr><td>Deakin10</td><td>D</td><td>LR</td><td>累计</td><td class="num">0.3247</td><td class="num">0.3636</td><td class="num">+0.0390</td></tr>
+<tr><td>Deakin10</td><td>D</td><td>LR</td><td>滑动</td><td class="num">0.4077</td><td class="num">0.4130</td><td class="num">+0.0053</td></tr>
+<tr><td>Deakin10</td><td>D</td><td>RF</td><td>累计</td><td class="num">0.5701</td><td class="num">0.6149</td><td class="num">+0.0448</td></tr>
+<tr><td>Deakin10</td><td>D</td><td>RF</td><td>滑动</td><td class="num">0.5038</td><td class="num">0.5287</td><td class="num">+0.0249</td></tr>
+<tr><td>Deakin10</td><td>C</td><td>LR</td><td>累计</td><td class="num">0.4549</td><td class="num">0.4606</td><td class="num">+0.0057</td></tr>
+<tr><td>Deakin10</td><td>C</td><td>LR</td><td>滑动</td><td class="num">0.4584</td><td class="num">0.4555</td><td class="num">-0.0029</td></tr>
+<tr><td>Deakin10</td><td>C</td><td>RF</td><td>累计</td><td class="num">0.5561</td><td class="num">0.5324</td><td class="num">-0.0237</td></tr>
+<tr><td>Deakin10</td><td>C</td><td>RF</td><td>滑动</td><td class="num">0.5108</td><td class="num">0.5041</td><td class="num">-0.0067</td></tr>
+</tbody></table></div>
+<p>T2在UNSW8原64维下降，在Deakin原64维升高。UNSW8无序C累计RF仍约0.965，未关闭残余泄漏。T2实际均值约629.95 B／0.985 s（UNSW8）及629.79 B／0.963 s（Deakin）；实际成本与padding额度变化见原记录。</p>
+<p>该比较同时改变对数、位置覆盖、资源分账、Weakener分布和真实包弱化额度，不能认定纯Trigger对数效应。单Seed不支持稳健性、显著性或最终泛化结论。</p><p class="small">来源：<a href="T2W1对比T1W3.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+
+</div>
+<h3>是 trigger code 本身有用吗？</h3>
+  <p>我们做了一个 Placebo：同样 2 个 trigger 事件、同样位置和预算，但所有类别共享同一个 code，没有 mapping rotation。</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>数据集</th><th class="num">Real − Placebo（LR）</th><th class="num">RF</th><th class="num">MLP</th></tr>
+    <tr><td>UNSW</td><td class="num">−0.002</td><td class="num">−0.053</td><td class="num">−0.034</td></tr>
+    <tr><td>CIC</td><td class="num">0.000</td><td class="num">−0.007</td><td class="num">−0.006</td></tr>
+  </table></div>
+  <div class="callout warn">
+    <b>关键否证：</b>类特定 code 与 mapping rotation 的贡献很小。T1 与 T0 的巨大差异不能归因于“code 编码”。
+  </div>
+<h3>3.3 位置关联与映射切换</h3>
+  
+  <p>既然不是 code，我们继续拆位置。这里有两个容易混淆的对照：</p>
+
+  <h3>对照 1：去掉“位置与类别的关联”</h3>
+  <p>保持 2 个 trigger 事件、同样预算，但把位置改成与类别无关的随机位置。防御几乎消失。</p>
+  <p>这支持类别相关位置是该协议中产生较大降幅的重要条件。但还不能说明它是“静态可学习的位置”，还是“被 rotation 打乱的位置”。</p>
+
+  <h3>对照 2：保留类位置，但不做 rotation</h3>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>数据集</th><th class="num">静态类位置（无 rotation）</th><th class="num">类位置 + rotation</th><th class="num">随机位置</th></tr>
+    <tr><td>UNSW RF</td><td class="num">0.997</td><td class="num">0.405</td><td class="num">0.999</td></tr>
+    <tr><td>CIC RF</td><td class="num">0.993</td><td class="num">0.057</td><td class="num">0.830</td></tr>
+  </table></div>
+
+  <div class="callout good">
+    <b>机制结论：</b>静态类位置是可学习的，本身几乎不构成防御；同一个位置策略，只要经过 mapping rotation，就产生 0.6–0.9 的 BA 下降。这些对照将较大降幅定位到位置映射切换造成的表示失配；尚不能说明持续适应后仍保持该降幅。
+  </div>
+
+
+<h3>3.4 类内位置池稳定性（k_pos）</h3>
+  
+  <p>K 表示每个类别可用的位置对数量：K=1 是固定位置；K 越大，同一类别内部位置越随机。事件数与预算固定，并做位移分层及对齐审计；不能将位置随机化与其他协议下的Per-flow状态随机化等同。</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>K</th><th class="num">CIC RF</th><th class="num">UNSW RF</th></tr>
+    <tr><td>1（固定）</td><td class="num"><b>0.057</b></td><td class="num"><b>0.405</b></td></tr>
+    <tr><td>2</td><td class="num">0.368</td><td class="num">0.889</td></tr>
+    <tr><td>4</td><td class="num">0.592</td><td class="num">0.954</td></tr>
+    <tr><td>8</td><td class="num"><b>0.771</b></td><td class="num"><b>0.989</b></td></tr>
+  </table></div>
+  <p>本表中位置池增大伴随BA升高；分布形状可学习是一种解释，尚非该表单独识别的因果机制。</p>
+  <div class="callout info">
+    <b>设计含义：</b>该块级映射切换协议中，固定类位置加切换更容易制造失配；不能外推为在线Full New5应取消逐流随机化。
+  </div>
+
+<h3>3.5 当时已出现的残余线索</h3><p>UNSW早期顺序无关包长直方图的clean→clean BA为0.9768、防御后训练→防御后测试为0.9636；真实包视图为0.9696。真实包视图使用内部角色标记，仅作诊断，全事件直方图才符合普通观测。早期padding审计约41 B/流、约4%真实事件变长；这些数值限于当时样本，不能直接替代后期在线结论。</p>
+<div class="callout info">本阶段建立了“特定序列表示会失配”的证据，同时已提示包长边际未被充分隐藏。两条证据应同时保留，后续残余实验重新检验后者。</div>
+<p class="small">来源：<a href="第一阶段实验结论.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="第二阶段_StageA1_A2.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="第二阶段_PositionPlacebo.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="mapping">
+<h2>四、映射适应：可恢复性、标签权限与统一配对</h2>
+<h3>4.1 已知映射的可恢复性（特权参考）</h3>
+  
+  <p>要判断 rotation 是“信息被破坏”还是“映射被换掉”，最直接的办法是给攻击者真实 mapping，让它做逆变换，然后看能否恢复。</p>
+  <p>我们实现了 feature-level canonicalization：按当前 mapping 把 trigger 的 code 和位置移回参考映射，再训练分类器。</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>条件</th><th class="num">UNSW LR</th><th class="num">CIC LR</th></tr>
+    <tr><td>不逆变换</td><td class="num">0.706</td><td class="num">0.585</td></tr>
+    <tr><td>只还原 code</td><td class="num">0.711</td><td class="num">—</td></tr>
+    <tr><td>只还原位置</td><td class="num">0.877</td><td class="num">0.915</td></tr>
+    <tr><td>code + 位置（combined）</td><td class="num">0.884</td><td class="num">0.922</td></tr>
+    <tr><td>Oracle 特征重建</td><td class="num">0.880</td><td class="num">0.923</td></tr>
+  </table></div>
+
+  <div class="callout good">
+    <b>结论：</b>已知 mapping 且重构正确时，三种 policy 都回到约 0.884，接近 Fixed 水平。这说明该实验中大量损失可恢复，不能证明所有身份信息均可逆。<b>位置还原贡献了绝大部分恢复</b>，code 还原贡献很小。
+  </div>
+
+  <h3>跨数据集与分类器</h3>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>设置</th><th class="num">不逆变换</th><th class="num">只还原位置</th><th class="num">combined</th></tr>
+    <tr><td>CIC / LR</td><td class="num">0.585</td><td class="num">0.915</td><td class="num">0.922</td></tr>
+    <tr><td>UNSW / RF</td><td class="num">0.868</td><td class="num">0.910</td><td class="num">0.962</td></tr>
+    <tr><td>CIC / RF</td><td class="num">0.694</td><td class="num">0.970</td><td class="num">0.991</td></tr>
+    <tr><td>UNSW / MLP</td><td class="num">0.838</td><td class="num">0.957</td><td class="num">0.958</td></tr>
+  </table></div>
+  <p>LR/MLP 下，只还原位置几乎就足够；RF 在 UNSW 上更依赖 code+位置组合，但在 CIC 上位置已足够。因此“RF 需要 combined”是数据集相关，不是模型固有属性。</p>
+
+  <div class="callout warn">
+    <b>方法学提醒：</b>早期“只还原 code 也能恢复”的结论来自一个 naive detector；换成 joint code+position detector 后，错误率从 13% 降到 0.3%。Detector 实现差异不能写成防御机制。
+  </div>
+<h3>4.2 Periodic的块级适应与类别覆盖</h3>
+  
+  <p>上面是“已知 mapping”的上界。现实中攻击者不知道当前 mapping，必须从流量里推断。这里的关键区别是：</p>
+  <ul>
+    <li><b>Periodic</b>：一个 block 共享一个 state，可以用 block 内少量标签识别；</li>
+    <li><b>Per-flow</b>：每条 flow 独立 state，block 标签不能直接迁移。</li>
+  </ul>
+
+  <h3>Periodic：用标签做 state selection</h3>
+  <p>我们枚举 6 个候选 state，对每个 state 做 canonicalization，用冻结历史模型的 log-loss 选 state；Probe 与 Finetune 共享同一个 state 与 canonical features。</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>指标</th><th class="num">结果</th></tr>
+    <tr><td>Selector Top-1</td><td class="num">65 / 66</td></tr>
+    <tr><td>n=256 Top-1</td><td class="num">18 / 18</td></tr>
+    <tr><td>n=1024 Top-1</td><td class="num">47 / 48</td></tr>
+    <tr><td>n=64</td><td class="num">不可评估（类别覆盖不足）</td></tr>
+  </table></div>
+  <p>Finetune 平均优于 Probe，但差异很大一部分来自类别覆盖：</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>n</th><th class="num">Probe Full</th><th class="num">Probe Common</th><th class="num">Finetune Full</th><th class="num">Finetune Common</th></tr>
+    <tr><td>256</td><td class="num">0.577</td><td class="num"><b>0.999</b></td><td class="num">0.872</td><td class="num">0.900</td></tr>
+    <tr><td>1024</td><td class="num">0.801</td><td class="num"><b>0.980</b></td><td class="num">0.916</td><td class="num">0.946</td></tr>
+  </table></div>
+  <div class="callout info">
+    <b>解释：</b>Probe 在 Full-class 上低，是因为 blind 中有 calibration 未出现的类别；在 Common-class（两边都出现的类别）上，Probe 很强。Finetune 的优势更多是“保留历史类别知识”，而不是在已见类别上普遍更好。
+  </div>
+<h3>4.3 Per-flow监督推断与概率融合</h3><p class="small">以下A–F采用历史真实State监督，属于特权攻击诊断；与后面的仅设备标签主比较分开。早期No-canon 0.546与本run 0.578受State RNG变化影响，不跨run计算增益。</p>
+  
+  <p>Per-flow 下每条 flow 独立随机 state。攻击者不能用一个 block 级标签确定共享 state，只能逐条 flow 推断。</p>
+
+  <h3>单流 state 可识别吗？</h3>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>方法</th><th class="num">State Top-1</th><th class="num">State Top-2</th></tr>
+    <tr><td>6 类随机猜测</td><td class="num">0.167</td><td class="num">0.333</td></tr>
+    <tr><td>只看单流可观测特征</td><td class="num">0.149–0.180</td><td class="num">—</td></tr>
+    <tr><td>历史监督 state classifier</td><td class="num"><b>0.458</b></td><td class="num"><b>0.666</b></td></tr>
+    <tr><td>Oracle</td><td class="num">1.000</td><td class="num">1.000</td></tr>
+  </table></div>
+  <p>早期无监督观测评分接近随机；另一个获得历史真实State监督的分类器达到Top-1 0.458。二者信息权限不同，不能表述成可观测流量一般不含State信号。</p>
+
+  <h3>下游设备分类：不同 state 推断策略</h3>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>攻击者</th><th class="num">Device BA</th><th class="num">相对 No-canon</th></tr>
+    <tr><td>No-canonicalization</td><td class="num">0.578</td><td class="num">—</td></tr>
+    <tr><td>Predicted Top-1</td><td class="num">0.565</td><td class="num">−0.014</td></tr>
+    <tr><td>Top-2 fusion</td><td class="num">0.605</td><td class="num">+0.027</td></tr>
+    <tr><td>Top-6 marginalization</td><td class="num"><b>0.658</b></td><td class="num"><b>+0.079</b></td></tr>
+    <tr><td>置信度门控</td><td class="num">0.587</td><td class="num">+0.008</td></tr>
+    <tr><td>Oracle state</td><td class="num"><b>0.831</b></td><td class="num">+0.253</td></tr>
+  </table></div>
+
+  <p>关键现象：</p>
+  <p class="small">注：Per-flow 数值来自同一组 A–F 消融运行；由于 state 抽样与校准切分，绝对 BA 与更早的 pilot 会略有差异。所有相对结论都使用同一 run 内的配对比较。</p>
+  <ul>
+    <li>Top-1 错误 state 会破坏设备识别：正确 state 的 flow 平均 BA 0.850，错误 state 只有 0.440；</li>
+    <li>因此硬选 Top-1 平均反而低于不逆变换；</li>
+    <li>保留更多候选（Top-6）最稳，但也只恢复约 31% 的 oracle 增益；</li>
+    <li>门控阈值从历史数据迁移后覆盖率只有 12–33%，大多数 flow 回退到 No-canon，收益接近 0。</li>
+  </ul>
+
+  <div class="callout good">
+    <b>机制结论：</b>对本轮canonicalization攻击，逐流State不确定性限制了恢复收益；该诊断并未覆盖所有设备分类表示或所有攻击方法。
+  </div>
+
+<h3>4.4 统一权限主比较：仅设备标签</h3><p>UNSW8单Seed，八个20观测日块；每块最多1024个Calibration和1000个后续Blind，共8000 Blind。三Policy共享原始流和参考LR；Fixed长期共享State、Periodic每两块共享State、Per-flow独立抽State。真实State不参与Adaptive训练，Oracle额外获得真实State。主BA对每块出现类等权后块均值，部分历史未见类计零召回。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>Policy</th><th>No-canon</th><th>Adaptive</th><th>Oracle参考</th><th>Adaptive增益</th><th>Oracle−Adaptive</th><th>增益恢复比</th></tr></thead><tbody>
+<tr><td>Fixed Mapping</td><td class="num">0.178</td><td class="num">0.517</td><td class="num">0.517</td><td class="num">+0.339</td><td class="num">0.000</td><td class="num">100.0%</td></tr>
+<tr><td>Periodic</td><td class="num">0.291</td><td class="num">0.550</td><td class="num">0.550</td><td class="num">+0.259</td><td class="num">0.000</td><td class="num">100.0%</td></tr>
+<tr><td>Per-flow</td><td class="num">0.312</td><td class="num">0.442</td><td class="num">0.539</td><td class="num">+0.130</td><td class="num">0.096</td><td class="num">57.5%</td></tr>
+</tbody></table></div>
+<p>Fixed/Periodic在当前标签预算下达到其Oracle参考，Per-flow仍有差距。这是策略结构与对应适应算法的联合结果，不能将差值全归因为State推断。表内由未四舍五入数计算增益与恢复比；不与上面的A–F绝对值混用。</p><p class="small">来源：<a href="第二阶段_MappingPolicy配对.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="第二阶段_FeatureCanonical.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="dynamic">
+<h2>五、转向时间推进：固定状态库与新码本生成</h2>
+
+<p class="lead">研究问题从“能否估计单流隐藏State”转为“过去学习能否持续迁移”。本节新码本更新周期为<b>25个观测日</b>；后文Full New5为5日，不能混作同一实验。</p>
+  <h3>固定状态库的调度能否持续压低识别率？</h3>
+  <p>只改变六个既定 Mapping 的混合概率，会在部分切换日压低冻结模型的 BA。UNSW8 三次回放中，原非平稳调度相对 Stationary IID 的全期 Post BA，累计 LR 平均降低 0.0054，滑动 LR 平均升高 0.0061。缩短周期、降低权重集中度和改用固定顺序均未形成跨攻击者稳定的全期收益。<a href="非平稳动态防御.html">调度实验</a></p>
+
+  <h3>生成新码本后，逐流随机化有何作用？</h3>
+  <p>新码本改变合法的 Trigger 位置、包长和 gap，保留两包 Trigger、三包 Weakener 和原预算分区。每段固定 Mapping 时，新码本能反复造成冻结模型的切换损失，但两类 LR 的平均全期 BA 都高于 IID。保持同一批新码本并加入逐流均匀 Mapping 后，UNSW8 累计 LR 的三条序列全期 BA 均下降。</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>回放与攻击者</th><th class="num">Stationary IID</th><th class="num">随机新码本 + Per-flow</th><th class="num">差值</th></tr>
+    <tr><td>UNSW8 开发，150 日，累计 LR</td><td class="num">0.8256</td><td class="num"><b>0.7939</b></td><td class="num">−0.0317</td></tr>
+    <tr><td>UNSW8 开发，150 日，滑动 LR</td><td class="num">0.7656</td><td class="num">0.7568</td><td class="num">−0.0088</td></tr>
+    <tr><td>Deakin 跨数据集开发，50 日，累计 LR</td><td class="num">0.3559</td><td class="num">0.3386</td><td class="num">−0.0173</td></tr>
+    <tr><td>Deakin 跨数据集开发，50 日，累计 RF</td><td class="num">0.6476</td><td class="num"><b>0.5979</b></td><td class="num">−0.0497</td></tr>
+    <tr><td>Deakin 跨数据集开发，50 日，滑动 LR</td><td class="num">0.4358</td><td class="num">0.4428</td><td class="num">+0.0070</td></tr>
+    <tr><td>Deakin 跨数据集开发，50 日，滑动 RF</td><td class="num">0.5509</td><td class="num">0.5529</td><td class="num">+0.0020</td></tr>
+  </table></div>
+  <p class="small">差值为新码本策略减 IID。Deakin 累计 RF 三次均下降，累计 LR 两降一升。滑动攻击者未见一致收益。各数据集的重复共用各自的捕获时段，UNSW8 的 150 日与 Deakin 的 50 日分别报告。<a href="连续生成Trigger在线回放.html">UNSW8 回放</a> · <a href="Deakin外部短期码本回放.html">Deakin 回放</a></p>
+
+
+<p>仅段内固定Mapping的新码本组，UNSW累计／滑动LR为0.8404／0.8089；加入逐流IID后为0.7939／0.7568。该控制支持两时间尺度结合的作用，但尚未严格估计所有因素的完整交互效应。冻结模型瞬时下降与持续学习后的收益分别评价。</p><p class="small">来源：<a href="连续生成Trigger在线回放.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="Deakin外部短期码本回放.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="history">
+<h2>六、解释性诊断：历史标签是否失去价值</h2>
+  <h3>新码本怎样改变历史标签的价值？</h3>
+  <p>Deakin RF 的类别配额诊断对同一批 Blind 流评估。等样本数、等类别配额下，严格早于 14 日边界的旧标签弱于近期标签。共同类别评分中，随机新码本相对 IID 额外扩大旧样本替代损失 <b>0.0435 BA</b>。</p>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>固定同一近期训练基础集</th><th class="num">加同量旧标签的 BA 增益</th><th class="num">加同量近期标签的 BA 增益</th></tr>
+    <tr><td>Stationary IID</td><td class="num">+0.1010</td><td class="num">+0.1107</td></tr>
+    <tr><td>随机新码本 + Per-flow</td><td class="num">+0.0743</td><td class="num">+0.1196</td></tr>
+  </table></div>
+  <p class="small">动态新码本额外扩大近期标签的边际优势约 0.0357 BA。旧标签平均仍有正收益。设备行为漂移仍可能参与解释，历史价值指标用于机制诊断，全期 Post BA 用于评估安全收益。<a href="Deakin外部短期码本回放.html">资格审计与工作 A 冻结结论</a></p>
+
+
+<p>替代实验比较等数量、等类别配额的新旧训练集；边际实验固定同一近期基础集，再分别加入同量旧标签和额外近期标签。旧池严格早于14日边界，资格由训练可用性决定，不能据Blind难度选择。共同类别边际评价覆盖147/150个重复日观测，缺少共同Blind的日期单列；全类别评分作为辅助。</p>
+<div class="callout info">结果支持旧标签相对近期标签“折价”，不支持总体净负迁移。该证据来自Deakin RF及当时25日随机码本设置，不能直接归因到位置、长度、Gap某一组件，也未在5日条件下单独复验。</div>
+</section>
+<section id="learning">
+<h2>七、学习型选择：依次检验质量、历史与长期价值</h2>
+  <h3>学习型生成器能否超过同池随机生成？</h3>
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>问题</th><th>进度</th><th>结论</th></tr>
+    <tr><td>静态码本排序</td><td><span class="tag">已测试</span></td><td>四维 Ridge 用 16 个码本拟合。在后续 50 日的 8 个未见码本上，Spearman ρ 为 −0.333。选择序列的累计 LR BA 比同池随机参照均值高 0.0252。</td></tr>
+    <tr><td>历史条件排序</td><td><span class="tag">第一关已测试</span></td><td>两个时间块分别运行 3 条历史 × 4 个候选的完整矩阵。历史会改变候选间 BA 差距，但未见相同对比在两个块重复翻转。累计 LR 在各块内的最优候选对三条历史都相同。</td></tr>
+    <tr><td>双阶段非短视决策价值</td><td><span class="tag">已测试</span></td><td>复用 3×4 矩阵，补评分前 25 日。两个时间块、两种 LR 的第一阶段最优与 50 日联合最优均一致，非短视收益为 0。工作 B 暂时冻结，长期学习型策略列为未来工作。<a href="码本历史交叉回放.html">双阶段结果</a></td></tr>
+  </table></div>
+  <div class="callout info">随机双时间尺度策略已有在线证据支持。学习型扩展尚缺可靠的候选选择信号。UNSW8 和 Deakin 都已用于形成研究判断，正式泛化需要新的隔离捕获。<a href="学习型码本搜索与外部时间数据.html">静态排序</a> · <a href="码本历史交叉回放.html">历史交互矩阵</a></div>
+
+<p>这三关检验的是有限特征、候选池和回放设计；未发现可靠信号不等于证明所有学习控制无效。未训练PPO，也不能把预设规则实验称为强化学习算法对比。Deakin已用于研究判断，不作为该选择器的全新最终测试。</p>
+</section>
+<section id="refresh">
+<h2>八、简单更新规则：周期、复用与动态组件</h2>
+
+<h3>8.1 初轮周期：5/10/25/50观测日</h3><p>固定新码本生成空间、逐流IID和标签协议。周期越短，部署码本越多，暴露频率与学习路径也同时改变。UNSW8三Seed结果如下：</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>更新周期（观测日）</th><th>累计 LR</th><th>Δ vs 25 日</th><th>累计 LR 逐重复 Δ vs 25 日</th><th>滑动 LR</th><th>Δ vs 25 日</th></tr></thead><tbody>
+<tr><td>5</td><td class="num">0.7683</td><td class="num">-0.0256</td><td>-0.0160 / -0.0270 / -0.0340</td><td class="num">0.7405</td><td class="num">-0.0162</td></tr>
+<tr><td>10</td><td class="num">0.7800</td><td class="num">-0.0140</td><td>-0.0179 / -0.0131 / -0.0108</td><td class="num">0.7510</td><td class="num">-0.0058</td></tr>
+<tr><td>25</td><td class="num">0.7939</td><td class="num">+0.0000</td><td>+0.0000 / +0.0000 / +0.0000</td><td class="num">0.7568</td><td class="num">+0.0000</td></tr>
+<tr><td>50</td><td class="num">0.7988</td><td class="num">+0.0048</td><td>+0.0023 / -0.0085 / +0.0207</td><td class="num">0.7667</td><td class="num">+0.0100</td></tr>
+</tbody></table></div>
+<p>初轮5日均值最低，成为后续工程参照；累计LR逐Seed最优为10/5/5日，不能称为普遍最优。各50日块沿用各自历史，分块排序不是自适应切换收益。</p>
+<h3>8.2 持续新生成还是有限库循环</h3><p>每5日切换，New5与Reuse5前30日完全相同；随后Reuse5循环前六套。累计LR全期0.7683 vs 0.7833（差−0.0150，三Seed两降一升）；滑动LR为0.7405 vs 0.7404（差约零）。该比较同时改变多样性与重复暴露，不能独立识别新颖性。</p>
+<h3>8.3 UNSW8单组件动态更新</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>条件</th><th>累计 LR 150 日 Post BA</th><th>Δ vs Fixed</th><th>滑动 LR 150 日 Post BA</th><th>Δ vs Fixed</th></tr></thead><tbody>
+<tr><td>固定码本</td><td class="num">0.8054</td><td>—</td><td class="num">0.7628</td><td>—</td></tr>
+<tr><td>Position5</td><td class="num">0.7704</td><td class="num">-0.0350</td><td class="num">0.7414</td><td class="num">-0.0214</td></tr>
+<tr><td>Length5</td><td class="num">0.8044</td><td class="num">-0.0010</td><td class="num">0.7621</td><td class="num">-0.0007</td></tr>
+<tr><td>Gap5</td><td class="num">0.8056</td><td class="num">+0.0002</td><td class="num">0.7637</td><td class="num">+0.0009</td></tr>
+<tr><td>Full New5</td><td class="num">0.7683</td><td class="num">-0.0371</td><td class="num">0.7405</td><td class="num">-0.0223</td></tr>
+</tbody></table></div>
+<p>Position5保留Full相对固定码本约94%／96%的累计／滑动LR降幅。该比例是特定参照下的描述性结果，不是等效性结论；长度更新指Trigger码包，不是增加真实包padding。</p>
+<h3>8.4 Deakin跨数据集开发复验与模型差异</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>攻击者</th><th>固定码本+IID</th><th>Position5</th><th>Full New5</th><th>Full−Position5</th></tr></thead><tbody>
+<tr><td>累计LR</td><td class="num">0.3299</td><td class="num">0.3197</td><td class="num">0.3210</td><td class="num">+0.0013</td></tr>
+<tr><td>滑动LR</td><td class="num">0.4412</td><td class="num">0.4119</td><td class="num">0.4073</td><td class="num">−0.0047</td></tr>
+<tr><td>累计RF</td><td class="num">0.6295</td><td class="num">0.5983</td><td class="num">0.5730</td><td class="num">−0.0252</td></tr>
+<tr><td>滑动RF</td><td class="num">0.5506</td><td class="num">0.5295</td><td class="num">0.5092</td><td class="num">−0.0203</td></tr>
+<tr><td>累计MLP</td><td class="num">0.4740</td><td class="num">0.4540</td><td class="num">0.4483</td><td class="num">−0.0058</td></tr>
+<tr><td>滑动MLP</td><td class="num">0.3618</td><td class="num">0.3547</td><td class="num">0.3529</td><td class="num">−0.0018</td></tr>
+</tbody></table></div>
+<p>Position5对四类LR/RF攻击的三个重复均低于固定码本。Full对RF仍有额外收益；MLP仅为固定小模型，其Fixed BA低于RF，不能认为已覆盖更强深度攻击。</p>
+<h3>8.5 长度与Gap是否互补</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>Deakin攻击</th><th>Position5</th><th>P+Length5</th><th>P+Gap5</th><th>Full</th><th>交互I</th></tr></thead><tbody>
+<tr><td>累计RF</td><td class="num">0.5983</td><td class="num">0.5834</td><td class="num">0.5858</td><td class="num">0.5730</td><td class="num">+0.0021</td></tr>
+<tr><td>滑动RF</td><td class="num">0.5295</td><td class="num">0.5181</td><td class="num">0.5174</td><td class="num">0.5092</td><td class="num">+0.0033</td></tr>
+</tbody></table></div>
+<p>I = Full − P+L − P+G + P；BA越低越好，因此I&lt;0才表示超加和收益。本轮平均I略正且逐Seed变号，未形成稳定有利交互。保留Position5作机制基线，Full作完整参照。</p><p class="small">来源：<a href="新码本更新周期.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="新码本组件消融.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="Deakin外部短期码本回放.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="controls">
+<h2>九、有限优化空间：联合控制、State数量与历史差异</h2>
+
+<h3>9.1 双时间尺度预设2×2控制</h3><p>A为Full New5；B每日轮转非均匀State概率；C码本持续5/10日交替；D合并二者。规则不读取攻击者BA，C/D同时减少部署码本数。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>攻击</th><th>A Full New5</th><th>B 快层</th><th>C 慢层</th><th>D 联合</th><th>ΔF</th><th>ΔS</th><th>Δjoint</th><th>I</th></tr></thead><tbody>
+<tr><td>累计</td><td class="num">0.7683</td><td class="num">0.7665</td><td class="num">0.7792</td><td class="num">0.7735</td><td class="num">-0.0018</td><td class="num">+0.0109</td><td class="num">+0.0052</td><td class="num">-0.0039</td></tr>
+<tr><td>滑动</td><td class="num">0.7405</td><td class="num">0.7423</td><td class="num">0.7469</td><td class="num">0.7455</td><td class="num">+0.0018</td><td class="num">+0.0064</td><td class="num">+0.0050</td><td class="num">-0.0032</td></tr>
+</tbody></table></div>
+<p>联合组平均交互虽为负，但全期BA仍高于A；本轮规则没有建立学习型联合控制的增量价值。</p>
+<h3>9.2 State数量K=3/6/12</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>数据集 / 期限</th><th>攻击者</th><th>K=3</th><th>K=6</th><th>K=12</th><th>6−3</th><th>12−6</th></tr></thead><tbody>
+<tr><td>unsw8 / 150 日</td><td>LR cumulative</td><td class="num">0.7765</td><td class="num">0.7683</td><td class="num">0.7662</td><td class="num">-0.0082</td><td class="num">-0.0020</td></tr>
+<tr><td>unsw8 / 150 日</td><td>LR sliding</td><td class="num">0.7434</td><td class="num">0.7405</td><td class="num">0.7437</td><td class="num">-0.0029</td><td class="num">+0.0032</td></tr>
+<tr><td>unsw8 / 150 日</td><td>RF cumulative</td><td class="num">0.8855</td><td class="num">0.8818</td><td class="num">0.8811</td><td class="num">-0.0036</td><td class="num">-0.0008</td></tr>
+<tr><td>unsw8 / 150 日</td><td>RF sliding</td><td class="num">0.7581</td><td class="num">0.7543</td><td class="num">0.7518</td><td class="num">-0.0038</td><td class="num">-0.0026</td></tr>
+<tr><td>deakin10 / 50 日</td><td>LR cumulative</td><td class="num">0.3179</td><td class="num">0.3210</td><td class="num">0.3279</td><td class="num">+0.0031</td><td class="num">+0.0069</td></tr>
+<tr><td>deakin10 / 50 日</td><td>LR sliding</td><td class="num">0.4065</td><td class="num">0.4073</td><td class="num">0.4144</td><td class="num">+0.0007</td><td class="num">+0.0072</td></tr>
+<tr><td>deakin10 / 50 日</td><td>RF cumulative</td><td class="num">0.5774</td><td class="num">0.5730</td><td class="num">0.5748</td><td class="num">-0.0044</td><td class="num">+0.0018</td></tr>
+<tr><td>deakin10 / 50 日</td><td>RF sliding</td><td class="num">0.5156</td><td class="num">0.5092</td><td class="num">0.5113</td><td class="num">-0.0063</td><td class="num">+0.0021</td></tr>
+</tbody></table></div>
+<p>各K从同一K=6热身历史开始，库为同一12-State序列的前缀。最低点依赖数据与更新规则，不能据两数据集分离设备类别数效应，也不能由三点证明极限饱和。保留K=6，不主张最优。</p>
+<h3>9.3 历史差异性感知生成</h3><p>固定四候选池，按位置／长度／Gap归一化参数距离，最大化到最近三码本的最小距离。距离提高约13%，但八种数据×攻击组合的逐Seed差值均变号；累计LR/RF没有稳定收益。参数差异不等于有效观测分布差异。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>数据集 / 期限</th><th>攻击</th><th>Full</th><th>Novelty</th><th>平均 Δ</th><th>逐重复 Δ</th></tr></thead><tbody>
+<tr><td>unsw8 / 150 日</td><td>LR cumulative</td><td class="num">0.7683</td><td class="num">0.7694</td><td class="num">+0.0011</td><td>+0.0052 / -0.0110 / +0.0091</td></tr>
+<tr><td>unsw8 / 150 日</td><td>LR sliding</td><td class="num">0.7405</td><td class="num">0.7519</td><td class="num">+0.0113</td><td>+0.0212 / -0.0008 / +0.0137</td></tr>
+<tr><td>unsw8 / 150 日</td><td>RF cumulative</td><td class="num">0.8818</td><td class="num">0.8850</td><td class="num">+0.0032</td><td>-0.0004 / +0.0088 / +0.0012</td></tr>
+<tr><td>unsw8 / 150 日</td><td>RF sliding</td><td class="num">0.7543</td><td class="num">0.7507</td><td class="num">-0.0037</td><td>-0.0100 / +0.0012 / -0.0022</td></tr>
+<tr><td>deakin10 / 50 日</td><td>LR cumulative</td><td class="num">0.3210</td><td class="num">0.3218</td><td class="num">+0.0008</td><td>+0.0037 / -0.0044 / +0.0031</td></tr>
+<tr><td>deakin10 / 50 日</td><td>LR sliding</td><td class="num">0.4073</td><td class="num">0.4078</td><td class="num">+0.0005</td><td>+0.0060 / -0.0022 / -0.0023</td></tr>
+<tr><td>deakin10 / 50 日</td><td>RF cumulative</td><td class="num">0.5730</td><td class="num">0.5735</td><td class="num">+0.0005</td><td>-0.0004 / -0.0124 / +0.0142</td></tr>
+<tr><td>deakin10 / 50 日</td><td>RF sliding</td><td class="num">0.5092</td><td class="num">0.5089</td><td class="num">-0.0003</td><td>+0.0020 / +0.0066 / -0.0094</td></tr>
+</tbody></table></div>
+<p>仅否定本轮距离代理与候选池规则的稳定增量；不能推广为所有历史感知生成均无效。</p><p class="small">来源：<a href="双时间尺度联合控制可行性.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="State数量消融.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="历史差异性码本生成.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="lower">
+<h2>十、周期下界复核：缩短到1–2日是否继续改善</h2>
+<p>仅补UNSW8，使用同一预定码本流前缀、共同热身与配对标签账本。1/2/5日分别部署150/75/30套码本；1日是本轮日级回放分辨率，不是日内理论下界。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>攻击</th><th>1 日 BA</th><th>2 日 BA</th><th>5 日 BA</th><th>1−5</th><th>2−5</th><th>1−2</th></tr></thead><tbody>
+<tr><td>LR cumulative</td><td class="num">0.7717</td><td class="num">0.7663</td><td class="num">0.7683</td><td class="num">+0.0034</td><td class="num">-0.0020</td><td class="num">+0.0054</td></tr>
+<tr><td>LR sliding</td><td class="num">0.7407</td><td class="num">0.7392</td><td class="num">0.7405</td><td class="num">+0.0002</td><td class="num">-0.0013</td><td class="num">+0.0015</td></tr>
+<tr><td>RF cumulative</td><td class="num">0.8787</td><td class="num">0.8830</td><td class="num">0.8818</td><td class="num">-0.0031</td><td class="num">+0.0012</td><td class="num">-0.0043</td></tr>
+<tr><td>RF sliding</td><td class="num">0.7486</td><td class="num">0.7467</td><td class="num">0.7543</td><td class="num">-0.0058</td><td class="num">-0.0076</td><td class="num">+0.0019</td></tr>
+</tbody></table></div><p>2日滑动RF相对5日的三个Seed均下降，均值−0.0076；其余差值存在变号，1日并非统一更优。保留5日既有基线，同时明确它不是所有已测周期的最优。</p><p class="small">来源：<a href="新码本更新周期.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="residual">
+<h2>十一、关键转折：Full New5下的可观测残余特征</h2>
+
+<p class="lead">冻结防御，只切换攻击者的输入视图，直接检验位置扰动之外还剩多少可用信息。所有视图与D共用原始流、已到达设备标签、Blind、更新协议与配对Seed，不读取role、真实包索引或真实State。</p><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>视图</th><th>可观测信息</th><th>维数</th></tr></thead><tbody>
+<tr><td>A</td><td>下行包长16箱归一化直方图 + 下行数量</td><td>17</td></tr>
+<tr><td>B</td><td>&gt;256 B事件的16箱归一化直方图 + 有效事件总数</td><td>17</td></tr>
+<tr><td>C</td><td>A+B；下行和大包长度的和／均值／标准差／最小／最大 + 大包数</td><td>45</td></tr>
+<tr><td>D</td><td>原32维带方向长度 + 32维log Gap</td><td>64</td></tr>
+</tbody></table></div><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>数据</th><th>模型</th><th>更新</th><th>A</th><th>B</th><th>C</th><th>D</th><th>C−D</th></tr></thead><tbody>
+<tr><td>UNSW8</td><td>LR</td><td>累计</td><td class="num">0.8986</td><td class="num">0.8919</td><td class="num">0.9544</td><td class="num">0.7683</td><td class="num">+0.1861</td></tr>
+<tr><td>UNSW8</td><td>LR</td><td>滑动</td><td class="num">0.8712</td><td class="num">0.8720</td><td class="num">0.8944</td><td class="num">0.7405</td><td class="num">+0.1539</td></tr>
+<tr><td>UNSW8</td><td>RF</td><td>累计</td><td class="num">0.9294</td><td class="num">0.9064</td><td class="num">0.9647</td><td class="num">0.8818</td><td class="num">+0.0829</td></tr>
+<tr><td>UNSW8</td><td>RF</td><td>滑动</td><td class="num">0.8163</td><td class="num">0.8238</td><td class="num">0.8524</td><td class="num">0.7543</td><td class="num">+0.0980</td></tr>
+<tr><td>Deakin10</td><td>LR</td><td>累计</td><td class="num">0.1194</td><td class="num">0.4260</td><td class="num">0.4549</td><td class="num">0.3210</td><td class="num">+0.1340</td></tr>
+<tr><td>Deakin10</td><td>LR</td><td>滑动</td><td class="num">0.1205</td><td class="num">0.4250</td><td class="num">0.4584</td><td class="num">0.4073</td><td class="num">+0.0511</td></tr>
+<tr><td>Deakin10</td><td>RF</td><td>累计</td><td class="num">0.1205</td><td class="num">0.4135</td><td class="num">0.5561</td><td class="num">0.5730</td><td class="num">-0.0169</td></tr>
+<tr><td>Deakin10</td><td>RF</td><td>滑动</td><td class="num">0.1205</td><td class="num">0.4415</td><td class="num">0.5108</td><td class="num">0.5092</td><td class="num">+0.0015</td></tr>
+</tbody></table></div>
+<p>A–C通过事件顺序打乱不变性检查；各数据集三个Seed的逐日结果相同，应视为对当前Trigger生成序列不敏感，不当作三个独立时间复验。D复用同Seed已有结果。UNSW8全期150日，Deakin全期50日，不跨数据集直接比较绝对数值。</p>
+<h3>11.1 哪些假设得到支持</h3><p><b>UNSW8：</b>下行包长与数量本身支持很强识别；C在四类攻击下超过D。<b>Deakin：</b>A约0.12，不能推广“下行主导”；B/C组合更强，C在LR下超过D，滑动RF接近D，累计RF低0.0169。</p>
+<p>当前支持“存在跨码本稳定、无需精确位置与Gap的可用特征”。C高于D说明有限样本下的表示和归纳偏置会改变结果，D不构成性能上限。本实验是信息充分性测试，未识别原64维模型的因果依赖；也未拆分C中包长与数量各自的必要贡献，未测试时序残余。</p>
+<h3>11.2 防御权限与预算如何限制这些信息</h3><div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>信息</th><th>当前T1_W3可操作范围</th><th>尚不能断言</th></tr></thead><tbody>
+<tr><td>下行包长</td><td>不做下行padding；只可能改变窗口覆盖</td><td>不能据此认定所有部署场景都不可修改下行</td></tr>
+<tr><td>上行真实包长</td><td>允许只增padding；Weakener预算先支付三个dummy，早期均值约41 B/流用于padding</td><td>不等于630 B重新分配仍无法隐藏</td></tr>
+<tr><td>短流规模</td><td>固定加五事件；输出有效数m&lt;32时可恢复输入数n=m−5</td><td>不代表独立包数攻击已单独测得高BA</td></tr>
+<tr><td>方向与相对顺序</td><td>不翻转方向、不删除、不重排真实包；插包可混淆位置</td><td>尚无单独方向／顺序的当前在线因果归因</td></tr>
+</tbody></table></div>
+<div class="callout warn"><b>中心认识更新：</b>Full New5对特定序列攻击器的收益依然成立，但无法作为设备身份已被隐藏的证据。现有变换保留的可观测信息构成明确的攻击面；动作权限是否形成不可突破瓶颈仍属假设。</div><p class="small">来源：<a href="FullNew5残余特征归因.html">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+
+<section id="conclusion">
+<h2>十二、可以提交审阅的主张、边界与冻结决定</h2>
+
+<div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>主张</th><th>支持证据</th><th>允许的结论强度</th></tr></thead><tbody>
+<tr><td>动态更新有条件有效</td><td>25日新码本+IID、5日组件、LR/RF及小MLP回放</td><td>对已测试表示、模型与标签协议的开发收益；非普遍安全保证</td></tr>
+<tr><td>位置刷新重要但不足以代替完整更新</td><td>UNSW8 LR的Position5接近Full；Deakin RF仍有长度/Gap增量</td><td>模型与数据依赖；未做正式等效检验</td></tr>
+<tr><td>历史标签相对价值改变</td><td>Deakin RF等预算替代与边际增量实验</td><td>与历史适用性下降相一致；旧标签平均仍有正增益</td></tr>
+<tr><td>细调与学习型选择缺少可靠增量</td><td>排序、历史交叉、双阶段、2×2、K、Novelty与周期下界</td><td>冻结当前路线；不是学习型控制不可能的证明</td></tr>
+<tr><td>存在很强的跨码本观测残余</td><td>Full New5下A–C的配对在线识别，UNSW8 C累计RF=0.9647</td><td>可观测统计足以支持识别；非原模型必要性／因果归因</td></tr>
+<tr><td>T2_W1尚无统一替代价值</td><td>单Seed两数据集D/C结果</td><td>保留探索；不能视为配比最优或结构性泄漏的解决方案</td></tr>
+</tbody></table></div>
+<h3>13.1 当前阶段表述</h3><div class="card"><p>在当前在线开发回放中，随机动态码本能够降低部分既定攻击器的识别表现，并改变历史标签相对近期标签的预测价值。然而，攻击者采用顺序无关的可观测统计后，仍能利用显著的跨码本稳定信息。结果表明，扰动特定序列表示并不等于充分隐藏设备身份；现有动态码本防御的安全收益受到残余泄漏的限制，且其组成具有数据集依赖性。</p></div>
+<h3>13.2 审稿限制与尚未完成的检验</h3><ul>
+<li><b>开发集反复使用：</b>UNSW8和Deakin均已参与选参和研究判断；capture-disjoint或换Seed不构成全新隔离测试。需新的多类长时间捕获验证泛化。</li>
+<li><b>时间与类别：</b>每日类别集合变化、行为漂移、标签覆盖和滑动窗回退均影响评价；同日配对改善内部比较，不能消除所有跨日混杂。</li>
+<li><b>统计证据：</b>多数在线表只有三随机重复的描述性均值，T2仅一个；时间自相关和重复样本限制有效样本量。未作显著性或等效性宣称。</li>
+<li><b>攻击覆盖：</b>LR/RF与小MLP不覆盖任意强攻击者；残余视图已显示表示可绕开部分干扰，当前结果不能作为最坏情形安全保证。</li>
+<li><b>归因范围：</b>窗口裁剪、预算分配和事件结构耦合；历史折价不等于总体净负迁移；C高BA不证明所有真实包特征主导，也不证明等预算防御不可能。</li>
+<li><b>部署有效性：</b>类别身份来源、真实网络时序可实现性、带宽/延迟业务影响与端到端实现均待独立验证。当前逐流成本账本不能代替实网验证。</li></ul>
+<h3>13.3 冻结与后续研究边界</h3><p>保留固定码本+IID作参照，Position5解释位置刷新，Full New5作完整随机动态基线。冻结调度、K、Novelty、码本选择和PPO路线；T2仅作为支线记录。后续若启动新研究，应围绕“哪些身份信息在允许变换下仍可观察、可否改变”提出可证伪假设，并先冻结隔离数据与攻击评价协议。</p>
+<p class="small">来源：<a href="双时间尺度防御_时间泛化与训练隔离.html">未来隔离验证协议</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+</section>
+<section id="audit">
+<h2>附录A：失败、修正与结论版本</h2>
+
+  
+  <p>这项研究并不是一条直线。下面这些失败直接改变了后续协议；把它们讲清楚，比只报成功结果更能说明结论的可信度。</p>
+
+  <div style="max-width:100%;overflow-x:auto"><table>
+    <tr><th>早期现象</th><th>问题</th><th>修正</th><th>修正后的结论</th></tr>
+    <tr>
+      <td>“observable inverse 能到 0.748”</td>
+      <td>naive code detector 误检率高，39/300</td>
+      <td>改为 joint code+position detector，错误降到 1/300</td>
+      <td>可到 0.882；早期数字是 detector 产物</td>
+    </tr>
+    <tr>
+      <td>Adaptive-Probe 的 state 推断恒为 state0</td>
+      <td>只用无标签特征做 block-level 似然；mapping 置换保持边际分布，state 不可识别</td>
+      <td>引入历史监督 state classifier；明确不做无标签 block 推断</td>
+      <td>早期 adaptive pilot 无效，不能作为结论</td>
+    </tr>
+    <tr>
+      <td>硬准确率 selector 所有候选都接近 1.0</td>
+      <td>准确率饱和，候选之间无区分</td>
+      <td>改用连续 log-loss / margin / Brier</td>
+      <td>连续评分才能区分真实 state</td>
+    </tr>
+    <tr>
+      <td>标签预算 n 越大，Adaptive-Probe 反而越差</td>
+      <td>标签未按类别分层，n 增大后类别分布更偏</td>
+      <td>嵌套分层抽样；固定 blind</td>
+      <td>早期的“标签越多越差”是抽样 bug</td>
+    </tr>
+    <tr>
+      <td>State sensitivity audit 全部 block 被跳过</td>
+      <td>calibration pool 不足 3 类</td>
+      <td>先做 block coverage audit，再选 20-day、≥5 类 block</td>
+      <td>类别覆盖是硬约束，不是模型失败</td>
+    </tr>
+    <tr>
+      <td>Probe 的 Full-class BA 很低</td>
+      <td>blind 中有 calibration 未出现的类别；Probe 无法学习</td>
+      <td>增加 Common-class BA；单独报告 unknown 比例</td>
+      <td>Probe 在共同类别上可达 0.999；低 BA 主因是覆盖</td>
+    </tr>
+    <tr>
+      <td>Finetune 在 Block6/7 出现负迁移</td>
+      <td>Full-class 中混入了 cal 缺失类别</td>
+      <td>逐类 recall + support audit</td>
+      <td>负迁移集中在少数类；Common-class 下基本消失</td>
+    </tr>
+    <tr>
+      <td>Per-flow 硬选 Top-1 反而低于 No-canon</td>
+      <td>错误 state 的逆变换会伤害分类（错误 state BA 0.440）</td>
+      <td>Top-2 / Top-6 概率边缘化</td>
+      <td>Top-6 最好，但仍只恢复约 31%</td>
+    </tr>
+    <tr>
+      <td>置信度门控几乎不生效</td>
+      <td>历史阈值迁移到当前 block 后覆盖率只有 12–33%</td>
+      <td>不在 blind 上调阈值；把门控失败作为审计结果报告</td>
+      <td>门控在当前协议下不可用</td>
+    </tr>
+  </table></div>
+
+  <div class="callout warn">
+    <b>这些失败带来的方法学原则：</b>同一 blind、同一类别集合、同一分类器；detector 必须审计；标签抽样须符合各协议：机制实验可预设分层，在线实验按固定时间账本到达，不事后按Blind分层；calibration 不能包含未来；state 推断不能使用待测 flow 的设备标签。
+  </div>
+
+<p>新增修正：5日“最优”仅适用于初轮已测周期；1/2日补测后不再宣称统一最优。Full New5“防御有效”须限定攻击表示，C视图已改变总体安全判断。T2仅等预算上限，不沿用其他实验的实际成本相等陈述。</p>
+</section>
+<section id="reproduce">
+<h2>附录B：复现与证据索引</h2>
+<div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>实验簇</th><th>协议／脚本</th><th>结果位置</th></tr></thead><tbody>
+<tr><td>早期组件与表示</td><td><a href="第一阶段实验结论.html">第一阶段v2</a>；codebook_experiments.py、mechanism_decomp.py</td><td>artifacts/es/v2_*.json</td></tr>
+<tr><td>Mapping配对</td><td>paired_mapping_policies.py；<a href="第二阶段_MappingPolicy配对.html">配对协议</a></td><td>artifacts/es/paired_mapping_policies.json</td></tr>
+<tr><td>在线与25日新码本</td><td>online_nonstationary.py、continual_new_trigger.py</td><td>artifacts/es/online_nonstationary_s*.json；continual_new_trigger_perflow_s*.json</td></tr>
+<tr><td>5日周期与组件</td><td>continual_new_trigger.py；<a href="新码本组件消融.html">组件协议</a></td><td>artifacts/es/new_codebook_period5_s*.json；new_codebook_component_*.json</td></tr>
+<tr><td>Deakin与历史诊断</td><td>deakin_external_codebook.py；<a href="Deakin外部短期码本回放.html">完整账本</a></td><td>artifacts/splits/deakin_external_short_time.json；artifacts/es/deakin_*.json</td></tr>
+<tr><td>历史选择与联合控制</td><td>learned_codebook_search.py、codebook_history_cross.py、codebook_two_stage_value.py</td><td>artifacts/es/；具体文件与命令见各节协议</td></tr>
+<tr><td>K／Novelty／更短周期</td><td>state_count_ablation.py、novelty_codebook.py</td><td>state_count_{family}_s*.json；novelty_new5_*.json；full_codebook_period{1,2}_unsw8_s*.json</td></tr>
+<tr><td>残余视图</td><td>residual_feature_views.py；入口state_count_ablation --residual</td><td>artifacts/es/residual_views_{family}_s{0,1,2}.json</td></tr>
+<tr><td>T2支线</td><td>two_trigger_pairs.py、two_pair_replay.py；--two-pairs</td><td>artifacts/es/two_pairs_{family}_s0.json</td></tr>
+</tbody></table></div>
+<p>所有路径相对于项目根目录；原始日志保留逐日／逐块支持、标签数量、配对Seed及协议所需的成本或审计字段。复现应使用协议记录的配置、清单与SHA绑定数据，不能混用同名但不同时间窗结果。本文整理没有新增实验或重算研究结果。</p>
+
+</section>
+</main>
+<footer>FADE阶段性研究汇报 · 2026-11-05 · 在线主表为描述性开发结果；原始证据保留于 docs/ 与 artifacts/es/。重排前版本保留于 artifacts/reports/。</footer>
+</body>
+</html>

@@ -170,12 +170,12 @@ def resolve_trigger_positions(config: Method33Config) -> tuple[tuple[int, int], 
         raise ValueError("trigger_positions must contain exactly one pair per code")
     result = []
     for pair in pairs:
-        if len(pair) != 2 or any(isinstance(x, (bool, np.bool_)) or not isinstance(x, (int, np.integer)) for x in pair):
+        if len(pair) != config.trigger_packet_count or any(isinstance(x, (bool, np.bool_)) or not isinstance(x, (int, np.integer)) for x in pair):
             raise ValueError("each trigger_positions pair must contain two integers")
-        first, second = map(int, pair)
-        if not 1 <= first < second:
+        ordered = tuple(map(int, pair))
+        if ordered[0] < 1 or any(a >= b for a,b in zip(ordered, ordered[1:])):
             raise ValueError("Trigger positions must be positive and strictly increasing")
-        result.append((first, second))
+        result.append(ordered)
     if len(set(result)) != len(result):
         raise ValueError("different trigger codes must have distinct position pairs")
     return tuple(result)
@@ -586,6 +586,7 @@ def apply_method33_base(
     include_weakener: bool = True,
     include_trigger: bool = True,
     include_event_trace: bool = False,
+    trigger_position_override: Sequence[tuple[int, int]] | None = None,
 ) -> Application:
     """Build Method33's deterministic pre-jitter traffic for one batch.
 
@@ -617,6 +618,18 @@ def apply_method33_base(
     )
     active_mapping, mapping_name = _resolve_mapping(config, mapping)
     position_codes = resolve_trigger_positions(config)
+    if trigger_position_override is not None:
+        if len(trigger_position_override) != len(lengths):
+            raise ValueError("trigger_position_override must have one pair per flow")
+        normalized_positions = []
+        for pair in trigger_position_override:
+            if len(pair) != 2:
+                raise ValueError("each trigger_position_override pair must have two entries")
+            first, second = map(int, pair)
+            if not 1 <= first < second <= lengths.shape[1]:
+                raise ValueError("trigger_position_override pair is outside the window")
+            normalized_positions.append((first, second))
+        trigger_position_override = tuple(normalized_positions)
     weakener = config.weakener
     length_targets = np.asarray(weakener.length_targets, dtype=np.float64)
     length_probabilities = np.asarray(
@@ -676,7 +689,15 @@ def apply_method33_base(
             config.trigger_codes[trigger_code_index] if include_trigger else ()
         )
 
-        trigger_slots = position_codes[trigger_code_index] if include_trigger else ()
+        trigger_slots = (
+            (
+                trigger_position_override[sample]
+                if trigger_position_override is not None
+                else position_codes[trigger_code_index]
+            )
+            if include_trigger
+            else ()
+        )
         realized_trigger_slots: list[int] = []
         emitted_trigger_packets = 0
 
@@ -922,6 +943,7 @@ def apply_method33_base(
         "active_mapping": list(active_mapping),
         "trigger_position_anchor": "original_real_packet_both_directions",
         "trigger_positions_by_code": [list(pair) for pair in position_codes],
+        "trigger_position_override": bool(trigger_position_override is not None),
         "trigger_short_flow_policy": "append remaining Trigger packets at end of flow",
         "trigger_positions_changed_by_jitter": False,
         "include_weakener": bool(include_weakener),
@@ -1374,6 +1396,7 @@ def apply_method33(
     include_trigger: bool = True,
     include_event_trace: bool = False,
     jitter_config: TriggerJitterConfig = DEFAULT_TRIGGER_JITTER,
+    trigger_position_override: Sequence[tuple[int, int]] | None = None,
 ) -> Application:
     """Apply Method33 to a batch of fixed-window flows.
 
@@ -1410,6 +1433,7 @@ def apply_method33(
         include_weakener=include_weakener,
         include_trigger=include_trigger,
         include_event_trace=bool(include_event_trace or internal_trace_required),
+        trigger_position_override=trigger_position_override,
     )
     (
         protected_lengths,

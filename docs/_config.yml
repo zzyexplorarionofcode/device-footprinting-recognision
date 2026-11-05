@@ -1,0 +1,6 @@
+title: FADE 项目研究报告
+markdown: kramdown
+exclude:
+  - PingPong审计.md
+  - 数据集清单与实验状态.md
+  - 数据处理与运行说明.md

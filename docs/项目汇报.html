@@ -90,6 +90,17 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
   <div class="card"><h3>稳定结论的边界</h3><p>固定六 State 的概率调度没有稳定的全期增益；已测学习型排序、历史感知选择与联合控制也未建立可靠优势。当前保留固定码本 + IID、Position5 与 Full New5 三个可解释基线。</p></div>
 </div>
 <p class="small">主比较使用相同原始流、时间划分、Blind 与标签到达规则；各表仍有数据集、模型和实际开销的限定。<a href="新码本组件消融.md">组件明细</a> · <a href="Deakin外部短期码本回放.md">跨数据集开发回放</a></p>
+<h3>同协议的原始 FADE 对照</h3>
+<p>把固定码本、阶段内共享 Mapping、每 25 个观测日轮换 Mapping 作为原始 FADE 的在线实例，与 Full New5 使用同一 UNSW8 时间划分、设备标签账本和 Blind 流配对比较。25 日是本次实验设定，并非原论文规定的轮换周期。</p>
+<div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>攻击视图与模型</th><th>原始 FADE 在线实例</th><th>Full New5</th><th>Post BA 变化</th></tr></thead><tbody>
+<tr><td>原 64 维 · 累计 LR</td><td class="num">0.7943</td><td class="num">0.7683</td><td class="num">−0.0260</td></tr>
+<tr><td>原 64 维 · 14 日滑动 LR</td><td class="num">0.7975</td><td class="num">0.7405</td><td class="num">−0.0570</td></tr>
+<tr><td>原 64 维 · 累计 RF</td><td class="num">0.8845</td><td class="num">0.8818</td><td class="num">−0.0027</td></tr>
+<tr><td>原 64 维 · 14 日滑动 RF</td><td class="num">0.7878</td><td class="num">0.7543</td><td class="num">−0.0334</td></tr>
+<tr><td>无序视图 C · LR / RF</td><td colspan="2">两臂特征及识别结果相同</td><td class="num">0</td></tr>
+</tbody></table></div>
+<p>两臂在 18,459 条回放流上的实际新增字节、时延和事件数逐流一致；45 维视图 C 在这些流及 4,000 条热身流上也逐流相同。Full New5 对部分序列攻击者有增量收益，但对该无序统计攻击没有额外抑制。累计 RF 的差值逐随机序列变号；三条序列共用同一捕获时间段，因此不构成独立泛化验证。</p>
+<p class="small">原始 FADE 在线实例只覆盖固定码本加映射轮换的主机制；轮换周期和后续循环置换是回放设定。<a href="原始FADE与FullNew5在线配对.md">完整协议、逐日结果与成本审计</a></p>
 </section>
 <section id="residual">
 <h2>关键反证：换一种攻击表示，身份仍可识别</h2>
@@ -500,6 +511,7 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 
 <div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>主张</th><th>支持证据</th><th>允许的结论强度</th></tr></thead><tbody>
 <tr><td>动态更新有条件有效</td><td>25日新码本+IID、5日组件、LR/RF及小MLP回放</td><td>对已测试表示、模型与标签协议的开发收益；非普遍安全保证</td></tr>
+<tr><td>相对原始 FADE 在线实例有条件增量</td><td>同协议 UNSW8 对照：64维累计／滑动LR分别降低0.0260／0.0570 BA，滑动RF降低0.0334；视图C逐流相同</td><td>等实际开销的序列攻击收益；累计RF未见稳定优势，非原论文所有设置的普遍超越</td></tr>
 <tr><td>位置刷新重要但不足以代替完整更新</td><td>UNSW8 LR的Position5接近Full；Deakin RF仍有长度/Gap增量</td><td>模型与数据依赖；未做正式等效检验</td></tr>
 <tr><td>历史标签相对价值改变</td><td>Deakin RF等预算替代与边际增量实验</td><td>与历史适用性下降相一致；旧标签平均仍有正增益</td></tr>
 <tr><td>细调与学习型选择缺少可靠增量</td><td>排序、历史交叉、双阶段、2×2、K、Novelty与周期下界</td><td>冻结当前路线；不是学习型控制不可能的证明</td></tr>
@@ -608,4 +620,3 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <footer>FADE阶段性研究汇报 · 2026-11-05 · 在线主表为描述性开发结果；原始证据保留于 docs/ 与 artifacts/es/。详细实验与修正保留于本页折叠档案。</footer>
 </body>
 </html>
-

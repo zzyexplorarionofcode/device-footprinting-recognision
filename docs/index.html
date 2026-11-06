@@ -110,13 +110,13 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
   <div><span>原 64 维 D</span><div class="bar-track"><i style="width:88.18%"></i></div><strong>0.8818</strong></div>
 </div>
 <p><b>解释：</b>原序列攻击器受到动态扰动，但另一个可观测表示仍能识别设备。Deakin 累计 RF 的 C 为 0.5561、D 为 0.5730，不能把 UNSW8 的下行主导解释直接推广到别的数据集。</p>
-<div class="callout warn"><b>尚缺的同协议对照：</b><code>BA(C_clean)</code> 与 <code>BA(C_FullNew5)</code>。当前证明了防御后残余信息足以支持识别，尚未直接量化 Full New5 对 C 视图的抑制幅度，也未证明预算内无法进一步改善。</div>
+<div class="callout info"><b>Clean C 与 Full New5 C 配对：</b>同一时间清单、Blind 流和标签协议下，累计 RF 的日均 Post BA 在 UNSW8 从 0.9729 降至 0.9647，在 Deakin10 从 0.5474 升至 0.5561。两套开发回放的方向不同。<a href="Weakener残余特征审计.html">完整配对与特征拆分</a></div>
 <p class="small"><a href="FullNew5残余特征归因.html">完整 A–D 视图与逐日结果</a>；详细的动作权限分析保留在下方实验档案。</p>
 </section>
 <section id="decision">
 <h2>下一阶段研究建议</h2>
 <div class="card"><p>当前已完成动态码本调度、更新周期、State 数量、组件消融及学习型选择的开发性验证。证据支持固定预算下的随机动态刷新能够干扰部分持续学习攻击者，同时显示顺序无关特征仍保留显著识别能力。</p>
-<p><b>建议：</b>暂时停止码本调度与 PPO 优化，把下一阶段重点放在真实流量残余信息与防御动作权限的关系。优先冻结隔离捕获与攻击协议，补齐 <code>C_clean</code> 对 <code>C_FullNew5</code> 的配对比较，再判断是否需要设计新的防御操作。</p>
+<p><b>下一步：</b>将 Weakener 作为独立变体。固定五个插入事件，在相同观察窗口与实际真实包 padding 开销下，比较随机 padding 和优先修改高辨识度上行包长的规则。高辨识度模式从 warmup 数据估计。</p>
 <p>需要导师判断的是：在既定研究周期与部署约束下，是否启动改变残余信息的新机制；如要继续，允许调整哪些真实包和下行特征？</p></div>
 </section>
 <details id="archive" class="archive"><summary>展开实验档案、协议与复现索引 <span>保留完整实验表和失败修正记录</span></summary>

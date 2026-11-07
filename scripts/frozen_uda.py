@@ -72,6 +72,10 @@ def score(pred, y):
     return float(balanced_accuracy_score(y, pred))
 
 
+def daily_score(pred, y, local):
+    return float(np.nanmean([balanced_accuracy_score(y[b], pred[b]) for _, b in local]))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
@@ -126,9 +130,6 @@ def main() -> None:
     base = (x_warm_clean, x_clean, warm_new, x_new)
     raw = {"D": base, "C": tuple(views(v)["C"] for v in base)}
     for base_view, (xsr, xst, xwr, xwt) in raw.items():
-        if base_view == "C":
-            xsr, xst = views(xsr)["C"], views(xst)["C"]
-            xwr, xwt = views(xwr)["C"], views(xwt)["C"]
         for kind in [m.strip() for m in args.models.split(",") if m.strip()]:
             models = {
                 "Clean-only": fit_model(xsr, y_warm, kind),
@@ -138,8 +139,8 @@ def main() -> None:
             out = {}
             for name, model in models.items():
                 xt = xwt if name != "CORAL" else coral(xsr, xwt)
-                out[name] = score(model.predict(xt), y_ids)
-            out["KMeans-Hungarian"] = score(cluster_align(xsr, y_warm, xwt), y_ids)
+                out[name] = daily_score(model.predict(xt), y_ids, local)
+            out["KMeans-Hungarian"] = daily_score(cluster_align(xsr, y_warm, xwt), y_ids, local)
             report["views"][f"{base_view}/{kind}"] = out
             print(base_view, kind, out, flush=True)
     args.output_log.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

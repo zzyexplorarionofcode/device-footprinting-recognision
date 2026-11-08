@@ -43,7 +43,7 @@
 <tr><td>长度 Length</td><td class="num">0.003</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>独立搜索收益很小</td></tr>
 <tr><td>间隔 Gap</td><td class="num">0.016</td><td class="num">0.003</td><td class="num">0.044</td><td class="num">—</td><td>部分数据集有效</td></tr>
 </tbody></table></div>
-<div class="callout">这一步的结论不是“位置普遍最优”，而是位置值得深入研究；Gap 有数据集差异，长度搜索基本没有独立收益。</div>
+<div class="callout">这一步的结论不是“位置普遍最优”，而是位置值得深入研究；Gap 有数据集差异，长度搜索基本没有独立收益。真实包 Padding 的平均贡献较小，也提示单纯增加随机 Padding 不太可能带来大幅改善；后续 Weakener 实验因此转向“相同预算如何分配”。</div>
 <p class="sources">ΔBA 为开发搜索的 Base 与 Searched 差值；后续 held-out 结果对攻击模型和数据集更敏感。</p>
 </section>
 
@@ -51,7 +51,7 @@
 <div class="eyebrow">03 · 第一阶段机制拆解</div><h2>识别率下降，来自哪些包级变化？</h2>
 <figure class="chart"><svg viewBox="0 0 760 300" role="img" aria-label="UNSW机制分解路径差值"><line class="axis" x1="150" y1="250" x2="710" y2="250"/><line class="gridline" x1="150" y1="190" x2="710" y2="190"/><line class="gridline" x1="150" y1="130" x2="710" y2="130"/><line class="gridline" x1="150" y1="70" x2="710" y2="70"/><text x="20" y="74" font-size="14">0.04</text><text x="20" y="134" font-size="14">0.03</text><text x="20" y="194" font-size="14">0.02</text><text x="20" y="254" font-size="14">0.01</text><rect x="205" y="160" width="74" height="90" fill="#5b8b98" rx="5"/><rect x="355" y="226" width="74" height="24" fill="#e0a33b" rx="5"/><rect x="505" y="94" width="74" height="156" fill="#087f75" rx="5"/><text x="199" y="278" font-size="14">Representation</text><text x="374" y="278" font-size="14">Displacement</text><text x="518" y="278" font-size="14">Dummy mixing</text><text x="218" y="151" font-size="14">0.015</text><text x="376" y="218" font-size="14">0.004</text><text x="526" y="85" font-size="14">0.026</text><text x="615" y="40" font-size="15" fill="#596b7e">UNSW：總差值 0.046</text></svg><figcaption>图：UNSW早期链式机制分解。Representation 为真实包 padding 路径，Displacement 为窗口内真实事件位移，Dummy mixing 为 dummy 合并带来的路径差值。分解顺序固定为 CC→CD_complete→CD_visible→CD_merged，因此是路径相关差值。</figcaption></figure>
 <div class="flow"><div class="step"><b>原始真实包</b><span>设备本身的长度、方向和时间模式</span></div><div class="arrow">→</div><div class="step"><b>真实包 Padding</b><span>改变少量真实包的观测长度</span></div><div class="arrow">→</div><div class="step"><b>插入 Dummy</b><span>改变攻击者看到的混合序列</span></div><div class="arrow">→</div><div class="step"><b>前 32 事件</b><span>窗口截断可能挤出后续真实事件</span></div></div>
-<div class="grid"><div class="card"><h3>真实包与 Dummy 不是一回事</h3><p>早期机制分解显示，merged 直方图的下降很大一部分来自 dummy 混入；真实包 padding 改变了真实包长表示，但影响较小且数据集不同。</p></div><div class="card"><h3>位置／长度搜索也不是 Padding</h3><p>Length 搜索改变的是 Trigger dummy 自身的长度码字；Weakener padding 改变真实上行包长。两种“长度”需分开解释。</p></div></div>
+<div class="grid"><div class="card"><h3>真实包与 Dummy 不是一回事</h3><p>早期机制分解显示，merged 直方图的下降很大一部分来自 dummy 混入；真实包 padding 对整体识别率的平均影响较小，并且依赖数据集。这个结果应当降低我们对“普通随机 Padding 能显著改变设备指纹”的预期。</p></div><div class="card"><h3>位置／长度搜索也不是 Padding</h3><p>Length 搜索改变的是 Trigger dummy 自身的长度码字；Weakener padding 改变真实上行包长。后续 Hybrid 不是否定早期结论，而是检验更窄的问题：固定同一预算，把 Padding 集中投向特定长包，能否比平均随机分配更有效？</p></div></div>
 <p class="sources">UNSW、CIC、UNSW2018、Deakin 的机制分解均显示：观测窗口和 dummy 混合是效果解释的重要部分，不能把总下降都归因于“真实指纹被抹去”。</p>
 </section>
 
@@ -116,7 +116,7 @@
 
 <section class="slide">
 <div class="eyebrow">10 · 最新 Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
-<p>Baseline 将真实包 padding 预算随机分配到全部合法事件；Hybrid-25／50 把一部分预算预留给 warmup 判定的长包候选，再随机分配。逐 flow padding 字节数保持一致。</p>
+<p>早期证据显示，平均随机 Padding 对真实包长表示的影响有限。由此提出的 Hybrid 假设是：不增加总预算，只改变预算落点，把一部分预算预留给 warmup 判定的长包候选，或许能更有效地改变攻击者可见的上行特征。Baseline 在全部合法事件中随机分配；Hybrid-25／50 分别将约 25%／50% 预算预留给长包候选，候选内部仍随机选择。三组逐 flow 实际 Padding 字节数保持一致。</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击与视图</th><th class="num">Baseline</th><th class="num">Hybrid-25</th><th class="num">Hybrid-50</th><th>结果含义</th></tr></thead><tbody>
 <tr><td>UNSW8 · 累计 RF · C</td><td class="num">0.9766</td><td class="num">0.9658</td><td class="num">0.9670</td><td>长包偏置有改善</td></tr>
 <tr><td>Deakin10 · 累计 RF · C</td><td class="num">0.5715</td><td class="num">0.5588</td><td class="num">0.5362</td><td>Hybrid-50 改善较多</td></tr>

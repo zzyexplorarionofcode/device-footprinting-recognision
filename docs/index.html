@@ -49,27 +49,41 @@
 
 <section class="slide">
 <div class="eyebrow">03 · 第一阶段机制拆解</div><h2>识别率下降，来自哪些包级变化？</h2>
+<figure class="chart"><svg viewBox="0 0 760 300" role="img" aria-label="UNSW机制分解路径差值"><line class="axis" x1="150" y1="250" x2="710" y2="250"/><line class="gridline" x1="150" y1="190" x2="710" y2="190"/><line class="gridline" x1="150" y1="130" x2="710" y2="130"/><line class="gridline" x1="150" y1="70" x2="710" y2="70"/><text x="20" y="74" font-size="14">0.04</text><text x="20" y="134" font-size="14">0.03</text><text x="20" y="194" font-size="14">0.02</text><text x="20" y="254" font-size="14">0.01</text><rect x="205" y="160" width="74" height="90" fill="#5b8b98" rx="5"/><rect x="355" y="226" width="74" height="24" fill="#e0a33b" rx="5"/><rect x="505" y="94" width="74" height="156" fill="#087f75" rx="5"/><text x="199" y="278" font-size="14">Representation</text><text x="374" y="278" font-size="14">Displacement</text><text x="518" y="278" font-size="14">Dummy mixing</text><text x="218" y="151" font-size="14">0.015</text><text x="376" y="218" font-size="14">0.004</text><text x="526" y="85" font-size="14">0.026</text><text x="615" y="40" font-size="15" fill="#596b7e">UNSW：總差值 0.046</text></svg><figcaption>图：UNSW早期链式机制分解。Representation 为真实包 padding 路径，Displacement 为窗口内真实事件位移，Dummy mixing 为 dummy 合并带来的路径差值。分解顺序固定为 CC→CD_complete→CD_visible→CD_merged，因此是路径相关差值。</figcaption></figure>
 <div class="flow"><div class="step"><b>原始真实包</b><span>设备本身的长度、方向和时间模式</span></div><div class="arrow">→</div><div class="step"><b>真实包 Padding</b><span>改变少量真实包的观测长度</span></div><div class="arrow">→</div><div class="step"><b>插入 Dummy</b><span>改变攻击者看到的混合序列</span></div><div class="arrow">→</div><div class="step"><b>前 32 事件</b><span>窗口截断可能挤出后续真实事件</span></div></div>
 <div class="grid"><div class="card"><h3>真实包与 Dummy 不是一回事</h3><p>早期机制分解显示，merged 直方图的下降很大一部分来自 dummy 混入；真实包 padding 改变了真实包长表示，但影响较小且数据集不同。</p></div><div class="card"><h3>位置／长度搜索也不是 Padding</h3><p>Length 搜索改变的是 Trigger dummy 自身的长度码字；Weakener padding 改变真实上行包长。两种“长度”需分开解释。</p></div></div>
 <p class="sources">UNSW、CIC、UNSW2018、Deakin 的机制分解均显示：观测窗口和 dummy 混合是效果解释的重要部分，不能把总下降都归因于“真实指纹被抹去”。</p>
 </section>
 
 <section class="slide">
-<div class="eyebrow">04 · 静态映射的边界</div><h2>可学习的诱导特征，需要放到在线环境里看</h2>
+<div class="eyebrow">04 · Trigger 与映射</div><h2>Trigger 内容与“类别对应哪个位置”是两个问题</h2>
+<div class="table-wrap"><table><thead><tr><th>对照</th><th>UNSW RF BA</th><th>CIC RF BA</th><th>说明</th></tr></thead><tbody><tr><td>静态类位置（无 rotation）</td><td class="num">0.997</td><td class="num">0.993</td><td>静态关联能被学习</td></tr><tr><td>类位置 + mapping rotation</td><td class="num">0.405</td><td class="num">0.057</td><td>块级切换造成明显表示失配</td></tr><tr><td>随机位置</td><td class="num">0.999</td><td class="num">0.830</td><td>失去类相关位置诱导后，收益消失</td></tr></tbody></table></div>
+<div class="grid"><div class="card"><h3>Trigger code placebo</h3><p>Real 与共享长度 code 的 Placebo 保留类相关位置投放。Real−Placebo 的 LR/RF/MLP 差异较小，表明该对照主要检验 code 内容映射，不能代替位置映射切换实验。</p></div><div class="card"><h3>位置池大小 k<sub>pos</sub></h3><p>位置池变大后识别率升高：UNSW RF 从 K=1 的 0.405 到 K=8 的 0.989；CIC RF 从 0.057 到 0.771。块级协议提示位置关联的稳定性很重要。</p></div></div>
+<p class="caption">这组大幅度结果来自早期块级机制协议，不能直接当作在线 Full New5 的长期收益。</p>
+<h2 style="margin-top:30px">可学习的诱导特征，需要放到在线环境里看</h2>
 <p class="lead">静态类别到位置的对应关系可能成为攻击者捷径。改位置会制造表示失配，但知道映射或获得足够标签后，攻击者又能部分恢复。</p>
 <div class="grid"><div class="card"><div class="number">共享</div><h3>Periodic State</h3><p>一段时间内多条流共用同一个映射；少量标签可能识别当前映射，再做逆变换。</p></div><div class="card"><div class="number">逐流</div><h3>Per-flow State</h3><p>每条流独立选映射，阻止把一条流的真实 State 直接套给另一条流；攻击者需逐流推断。</p></div></div>
 <div class="callout">这段工作把研究从“映射是否变化”推进到“变化后的映射结构，攻击者能否利用标签恢复”。固定六状态概率轮换没有稳定长期优势，促使后续转向新码本。</div>
 </section>
 
 <section class="slide">
-<div class="eyebrow">05 · 在线评价</div><h2>把攻击者放进时间轴</h2>
+<div class="eyebrow">05 · 攻击者与评价协议</div><h2>把攻击者放进时间轴</h2>
 <div class="flow"><div class="step"><b>可信设备类别</b><span>防御端按部署身份得到类别</span></div><div class="arrow">→</div><div class="step"><b>应用扰动策略</b><span>码本与逐流 Mapping 作用于流</span></div><div class="arrow">→</div><div class="step"><b>当日 Blind 评分</b><span>只用此前到达的标签训练</span></div><div class="arrow">→</div><div class="step"><b>释放新标签</b><span>每日到达一批设备标签供后续更新</span></div></div>
-<div class="grid three"><div class="card"><h3>累计攻击者</h3><p>保留并累积历史标签，持续扩大训练集。</p></div><div class="card"><h3>滑动攻击者</h3><p>主要使用最近 14 日标签，强调适应当前分布。</p></div><div class="card"><h3>模型家族</h3><p>LR、RF；另有 Deakin 小型 MLP 作为不同归纳偏置检查。</p></div></div>
+<div class="grid three"><div class="card"><h3>累计攻击者</h3><p>保留并累积历史标签，持续扩大训练集。检验历史知识能否继续利用。</p></div><div class="card"><h3>14 日滑动攻击者</h3><p>训练主要依赖近期标签，强调对新分布的快速适应。</p></div><div class="card"><h3>逐步增强的模型</h3><p>LR 是线性参照；RF 可学习非线性分割；Deakin 小型 MLP 检验不同归纳偏置。</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>攻击输入</th><th>它看到什么</th><th>在汇报中怎么解释</th></tr></thead><tbody><tr><td>D：64维序列</td><td>防御后前32事件的方向/长度及 log-Gap 序列</td><td>保留顺序结构，是常规序列攻击输入</td></tr><tr><td>C：45维顺序无关统计</td><td>防御后可观测汇总统计</td><td>不依赖精确位置顺序，检查统计信息是否仍可识别</td></tr><tr><td>真实包审计视图</td><td>借助 role 标记分离真实包与 dummy</td><td>仅作机制诊断，不代表普通攻击者可见输入</td></tr></tbody></table></div>
 <p class="sources">Post BA：每日模型只使用严格早于当天 Blind 的标签。日均 Post BA 是观察期内每日 Balanced Accuracy 的平均；越低表示该协议下越难识别。</p>
 </section>
 
+<section class="slide">
+<div class="eyebrow">06 · 中间阶段成果</div><h2>从共享映射转向逐流映射，再转向新码本</h2>
+<div class="step-chart"><div><strong>Fixed</strong><span>映射长期共享</span></div><div><strong>Periodic</strong><span>一段时间内共享</span></div><div><strong>Per-flow</strong><span>每条流独立 State</span></div><div><strong>新码本</strong><span>改变位置/长度/Gap</span></div><div><strong>在线持续学习</strong><span>每日更新攻击者</span></div></div>
+<div class="table-wrap"><table><thead><tr><th>Mapping Policy</th><th>No-canonicalization</th><th>Adaptive</th><th>Oracle参考</th><th>实验读法</th></tr></thead><tbody><tr><td>Fixed Mapping</td><td class="num">0.178</td><td class="num">0.517</td><td class="num">0.517</td><td>共享 State 可被监督适应恢复</td></tr><tr><td>Periodic</td><td class="num">0.291</td><td class="num">0.550</td><td class="num">0.550</td><td>块内共享 State 仍可从标签学习</td></tr><tr><td>Per-flow</td><td class="num">0.312</td><td class="num">0.442</td><td class="num">0.539</td><td>逐流推断使 Adaptive 与 Oracle 拉开</td></tr></tbody></table></div>
+<p class="caption">这是早期 UNSW8 单 Seed、块级 8 类评价，最多每块 1024 Calibration 和 1000 Blind；Adaptive 只用设备标签，Oracle 额外使用真实 State，属于特权参考。它解释了为何研究转向在线码本变化，但绝对值不与后面的日均 Post BA 直接比较。</p>
+<div class="callout">中间阶段的关键认识：共享 State 可以被标签恢复；逐流 State 把问题变成单流推断。随后研究重心转向攻击者历史学习在新码本下是否继续有效。</div>
+</section>
+
 <section class="slide dark">
-<div class="eyebrow">06 · 当前防御结构</div><h2>慢层更新码本，快层逐流抽 State</h2>
+<div class="eyebrow">07 · 当前防御结构</div><h2>慢层更新码本，快层逐流抽 State</h2>
 <p class="lead">Full New5 组合两个时间尺度：码本大约每 5 个观测日刷新；每条 flow 再独立、均匀抽取一个 State。</p>
 <div class="flow"><div class="step"><b>类别 Y</b><span>可信防御端已知</span></div><div class="arrow">→</div><div class="step"><b>State<sub>f</sub>(Y)</b><span>六个类别→Code 置换之一</span></div><div class="arrow">→</div><div class="step"><b>Code 参数</b><span>位置、Trigger 长度与 Gap</span></div><div class="arrow">→</div><div class="step"><b>T1_W3 流量</b><span>2 Trigger + 3 Weakener</span></div></div>
 <div class="grid"><div class="card"><h3>慢时间尺度</h3><p>重新生成一套合法码本，改变各 Code 对应的参数。</p></div><div class="card"><h3>快时间尺度</h3><p>逐流抽 State，改变类别使用哪个 Code；State 是类别到 Code 的置换，不是六套独立参数。</p></div></div>
@@ -77,7 +91,7 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">07 · 基线之间的关系</div><h2>四个基线，逐步增加“变化”</h2>
+<div class="eyebrow">08 · 基线之间的关系</div><h2>四个基线，逐步增加“变化”</h2>
 <div class="table-wrap"><table><thead><tr><th>基线</th><th>什么保持固定</th><th>什么发生变化</th><th>它回答的问题</th></tr></thead><tbody>
 <tr><td><b>固定码本 + IID</b></td><td>码本参数长期固定</td><td>每条 flow 独立抽六 State</td><td>只有逐流随机映射时的参照</td></tr>
 <tr><td><b>Position5</b></td><td>Trigger 长度、Gap 固定</td><td>每 5 日刷新位置，逐流 IID</td><td>位置更新本身能保留多少效果</td></tr>
@@ -88,18 +102,20 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">08 · 动态基线结果</div><h2>位置解释大部分 LR 收益；完整更新对 RF 仍有增量</h2>
+<div class="eyebrow">09 · 在线动态结果</div><h2>位置解释大部分 LR 收益；完整更新对 RF 仍有增量</h2>
 <p>UNSW8 150 日累计 LR 与 Deakin10 50 日累计 RF 的在线开发回放：</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击者</th><th class="num">固定码本 + IID</th><th class="num">Position5</th><th class="num">Full New5</th><th>读法</th></tr></thead><tbody>
 <tr><td>UNSW8 · 累计 LR</td><td class="num">0.8054</td><td class="num">0.7704</td><td class="num">0.7683</td><td>Position5 已接近 Full</td></tr>
 <tr><td>Deakin10 · 累计 RF</td><td class="num">0.6295</td><td class="num">0.5983</td><td class="num">0.5730</td><td>Full 相对 Position5 仍有约 0.025 BA 增益</td></tr>
 </tbody></table></div>
+<figure class="chart"><svg viewBox="0 0 780 330" role="img" aria-label="固定码本、Position5、Full New5的BA配对柱状图"><line class="axis" x1="165" y1="276" x2="730" y2="276"/><line class="gridline" x1="165" y1="210" x2="730" y2="210"/><line class="gridline" x1="165" y1="144" x2="730" y2="144"/><line class="gridline" x1="165" y1="78" x2="730" y2="78"/><text x="25" y="82" font-size="14">0.8</text><text x="25" y="148" font-size="14">0.6</text><text x="25" y="214" font-size="14">0.4</text><text x="25" y="280" font-size="14">0.2</text><text x="16" y="30" font-size="13">Post BA</text><rect x="240" y="10" width="78" height="266" fill="#7f9aa5" rx="5"/><rect x="340" y="22" width="78" height="254" fill="#087f75" rx="5"/><rect x="440" y="23" width="78" height="253" fill="#e0a33b" rx="5"/><text x="246" y="298" font-size="13">UNSW Fixed</text><text x="341" y="318" font-size="13">Position5</text><text x="445" y="298" font-size="13">Full New5</text><text x="253" y="6" font-size="13">0.805</text><text x="357" y="18" font-size="13">0.770</text><text x="457" y="19" font-size="13">0.768</text><rect x="565" y="68" width="54" height="208" fill="#7f9aa5" rx="5"/><rect x="627" y="78" width="54" height="198" fill="#087f75" rx="5"/><rect x="689" y="87" width="54" height="189" fill="#e0a33b" rx="5"/><text x="551" y="298" font-size="12">Deakin Fixed</text><text x="615" y="318" font-size="12">P5</text><text x="678" y="298" font-size="12">Full</text><text x="570" y="63" font-size="12">.630</text><text x="631" y="73" font-size="12">.598</text><text x="693" y="82" font-size="12">.573</text></svg><figcaption>在线日均 Post BA。左组三柱为 UNSW8 累计 LR，右组三柱为 Deakin10 累计 RF；纵轴从0起。两组数据集和模型不同，组间只展示各自内部基线变化。</figcaption></figure>
+<h3>更新周期也经过比较</h3><div class="table-wrap"><table><thead><tr><th>码本更新周期</th><th class="num">累计 LR</th><th class="num">滑动 LR</th><th>与 25 日相比</th></tr></thead><tbody><tr><td>5 日</td><td class="num">0.7683</td><td class="num">0.7405</td><td>初轮已测周期中较低</td></tr><tr><td>10 日</td><td class="num">0.7800</td><td class="num">0.7510</td><td>略高</td></tr><tr><td>25 日</td><td class="num">0.7939</td><td class="num">0.7568</td><td>参照周期</td></tr><tr><td>50 日</td><td class="num">0.7988</td><td class="num">0.7667</td><td>较高</td></tr></tbody></table></div>
 <div class="grid"><div class="card"><h3>Position5 的角色</h3><p>简化基线，突出位置映射刷新贡献；在 UNSW8 LR 下表现接近 Full。</p></div><div class="card"><h3>Full New5 的角色</h3><p>完整动态防御参照；Deakin RF 表明长度和 Gap 的动态更新对某些攻击者仍有价值。</p></div></div>
 <p class="note">BA = Balanced Accuracy，各数据集类别数和任务难度不同，因此不要横向比较两个数据集的绝对值。表中数值是对应在线协议下的日均 Post BA，越低越好。</p>
 </section>
 
 <section class="slide">
-<div class="eyebrow">09 · 最新 Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
+<div class="eyebrow">10 · 最新 Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
 <p>Baseline 将真实包 padding 预算随机分配到全部合法事件；Hybrid-25／50 把一部分预算预留给 warmup 判定的长包候选，再随机分配。逐 flow padding 字节数保持一致。</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击与视图</th><th class="num">Baseline</th><th class="num">Hybrid-25</th><th class="num">Hybrid-50</th><th>结果含义</th></tr></thead><tbody>
 <tr><td>UNSW8 · 累计 RF · C</td><td class="num">0.9766</td><td class="num">0.9658</td><td class="num">0.9670</td><td>长包偏置有改善</td></tr>
@@ -107,6 +123,7 @@
 <tr><td>Deakin10 · 累计 LR · C</td><td class="num">0.4536</td><td class="num">0.4791</td><td class="num">0.4578</td><td>Hybrid-25 反而变差</td></tr>
 <tr><td>Deakin10 · 累计 MLP · C</td><td class="num">0.4662</td><td class="num">0.4717</td><td class="num">0.4723</td><td>没有迁移到 MLP</td></tr>
 </tbody></table></div>
+<figure class="chart"><svg viewBox="0 0 760 270" role="img" aria-label="Hybrid相对Baseline的C视图BA差值"><line class="axis" x1="190" y1="220" x2="720" y2="220"/><line class="axis" x1="190" y1="38" x2="190" y2="220"/><line class="gridline" x1="190" y1="58" x2="720" y2="58"/><line class="gridline" x1="190" y1="139" x2="720" y2="139"/><text x="130" y="62" font-size="13">+0.02</text><text x="153" y="143" font-size="13">0</text><text x="130" y="224" font-size="13">−0.02</text><text x="20" y="86" font-size="14">RF / UNSW C</text><text x="20" y="126" font-size="14">RF / Deakin C</text><text x="20" y="166" font-size="14">LR / Deakin C</text><text x="20" y="206" font-size="14">MLP / Deakin C</text><line x1="190" y1="76" x2="633" y2="76" stroke="#087f75" stroke-width="9" stroke-linecap="round"/><circle cx="633" cy="76" r="7" fill="#087f75"/><text x="645" y="81" font-size="13">−0.010</text><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/><line x1="190" y1="116" x2="-999" y2="116" stroke="none"/></svg><figcaption>这里用同一基线作差，负值表示 Hybrid BA 更低。表格保留完整数值；图用于强调 RF 改善与 LR/MLP不一致，避免把单一模型收益当成普遍效果。</figcaption></figure>
 <div class="callout">Hybrid 对部分 C 视图 RF 有收益，但 LR／MLP 并不一致；原始 D 视图也没有稳定改善。它目前是模型相关的预算变体，不取代 Full New5。</div>
 <p class="note">Hybrid-25／50 指长包候选的预算预留比例，实际实现比例会因 headroom 不足而变化。这里 BA 越低越好；C 是攻击者从防御后流量构造的可观测统计视图。</p>
 </section>
@@ -134,11 +151,10 @@
 <div class="eyebrow">汇报小结</div><h2>我们做了什么</h2>
 <div class="grid"><div class="card"><h3>从静态到动态</h3><p>先以等成本搜索定位位置等参数信号，再拆解真实包与 dummy 的作用，随后构建在线持续学习评价。</p></div><div class="card"><h3>形成可解释的基线</h3><p>固定码本 + IID 是参照；Position5突出位置刷新；Full New5刷新完整码本；Hybrid在Full基础上改变Weakener预算分布。</p></div></div>
 <p class="keyline">最终效果由防御变化、攻击者如何更新、以及攻击者能读取什么特征共同决定。</p>
-<div class="cover-meta">汇报结束</div>
 </section>
 </main>
 <div class="progress" id="progress"></div>
-<footer class="footer"><div><span id="counter">1 / 12</span>　·　动态设备指纹防御</div><div class="hint">键盘 ← → / 空格　·　触屏左右滑动　·　F 全屏</div><div class="controls"><button id="prev" aria-label="上一页">← 上一页</button><button id="next" aria-label="下一页">下一页 →</button></div></footer>
+<footer class="footer"><div><span id="counter">1</span>　·　动态设备指纹防御</div><div class="controls"><button id="prev" aria-label="上一页">←</button><button id="next" aria-label="下一页">→</button></div></footer>
 <script>
 (()=>{const slides=[...document.querySelectorAll('.slide')],counter=document.getElementById('counter'),progress=document.getElementById('progress');let i=0;function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,j)=>{s.classList.toggle('active',j===i);s.setAttribute('aria-hidden',j!==i)});counter.textContent=`${i+1} / ${slides.length}`;progress.style.width=`${(i+1)/slides.length*100}%`;history.replaceState(null,'',`#slide-${i+1}`)}function next(){show(i+1)}function prev(){show(i-1)}document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()}});let x=null;document.addEventListener('touchstart',e=>x=e.changedTouches[0].clientX,{passive:true});document.addEventListener('touchend',e=>{if(x===null)return;const dx=e.changedTouches[0].clientX-x;if(Math.abs(dx)>55)(dx<0?next:prev)();x=null},{passive:true});const m=location.hash.match(/slide-(\d+)/);if(m)show(Number(m[1])-1);else show(0)})();
 </script>

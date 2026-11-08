@@ -14,6 +14,7 @@
 @media print{body{height:auto;overflow:visible;background:white}.deck{display:block;height:auto}.slide,.slide.active{display:block!important;min-height:100vh;page-break-after:always}.footer,.progress{display:none}}
 .chart:has(svg[aria-label="Hybrid相对Baseline的C视图BA差值"]){display:none}
 .compare-bars{display:grid;grid-template-columns:150px 1fr 75px;gap:12px;align-items:center;margin:12px 0;font-size:14px}.compare-bars .rail{height:23px;background:#edf1f2;border-radius:5px;position:relative}.compare-bars .rail:before{content:"";position:absolute;left:50%;height:100%;width:1px;background:#778b95}.compare-bars .rail i{position:absolute;top:2px;height:19px;border-radius:4px;background:#087f75}.compare-bars .rail i.worse{background:#b56150}.compare-bars b{text-align:right;font-variant-numeric:tabular-nums}
+.slide.compact{padding:32px clamp(28px,7vw,106px) 28px}.slide.compact .eyebrow{margin-bottom:9px}.slide.compact h2{font-size:clamp(28px,3vw,40px);margin-bottom:12px}.slide.compact p{font-size:16px;line-height:1.45;margin:7px 0}.slide.compact .lead{font-size:20px;line-height:1.4}.slide.compact .flow{margin:12px 0}.slide.compact .step{padding:11px}.slide.compact .grid{margin:12px 0;gap:10px}.slide.compact .card{padding:13px 15px}.slide.compact .card p{font-size:14px}.slide.compact .callout{margin:11px 0;padding:9px 12px;font-size:14px;line-height:1.45}.slide.compact .table-wrap{margin:11px 0}.slide.compact th,.slide.compact td{padding:7px 10px;font-size:13px}.slide.compact .note{font-size:12px}
 </style>
 </head>
 <body>
@@ -22,7 +23,7 @@
 <div class="eyebrow">研究阶段汇报 · 设备流量指纹防御</div>
 <h1>从静态扰动<br>到持续变化的防御</h1><div class="rule"></div>
 <p class="lead">这项工作先问：在相同通信成本下，位置、长度和时间间隔哪些值得调？随后逐步加入真实包弱化、动态码本和在线攻击者，检验防御效果能否持续。</p>
-<div class="cover-meta">汇报重点：实验是如何一步步推进的 · 当前保留的四类基线 · 不同攻击者下怎样读结果</div>
+<div class="cover-meta">汇报重点：实验是如何一步步推进的 · 当前五类基线 · 不同攻击者下怎样读结果</div>
 <div class="speaker">方向键或空格翻页</div>
 </section>
 
@@ -93,14 +94,15 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">08 · 基线之间的关系</div><h2>四个基线，逐步增加“变化”</h2>
+<div class="eyebrow">08 · 基线之间的关系</div><h2>五个基线，区分动态刷新与预算落点</h2>
 <div class="table-wrap"><table><thead><tr><th>基线</th><th>什么保持固定</th><th>什么发生变化</th><th>它回答的问题</th></tr></thead><tbody>
 <tr><td><b>固定码本 + IID</b></td><td>码本参数长期固定</td><td>每条 flow 独立抽六 State</td><td>只有逐流随机映射时的参照</td></tr>
 <tr><td><b>Position5</b></td><td>Trigger 长度、Gap 固定</td><td>每 5 日刷新位置，逐流 IID</td><td>位置更新本身能保留多少效果</td></tr>
 <tr><td><b>Full New5</b></td><td>T1_W3、预算规则固定</td><td>位置、长度、Gap 每 5 日刷新；逐流 IID</td><td>完整随机动态码本的强基线</td></tr>
 <tr><td><b>Hybrid</b></td><td>沿用 Full New5 与五 dummy</td><td>Weakener 预算部分偏向长包候选，候选内随机分配</td><td>预算投向长包后，能否改善可观测识别</td></tr>
+<tr><td><b>LT 比例预算</b></td><td>沿用 Full New5 的 Weakener、位置、State 与 Gap</td><td>按流的可操作上行空间，以 0.5 概率额外加长一个可见 Trigger</td><td>适度增加预算、制造虚假长包能否干扰统计指纹</td></tr>
 </tbody></table></div>
-<div class="callout">前三者是码本动态范围逐渐增加的主比较；Hybrid 是在 Full New5 上改变真实包 padding 预算分配的支线，不能把它误读为新的码本策略。</div>
+<div class="callout">前三者比较码本动态范围；Hybrid 把原有真实包 padding 预算改投长包；LT 保持原防御结构，额外加长 Trigger dummy。Hybrid 是等原 padding 开销比较，LT 相对 Full New5 有新增字节。</div>
 </section>
 
 <section class="slide">
@@ -117,7 +119,7 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">10 · 最新 Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
+<div class="eyebrow">10 · Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
 <p>早期证据显示，平均随机 Padding 对真实包长表示的影响有限。由此提出的 Hybrid 假设是：不增加总预算，只改变预算落点，把一部分预算预留给 warmup 判定的长包候选，或许能更有效地改变攻击者可见的上行特征。Baseline 在全部合法事件中随机分配；Hybrid-25／50 分别将约 25%／50% 预算预留给长包候选，候选内部仍随机选择。三组逐 flow 实际 Padding 字节数保持一致。</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击与视图</th><th class="num">Baseline</th><th class="num">Hybrid-25</th><th class="num">Hybrid-50</th><th>结果含义</th></tr></thead><tbody>
 <tr><td>UNSW8 · 累计 RF · C</td><td class="num">0.9766</td><td class="num">0.9658</td><td class="num">0.9670</td><td>长包偏置有改善</td></tr>
@@ -131,12 +133,42 @@
 <p class="note">Hybrid-25／50 指长包候选的预算预留比例，实际实现比例会因 headroom 不足而变化。这里 BA 越低越好；C 是攻击者从防御后流量构造的可观测统计视图。</p>
 </section>
 
+<section class="slide compact">
+<div class="eyebrow">11 · 第五个基线</div><h2>LT 比例预算：把长流新增字节给一个 Trigger</h2>
+<p class="lead">早期随机 Padding 对真实包的平均影响较小。LT 保留 Full New5 的 Weakener 和五个 dummy，不改位置、State 或 Gap；只让一个原有 Trigger dummy 在部分 flow 中变长，使攻击者看到概率性的虚假大包。</p>
+<div class="flow"><div class="step"><b>Full New5</b><span>2 Trigger + 3 Weakener；原预算上限 630 B / 1.5 s</span></div><div class="arrow">→</div><div class="step"><b>仅 warmup 定比例</b><span>Deakin r<sub>b</sub>=0.1969；UNSW r<sub>b</sub>=0.08205</span></div><div class="arrow">→</div><div class="step"><b>每条 flow</b><span>额外上限 256 B；概率 0.5；Trigger 最长 1514 B</span></div></div>
+<div class="callout">许可额外字节 = min(r<sub>b</sub> × 窗口内真实上行包可 padding headroom，256 B，目标 Trigger 的合法剩余长度)。这不是把整条流总字节乘比例；长度不足或概率未命中时可不追加。五个 dummy、时延规则与 32-event 观察窗口不变。原 630 B 上限允许被突破，理论字节上限为 886 B；实际平均额外可见字节在两套数据中约为 102–106 B/flow。</div>
+<div class="grid"><div class="card"><h3>A · Full New5</h3><p>原预算基线。与 B/C 比较，回答“多花这些字节是否有收益”，不是等开销比较。</p></div><div class="card"><h3>B · 分散追加</h3><p>把额外字节随机分给两个 Trigger。与 C 逐 flow 匹配最终可见的新增字节。</p></div><div class="card"><h3>C · LT 集中追加</h3><p>把同量额外字节给第一个可见 Trigger。B 与 C 才能比较“集中”本身的作用。</p></div></div>
+</section>
+
+<section class="slide compact">
+<div class="eyebrow">12 · 长 Trigger 的实测效果</div><h2>Deakin 改善明显；UNSW 的强统计指纹仍在</h2>
+<p>下表都是同一数据集内、同一 Blind 和同一攻击协议的 A/B/C 配对日均 BA；越低说明攻击者越难识别。每个数据集三个随机 seed，但只覆盖各自同一时间捕获。</p>
+<div class="table-wrap"><table><thead><tr><th>数据／攻击者</th><th class="num">A Full New5</th><th class="num">B 分散</th><th class="num">C LT 集中</th><th>读法</th></tr></thead><tbody>
+<tr><td>Deakin10 · C · 累计 RF</td><td class="num">0.5561</td><td class="num">0.4942</td><td class="num">0.4845</td><td>追加字节带来较大下降；集中又降约 0.010</td></tr>
+<tr><td>Deakin10 · C · 滑动 MLP</td><td class="num">0.3561</td><td class="num">0.3157</td><td class="num">0.3004</td><td>不同模型与更新方式下仍有收益</td></tr>
+<tr><td>Deakin10 · D · 累计 RF</td><td class="num">0.5730</td><td class="num">0.5820</td><td class="num">0.5825</td><td>反向：完整序列攻击者更容易识别</td></tr>
+<tr><td>UNSW8 P8-48 · C · 滑动 RF</td><td class="num">0.8447</td><td class="num">0.8317</td><td class="num">0.8352</td><td>追加有效，但集中未胜过等字节分散</td></tr>
+<tr><td>UNSW8 P8-48 · C · 累计 RF</td><td class="num">0.9854</td><td class="num">0.9858</td><td class="num">0.9842</td><td>接近识别天花板，变化很小</td></tr>
+<tr><td>UNSW8 P8-48 · D · 滑动 LR</td><td class="num">0.7246</td><td class="num">0.7169</td><td class="num">0.7148</td><td>三 seed 均下降</td></tr>
+</tbody></table></div>
+<div class="grid"><div class="card"><h3>已有收益</h3><p>Deakin 的 C 视图六种在线攻击配置，LT 集中臂的均值全部低于原 Full New5；D 视图六种中五种均值下降。UNSW 的十二种在线配置中十一种均值下降，但多为小幅变化。</p></div><div class="card"><h3>仍然可识别</h3><p>UNSW 完整八类的 Frozen-clean C/RF 只从 0.9109 降到 0.9081；Frozen-clean C/LR 反而从 0.8615 升到 0.8930。LT 尚未解决这里的强无序统计指纹。</p></div></div>
+<p class="note">UNSW P8-48 的 Frozen 模型只在 30 个多类 Blind 日计 BA；在线回放包含全部 48 日。两种攻击权限及平均口径分开看。完整结果：<a href="长Trigger比例预算_Deakin50日配对.md">Deakin 50 日</a>、<a href="长Trigger比例预算_UNSW8_P8-48复现.md">UNSW P8-48</a>。</p>
+</section>
+
+<section class="slide dark">
+<div class="eyebrow">13 · 从结果到解释</div><h2>我们的预测：关键是能触及多少判别信息</h2>
+<p class="lead">LT 在两套数据中平均都只额外增加约 105 B 可见字节，却出现很不同的 C 视图收益。我们预计，决定效果的不只是字节数，而是这些合法新增字节能否改变设备之间真正起区分作用的可观测统计。</p>
+<div class="grid"><div class="card"><h3>Deakin10</h3><p>虚假长 Trigger 进入长度统计后，多种 C 攻击的识别率下降。一个可能解释是：部分设备差异落在 LT 能改变的大包与规模特征上。</p></div><div class="card"><h3>UNSW8</h3><p>强累计 C 攻击依然接近 0.98。一个可能解释是：主要设备差异仍由当前预算难以触及的统计承担，少量追加字节只影响边缘部分。</p></div></div>
+<div class="callout">这是机制预测，不是已经完成的特征因果归因。UNSW 与 Deakin 的类别、时间捕获和攻击协议也不同，不能仅凭基线 BA 高低断定“哪个数据集更不可操作”。现阶段把 LT 保留为<strong>有额外开销、收益依赖数据与攻击者的第五基线</strong>，不声称它普遍替代 Full New5。</div>
+</section>
+
 <section class="slide">
-<div class="eyebrow">10 · 攻击者强度怎么读</div><h2>同一套基线，要看不同学习能力与特征视图</h2>
+<div class="eyebrow">14 · 攻击者强度怎么读</div><h2>同一套基线，要看不同学习能力与特征视图</h2>
 <div class="table-wrap"><table><thead><tr><th>攻击者／视图</th><th>能力说明</th><th>应与哪些结果配套看</th><th>它衡量什么</th></tr></thead><tbody>
-<tr><td>累计 LR / RF</td><td>持续累积已到达标签</td><td>固定码本 + IID、Position5、Full New5、Hybrid 的同协议 Post BA</td><td>历史数据持续可用时的适应表现</td></tr>
-<tr><td>14 日滑动 LR / RF</td><td>主要用近期标签更新</td><td>相同四个基线的滑动模型结果</td><td>偏近期适应的攻击表现</td></tr>
-<tr><td>MLP</td><td>非线性模型，当前仅在 Deakin 做补充</td><td>Hybrid 与 Baseline 的同视图、同在线协议比较</td><td>检查 LR/RF 结论是否能迁移到不同模型</td></tr>
+<tr><td>累计 LR / RF</td><td>持续累积已到达标签</td><td>同协议的五类基线 Post BA；LT 的 UNSW 与 Deakin 使用各自的完整评价期</td><td>历史数据持续可用时的适应表现</td></tr>
+<tr><td>14 日滑动 LR / RF</td><td>主要用近期标签更新</td><td>相同数据和 Blind 下的配对基线</td><td>偏近期适应的攻击表现</td></tr>
+<tr><td>MLP</td><td>非线性模型；LT 已在 Deakin 与 UNSW 两套回放中评价</td><td>LT 与 Full New5 的同视图、同在线协议比较</td><td>检查 LR/RF 结论是否能迁移到不同模型</td></tr>
 <tr><td>顺序无关 C 视图</td><td>忽略精确序列顺序，使用可观测统计</td><td>每种防御下 C 视图的同模型结果</td><td>判断动态位置／顺序改变后，汇总统计是否仍可识别</td></tr>
 </tbody></table></div>
 <p class="lead">“强度”不是单一等级：累计与滑动代表不同历史利用方式，LR／RF／MLP 代表不同模型，C 与 D 代表不同可见特征。评价最终基线时，必须在相同数据、视图、模型和标签协议下配对比较。</p>
@@ -159,7 +191,7 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">11 · 机制与观察</div><h2>动态扰动能改变表示，但结果取决于攻击者怎样看流量</h2>
+<div class="eyebrow">15 · 机制与观察</div><h2>动态扰动能改变表示，但结果取决于攻击者怎样看流量</h2>
 <div class="grid three"><div class="card"><span class="tag">早期机制</span><h3>位置搜索有信号</h3><p>等成本搜索中位置最稳定，推动了映射轮换与动态码本研究。</p></div><div class="card"><span class="tag">在线结果</span><h3>新码本 + 逐流 IID</h3><p>在部分累计／滑动 LR、RF 条件下，Post BA 低于固定码本参照。</p></div><div class="card"><span class="tag">Weakener诊断</span><h3>预算去向会改统计</h3><p>Hybrid 有时改善可观测 C-RF，却可能对 LR 或 MLP 无效甚至反向。</p></div></div>
 <p class="keyline">所以当前结果最好理解为：防御对一类攻击表示造成了学习成本，但不同特征视图和模型会看到不同效果。</p>
 <p class="sources">例如 UNSW8 Full New5 下，45 维无序 C 的累计 RF BA 约为 0.9647；该值是该攻击设置下的识别结果，不应与其他任务或模型的 BA 混成一个总体强度排名。</p>
@@ -167,8 +199,8 @@
 
 <section class="slide dark">
 <div class="eyebrow">汇报小结</div><h2>我们做了什么</h2>
-<div class="grid"><div class="card"><h3>从静态到动态</h3><p>先以等成本搜索定位位置等参数信号，再拆解真实包与 dummy 的作用，随后构建在线持续学习评价。</p></div><div class="card"><h3>形成可解释的基线</h3><p>固定码本 + IID 是参照；Position5突出位置刷新；Full New5刷新完整码本；Hybrid在Full基础上改变Weakener预算分布。</p></div></div>
-<p class="keyline">最终效果由防御变化、攻击者如何更新、以及攻击者能读取什么特征共同决定。</p>
+<div class="grid"><div class="card"><h3>从静态到动态</h3><p>先以等成本搜索定位位置等参数信号，再拆解真实包与 dummy 的作用，随后构建在线持续学习评价。</p></div><div class="card"><h3>形成五类基线</h3><p>固定码本 + IID 是参照；Position5 突出位置刷新；Full New5 刷新完整码本；Hybrid 改变原 Weakener 预算落点；LT 比例预算另用少量字节制造虚假长 Trigger。</p></div></div>
+<p class="keyline">最终效果由防御能改变哪些判别特征、攻击者怎样更新、以及攻击者读取哪种表示共同决定。</p>
 </section>
 </main>
 <div class="progress" id="progress"></div>

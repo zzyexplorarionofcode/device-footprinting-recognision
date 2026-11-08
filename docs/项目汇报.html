@@ -56,13 +56,13 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <h1>面向持续学习攻击者的动态设备指纹防御：机制、效果与残余泄漏</h1>
 <div class="sub">固定预算下的随机动态刷新能带来多少长期收益？哪些身份信息仍然可见？</div>
 <div class="meta">整理：2026-11-05 · UNSW8 150观测日 / Deakin10 50观测日为在线开发回放 · 早期CIC/UNSW2018/Mon为机制补充</div></div></header>
-<nav><div class="wrap"><a href="#summary">研究概览</a><a href="#method">防御机制</a><a href="#core">核心结果</a><a href="#residual">残余信息</a><a href="#decision">后续方向</a><a href="#archive">实验档案</a></div></nav>
+<nav><div class="wrap"><a href="#summary">研究概览</a><a href="#method">防御机制</a><a href="#core">核心结果</a><a href="#residual">残余信息</a><a href="#coverage">完整类别</a><a href="#static">静态对照</a><a href="#decision">后续方向</a><a href="#archive">实验档案</a></div></nav>
 <main class="wrap">
 <section id="summary" class="opening">
 <h2>研究概览与主要发现</h2>
 <p class="lead">核心问题：在相同通信预算与逐日标签到达规则下，持续刷新合法扰动分布，能否让持续学习的设备指纹攻击者反复付出适应成本？已有静态扰动主要检验一次变换后的识别下降；这里进一步评价攻击者持续更新后的全期 Post BA。</p>
 <p>阶段性结果显示，随机刷新码本并保持逐流随机 Mapping，可以降低部分持续学习攻击者的识别表现。但攻击者改用顺序无关的可观测统计后，仍能识别设备；已测试的学习型调度也未显示稳定的额外收益。下文依次说明防御机制、配对结果和证据边界。</p>
-<p class="small">UNSW8 与 Deakin10 均为已参与研究判断的开发回放，观察期分别为 150 与 50 日；不同数据集的绝对识别率不直接比较。</p>
+<p class="small">UNSW8 与 Deakin10 均为已参与研究判断的开发回放，观察期分别为 150 与 50 日；不同数据集的绝对识别率不直接比较。<b>类别覆盖边界：</b>UNSW8 的 150 日 warmup 只覆盖 5 类（1/2/3/5/7）；完整 8 类 causal warmup 只剩 48 日（P8-48），两者不可混用。</p>
 </section>
 <section id="method">
 <h2>实际实现：双时间尺度 Full New5</h2>
@@ -113,10 +113,54 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <div class="callout info"><b>Clean C 与 Full New5 C 配对：</b>同一时间清单、Blind 流和标签协议下，累计 RF 的日均 Post BA 在 UNSW8 从 0.9729 降至 0.9647，在 Deakin10 从 0.5474 升至 0.5561。两套开发回放的方向不同。<a href="Weakener残余特征审计.md">完整配对与特征拆分</a></div>
 <p class="small"><a href="FullNew5残余特征归因.md">完整 A–D 视图与逐日结果</a>；详细的动作权限分析保留在下方实验档案。</p>
 </section>
+<section id="coverage">
+<h2>完整类别零标签证据：P8-48</h2>
+<p>UNSW8 的类别 0/4/6 在 2016-10-20 尚未出现；要求 causal warmup 覆盖全部 8 类，只能从 2017-02-23 开始，剩 <b>48 个观测日</b>。这是目前唯一合法的“初始认识全部 8 类”协议。</p>
+<table>
+<thead><tr><th>攻击者（零部署后标签）</th><th class="num">D/LR</th><th class="num">D/RF</th><th class="num">C/LR</th><th class="num">C/RF</th></tr></thead>
+<tbody>
+<tr><td>Frozen-clean</td><td class="num">0.416</td><td class="num">0.419</td><td class="num">0.861</td><td class="num"><b>0.911</b></td></tr>
+<tr><td>Frozen-initial</td><td class="num">0.666</td><td class="num">0.896</td><td class="num">0.875</td><td class="num">0.978</td></tr>
+</tbody></table>
+<div class="callout warn"><b>解释：</b>8 类 warmup 后，C 视图的 Frozen-clean 残余很高（0.861/0.911）；之前 150 日实验里的 C/RF 0.395 是“warmup 缺类”造成的，不是 C 视图没有残余。48 天不能外推为 150 天长期结论。</div>
+<p class="small">来源：<a href="实验协议冻结_三类覆盖.md">实验协议冻结：三类覆盖</a>；<a href="P8-48静态源域对照.md">P8-48 静态源域对照</a>。</p>
+</section>
+
+<section id="static">
+<h2>静态源域对照：基础扰动 / IID State / 码本刷新</h2>
+<p>同一组内只训练<b>一个模型</b>，只更换评估流量，避免“clean 模型 vs defended 模型”混在一起。</p>
+<h3>A 组：Clean-model（完全不知防御的旧模型）</h3>
+<table>
+<thead><tr><th>评估臂</th><th class="num">D/LR</th><th class="num">D/RF</th><th class="num">C/LR</th><th class="num">C/RF</th></tr></thead>
+<tbody>
+<tr><td>Clean</td><td class="num">0.850</td><td class="num">0.996</td><td class="num">0.861</td><td class="num">0.912</td></tr>
+<tr><td>Fixed-map</td><td class="num">0.399</td><td class="num">0.441</td><td class="num">0.861</td><td class="num">0.911</td></tr>
+<tr><td>Fixed-IID</td><td class="num">0.430</td><td class="num">0.411</td><td class="num">0.861</td><td class="num">0.911</td></tr>
+<tr><td>Full New5</td><td class="num">0.416</td><td class="num">0.419</td><td class="num">0.861</td><td class="num">0.911</td></tr>
+</tbody></table>
+<p><b>基础扰动：</b>D 视图 LR 下降 45.1 pp、RF 下降 55.5 pp；C 视图几乎不变。基础扰动只打崩序列视图，没有消除顺序无关统计。</p>
+
+<h3>B 组：Initial-model（已认识初始防御的模型）</h3>
+<table>
+<thead><tr><th>评估臂</th><th class="num">D/LR</th><th class="num">D/RF</th><th class="num">C/LR</th><th class="num">C/RF</th></tr></thead>
+<tbody>
+<tr><td>Fixed-map</td><td class="num">0.767</td><td class="num">0.956</td><td class="num">0.875</td><td class="num">0.978</td></tr>
+<tr><td>Fixed-IID</td><td class="num">0.763</td><td class="num">0.940</td><td class="num">0.875</td><td class="num">0.978</td></tr>
+<tr><td>Full New5</td><td class="num">0.666</td><td class="num">0.896</td><td class="num">0.875</td><td class="num">0.978</td></tr>
+</tbody></table>
+<div class="callout good"><b>三个问题的回答：</b>
+<ol>
+<li><b>基础扰动是否让 clean 模型失效？</b>D 视图是（−45 到 −56 pp）；C 视图否。</li>
+<li><b>IID State 是否进一步削弱已认识初始防御的模型？</b>只有边际作用：LR −0.4 pp，RF −1.6 pp，方向不稳定。</li>
+<li><b>码本刷新是否在 IID 之外继续提供收益？</b>D 视图是：LR −9.7 pp、RF −4.4 pp；C 视图无变化。</li>
+</ol></div>
+<p class="small">仅 UNSW8、seed 0、48 天；零标签静态攻击，不含在线适应。来源：<a href="P8-48静态源域对照.md">P8-48 静态源域对照</a>。</p>
+</section>
+
 <section id="decision">
 <h2>下一阶段研究建议</h2>
 <div class="card"><p>当前已完成动态码本调度、更新周期、State 数量、组件消融及学习型选择的开发性验证。证据支持固定预算下的随机动态刷新能够干扰部分持续学习攻击者，同时显示顺序无关特征仍保留显著识别能力。</p>
-<p><b>下一步：</b>将 Weakener 作为独立变体。固定五个插入事件，在相同观察窗口与实际真实包 padding 开销下，比较随机 padding 和优先修改高辨识度上行包长的规则。高辨识度模式从 warmup 数据估计。</p>
+<p><b>下一步：</b>停止 Weakener / Hybrid 参数搜索；只在 P8-48 协议内做机制拆解，区分“基础扰动、IID State、码本刷新”各自触及了哪些可观测特征。不新增防御算法，不扩大实验矩阵。</p>
 <p>需要导师判断的是：在既定研究周期与部署约束下，是否启动改变残余信息的新机制；如要继续，允许调整哪些真实包和下行特征？</p></div>
 </section>
 <details id="archive" class="archive"><summary>展开实验档案、协议与复现索引 <span>保留完整实验表和失败修正记录</span></summary>
@@ -156,6 +200,8 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <tr><td>在线Deakin10开发</td><td>按实际UTC重建时间，排除6条跨午夜流；20观测日热身4000标签；50观测日，2023-07-10至09-03；6400 Blind</td><td>400个在线新标签，热身覆盖7类；不是全新最终测试</td></tr>
 </tbody></table></div>
 <p>每天先用严格早于当日的标签训练并评分当日Blind，再释放当日8个Calibration标签。Post是使用此前已到达标签的每日模型，<b>不包含当天新标签</b>；Pre在每个调度段首日拟合后整段冻结。Blind标签只用于评分或事后诊断。滑动窗按前14个日历日取标签，样本不足两类时回退热身模型并记录；码本周期按观测日计。</p>
+<div class="callout warn"><b>类别覆盖边界（2026-11-07 冻结）：</b>UNSW8 的 150 日在线 warmup 在首观测日之前只有类别 1/2/3/5/7，类别 0/4/6 尚未出现。因此所有 150 日结果只能标为“<b>5 类 warmup + 8 类 target</b>”，不能证明“攻击者初始认识全部 8 类”。要初始认识 8 类，必须从 2017-02-23 起，只剩 <b>48 个观测日</b>（P8-48）。两者不可直接比较；详见 <a href="实验协议冻结_三类覆盖.md">实验协议冻结</a>。</div>
+
 <p>在线LR：StandardScaler仅拟合热身特征，LogisticRegression最多500迭代、seed=0。RF：64树、深度12、叶节点最少2、seed=7500。Deakin MLP为64/32隐层、固定30轮，仅作补充压力测试；早期机制实验的模型参数以原记录为准。</p>
 <h3>2.5 主指标、配对与不确定性</h3><p>每日BA对当日Blind实际出现的设备类等权，历史未知类计零召回。J<sub>H</sub>为H个观测日BA的等权平均，再对配对Seed等权；不是所有流合并后的BA，也不要求各日出现同一类集合。相同日期跨臂使用相同原始流，因此跨臂差值配对有效，跨日期曲线仍受类别集合变化影响。J<sub>150</sub>与J<sub>50</sub>分别报告。</p>
 <p>在线主表是描述性均值，未统一执行显著性／等效性检验。三Seed不等于三套独立设备捕获；未提供CI的表不作“显著”宣称。切换冲击、前三日BA、T<sub>0.70</sub>、State准确率与历史价值是辅助诊断；阈值可能有天花板效应，低固定预算BA不能直接解释为适应时间延长。State RNG与样本划分分离；早期受Calibration split影响的A–F绝对BA只在同run内比较。</p>
@@ -436,6 +482,18 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <tr><td>滑动RF</td><td class="num">0.5295</td><td class="num">0.5181</td><td class="num">0.5174</td><td class="num">0.5092</td><td class="num">+0.0033</td></tr>
 </tbody></table></div>
 <p>I = Full − P+L − P+G + P；BA越低越好，因此I&lt;0才表示超加和收益。本轮平均I略正且逐Seed变号，未形成稳定有利交互。保留Position5作机制基线，Full作完整参照。</p><p class="small">来源：<a href="新码本更新周期.md">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="新码本组件消融.md">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p><p class="small">来源：<a href="Deakin外部短期码本回放.md">完整协议与结果</a>。主文保留关键结果，逐日、逐块及逐 Seed 明细见链接。</p>
+<h3>8.6 Weakener：长包随机预算与模型稳健性</h3>
+<p>在固定 Full New5、五个 dummy、逐流真实包 padding 字节和在线标签协议下，将 Weakener 预算在全部合法事件与长包候选之间随机分配。长包阈值仅由 warmup 确定，并要求至少保留64 B headroom；长包候选不足时，剩余预算回退到全部合法事件。三臂为 Baseline、Hybrid-25 和 Hybrid-50，实际比例与回退比例单独审计。</p>
+<div style="max-width:100%;overflow-x:auto"><table><thead><tr><th>数据与攻击</th><th>Baseline</th><th>Hybrid-25</th><th>Δ25</th><th>Hybrid-50</th><th>Δ50</th></tr></thead><tbody>
+<tr><td>UNSW8 C 累计RF</td><td class="num">0.9766</td><td class="num">0.9658</td><td class="num">−0.0108</td><td class="num">0.9670</td><td class="num">−0.0096</td></tr>
+<tr><td>UNSW8 D 累计RF</td><td class="num">0.8888</td><td class="num">0.8920</td><td class="num">+0.0032</td><td class="num">0.8886</td><td class="num">−0.0002</td></tr>
+<tr><td>Deakin10 C 累计RF</td><td class="num">0.5715</td><td class="num">0.5588</td><td class="num">−0.0127</td><td class="num">0.5362</td><td class="num">−0.0353</td></tr>
+<tr><td>Deakin10 C 累计LR</td><td class="num">0.4536</td><td class="num">0.4791</td><td class="num">+0.0255</td><td class="num">0.4578</td><td class="num">+0.0042</td></tr>
+<tr><td>Deakin10 C 累计MLP</td><td class="num">0.4662</td><td class="num">0.4717</td><td class="num">+0.0055</td><td class="num">0.4723</td><td class="num">+0.0061</td></tr>
+</tbody></table></div>
+<p>Hybrid-50 对两套数据的可观测 C-RF 都有改善，但没有迁移到 LR 或 MLP。Deakin 的原始 D 视图也未显示一致改善，说明收益主要依赖攻击模型与特征表示，而不是普遍降低设备信息。</p>
+<p>真实上行包长视图的识别率在部分条件下上升，属于内部机制审计，只有当攻击者能够可靠区分真实包与 dummy 时才构成直接风险。因此当前将 Hybrid 保留为模型相关候选，不替换 Full New5 基线。</p>
+<p class="small">来源：<a href="Weakener长包随机预算.md">长包随机预算三臂结果</a> · <a href="Weakener_MLP稳健性.md">MLP稳健性检查</a> · <a href="Weakener_C视图特征消融.md">C1–C5特征消融</a>。完整逐日与逐Seed结果保留在实验档案。</p>
 </section>
 <section id="controls">
 <h2>有限优化空间：联合控制、State数量与历史差异</h2>
@@ -620,3 +678,4 @@ code{background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:1px 5
 <footer>FADE阶段性研究汇报 · 2026-11-05 · 在线主表为描述性开发结果；原始证据保留于 docs/ 与 artifacts/es/。详细实验与修正保留于本页折叠档案。</footer>
 </body>
 </html>
+

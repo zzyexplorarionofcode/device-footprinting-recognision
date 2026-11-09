@@ -104,6 +104,15 @@
 <section class="slide">
   <div class="eyebrow">04 · 为什么是双时间尺度</div>
   <h2>为什么最终选择双时间尺度动态防御？</h2>
+  <div class="flow">
+    <div class="step"><b>Fixed Mapping</b><span>静态类位置，容易被学习。</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Periodic Rotation</b><span>每段换映射，旧捷径失效。</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Per-flow IID</b><span>逐流 State，增加推断成本。</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Full New5</b><span>5 日刷新 + 逐流 IID。</span></div>
+  </div>
   <div class="table-wrap"><table>
     <thead><tr><th>研究问题</th><th>核心发现</th></tr></thead>
     <tbody>
@@ -115,9 +124,35 @@
   </table></div>
   <p class="note">对应数值：固定类位置无 rotation 时 UNSW RF 0.997、CIC 0.993，加入 rotation 后 0.405 / 0.057；Periodic 的 block 平均 BA 0.965→0.828；Per-flow 的 6 类 State 推断随机基线为 0.167；Full New5 为 P8-48、48 日、零标签冻结 D/RF。</p>
 </section>
+<section class="slide">
+  <div class="eyebrow">05 · 位置与 Code</div>
+  <h2>位置要多稳？Code 还原到底贡献多少？</h2>
+  <div class="grid">
+    <div class="table-wrap"><table>
+      <thead><tr><th>类内位置池 K</th><th class="num">UNSW RF</th><th class="num">CIC RF</th></tr></thead>
+      <tbody>
+        <tr><td>K=1（固定）</td><td class="num">0.405</td><td class="num">0.057</td></tr>
+        <tr><td>K=2</td><td class="num">0.889</td><td class="num">0.368</td></tr>
+        <tr><td>K=4</td><td class="num">0.954</td><td class="num">0.592</td></tr>
+        <tr><td>K=8</td><td class="num">0.989</td><td class="num">0.771</td></tr>
+      </tbody>
+    </table></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Known-mapping 逆变换</th><th class="num">UNSW LR</th><th class="num">CIC LR</th></tr></thead>
+      <tbody>
+        <tr><td>不逆变换</td><td class="num">0.706</td><td class="num">0.585</td></tr>
+        <tr><td>只还原 Code</td><td class="num">0.711</td><td class="num">—</td></tr>
+        <tr><td>只还原位置</td><td class="num">0.877</td><td class="num">0.915</td></tr>
+        <tr><td>Code + 位置</td><td class="num">0.884</td><td class="num">0.922</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="callout">K 越大，攻击者越容易学类级位置分布；K=1 固定位置最强。逆变换里，只还原 Code 几乎无收益（0.706→0.711），只还原位置就回到 0.877；位置是主要可逆成分。</div>
+  <p class="note">早期 “只还原 Code 到 0.748” 来自 naive detector：300 条里错 39 条；换成 joint code+position detector 后只错 1 条。Detector 实现不能写成机制结论。</p>
+</section>
 
 <section class="slide">
-  <div class="eyebrow">05 · 核心结果</div>
+  <div class="eyebrow">06 · 核心结果</div>
   <h2>Full New5 在 Deakin 上主要改善 RF 与滑动攻击</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Deakin10 · 攻击者</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th></tr></thead>
@@ -134,7 +169,7 @@
   <p class="note">50 日、10 类、三 seed 均值；负 Δ 表示攻击 BA 下降（防御改善）。</p>
 </section>
 <section class="slide">
-  <div class="eyebrow">06 · 攻击者能力</div>
+  <div class="eyebrow">07 · 攻击者能力</div>
   <h2>不是只有最强自适应攻击者：零标签与低标签都要看</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>P8-48</th><th class="num">Frozen-clean</th><th class="num">Frozen-initial</th><th class="num">1 标签/日</th><th class="num">2</th><th class="num">4</th><th class="num">8</th></tr></thead>
@@ -148,9 +183,25 @@
   <p>零标签的 Frozen-clean 在 C/RF 上仍有 <b>0.911</b>；只给每天 1 条标签，C/RF 就升到 <b>0.993</b>。D 视图对标签更敏感，但 Frozen-initial 的 D/RF 也已到 0.896。</p>
   <div class="callout">所以不能只报“最强自适应”结果：零标签残余、初始防御知识、低标签适应是三种不同能力，必须分开列。</div>
 </section>
+<section class="slide">
+  <div class="eyebrow">08 · Per-flow</div>
+  <h2>逐流随机 State：瓶颈是“每条 flow 都要重新推断”</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>攻击者（Per-flow）</th><th class="num">C 视图 BA</th><th class="num">相对 No-canon</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>No-canonicalization</td><td class="num">0.578</td><td class="num">—</td><td>不逆变换</td></tr>
+      <tr><td>Predicted Top-1</td><td class="num">0.565</td><td class="num">−0.014</td><td>错误 State 会伤害分类</td></tr>
+      <tr><td>Top-2 fusion</td><td class="num">0.605</td><td class="num">+0.027</td><td>小幅恢复</td></tr>
+      <tr><td>Top-6 marginalization</td><td class="num">0.658</td><td class="num">+0.079</td><td>恢复约 31% Oracle 增益</td></tr>
+      <tr><td>Oracle State</td><td class="num">0.831</td><td class="num">+0.253</td><td>逐流真实 State 上界</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">单流 State 推断：Top-1 0.458、Top-2 0.666（6 类随机 0.167）；Oracle 1.0。错误 State 的 flow 平均 BA 0.440，正确 State 0.850。</div>
+  <p class="note">Periodic 共享 State 可用少量标签选到 65/66 Top-1；n=64 因类别覆盖不足不可评估。Per-flow 不能把 block 标签直接迁移到其他 flow。</p>
+</section>
 
 <section class="slide">
-  <div class="eyebrow">07 · Padding 与 Hybrid</div>
+  <div class="eyebrow">09 · Padding 与 Hybrid</div>
   <h2>为什么真实包 Padding 难以奏效：Hybrid 也受同一预算约束</h2>
   <div class="nums">
     <div class="numcard"><b>347 B</b><span>Weakener 字节分账</span></div>
@@ -173,7 +224,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">08 · 新方案</div>
+  <div class="eyebrow">10 · 新方案</div>
   <h2>概率长 Trigger：基于可操作余量追加预算</h2>
   <div class="eventrow"><span class="lbl">A 原 Full New5</span><span class="ev r">R1</span><span class="ev t">T1</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2</span><span class="ev w">W2</span></div>
   <div class="eventrow"><span class="lbl">B 分散追加</span><span class="ev r">R1</span><span class="ev t">T1+</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2+</span><span class="ev w">W2</span></div>
@@ -188,7 +239,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">09 · Deakin10</div>
+  <div class="eyebrow">11 · Deakin10</div>
   <h2>长 Trigger 在 C 视图上带来明显改善</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Deakin10 · 攻击</th><th class="num">A Full</th><th class="num">B 分散</th><th class="num">C 集中</th><th class="num">C−A</th></tr></thead>
@@ -204,7 +255,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">10 · UNSW8 P8-48</div>
+  <div class="eyebrow">12 · UNSW8 P8-48</div>
   <h2>同一方案，在 UNSW 上收益有限</h2>
   <div class="grid">
     <div class="card"><span class="tag">C 累计 RF</span><div class="big">0.9854 → 0.9842</div><p>仍接近识别天花板。</p></div>
@@ -224,7 +275,7 @@
   <p class="note"><b>待验证解释：</b>Deakin 的差异更多落在 LT 可触及的大包统计；UNSW 的强残余更多来自当前预算不可操作的统计。当前没有特征因果归因，不能作为结论。</p></section>
 
 <section class="slide">
-  <div class="eyebrow">11 · 五类基线</div>
+  <div class="eyebrow">13 · 五类基线</div>
   <h2>哪些方案成立，哪些不成立</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>方案</th><th>机制</th><th>证据</th><th>状态</th></tr></thead>
@@ -234,13 +285,14 @@
       <tr><td>Full New5</td><td>5 日刷新全码本 + IID</td><td>D 有增量，C 基本不动</td><td>当前主基线</td></tr>
       <tr><td>Hybrid</td><td>Weakener 预算偏向长包</td><td>C-RF 有时改善，LR/MLP 不一致</td><td>不替代</td></tr>
       <tr><td>概率长 Trigger</td><td>按 headroom 追加少量字节</td><td>Deakin C 改善，UNSW 有限</td><td>探索性</td></tr>
+      <tr><td>T2_W1</td><td>2 对 Trigger + 1 Weakener</td><td>UNSW D 下降、Deakin D 上升</td><td>不替代</td></tr>
     </tbody>
   </table></div>
   <div class="callout">没有一种方案同时解决 D 与 C；目前的强结论是<b>表示相关</b>，不是“找到一个通用更强防御”。</div>
 </section>
 
 <section class="slide dark">
-  <div class="eyebrow">12 · 总结</div>
+  <div class="eyebrow">14 · 总结</div>
   <h2>我们做了什么</h2>
   <div class="grid">
     <div class="card"><h3>机制</h3><p>用位置、Gap、Dummy mixing 与窗口截断解释防御为什么改变序列表示。</p></div>

@@ -129,39 +129,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">05 · 核心结果</div>
-  <h2>Full New5 在 Deakin 上主要改善 RF 与滑动攻击</h2>
-  <div class="table-wrap"><table>
-    <thead><tr><th>Deakin10 · 攻击者</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th></tr></thead>
-    <tbody>
-      <tr><td>LR 累计</td><td class="num">0.3299</td><td class="num">0.3210</td><td class="num">−0.0089</td></tr>
-      <tr><td>LR 14 日滑动</td><td class="num">0.4412</td><td class="num">0.4073</td><td class="num">−0.0339</td></tr>
-      <tr><td>RF 累计</td><td class="num">0.6295</td><td class="num">0.5730</td><td class="num">−0.0565</td></tr>
-      <tr><td>RF 14 日滑动</td><td class="num">0.5506</td><td class="num">0.5092</td><td class="num">−0.0414</td></tr>
-      <tr><td>MLP 累计</td><td class="num">0.4740</td><td class="num">0.4483</td><td class="num">−0.0257</td></tr>
-      <tr><td>MLP 14 日滑动</td><td class="num">0.3618</td><td class="num">0.3529</td><td class="num">−0.0089</td></tr>
-    </tbody>
-  </table></div>
-  <div class="callout">LR 累计仅下降 0.009；RF 与滑动更新的降幅更大。表中每一行都写明更新方式，避免把“全期平均”误读成所有攻击者一致下降。</div>
-  <p class="note"><b>定义：</b>固定码本 + IID = 不刷新码本，但每条 flow 独立抽 State；Full New5 = 每 5 个观测日刷新整套码本。50 日、10 类、三 seed 均值；负 Δ 表示攻击 BA 下降（防御改善）。</p>
-</section>
-<section class="slide">
-  <div class="eyebrow">06 · 攻击者能力</div>
-  <h2>不是只有最强自适应攻击者：零标签与低标签都要看</h2>
-  <div class="table-wrap"><table>
-    <thead><tr><th>P8-48</th><th class="num">Frozen-clean</th><th class="num">Frozen-initial</th><th class="num">1 标签/日</th><th class="num">2</th><th class="num">4</th><th class="num">8</th></tr></thead>
-    <tbody>
-      <tr><td>D / LR</td><td class="num">0.416</td><td class="num">0.666</td><td class="num">0.681</td><td class="num">0.711</td><td class="num">0.732</td><td class="num">0.762</td></tr>
-      <tr><td>D / RF</td><td class="num">0.419</td><td class="num">0.896</td><td class="num">0.913</td><td class="num">0.926</td><td class="num">0.936</td><td class="num">0.936</td></tr>
-      <tr><td>C / LR</td><td class="num">0.861</td><td class="num">0.875</td><td class="num">0.924</td><td class="num">0.941</td><td class="num">0.970</td><td class="num">0.970</td></tr>
-      <tr><td>C / RF</td><td class="num">0.911</td><td class="num">0.978</td><td class="num">0.993</td><td class="num">0.994</td><td class="num">0.990</td><td class="num">0.982</td></tr>
-    </tbody>
-  </table></div>
-  <p>零标签的 Frozen-clean 在 C/RF 上仍有 <b>0.911</b>；只给每天 1 条标签，C/RF 就升到 <b>0.993</b>。D 视图对标签更敏感，但 Frozen-initial 的 D/RF 也已到 0.896。</p>
-  <div class="callout">所以不能只报“最强自适应”结果：零标签残余、初始防御知识、低标签适应是三种不同能力，必须分开列。1/2/4/8 = 每天新增标签数；Frozen-* = 0 新标签。</div>
-</section>
-<section class="slide">
-  <div class="eyebrow">07 · Per-flow</div>
+  <div class="eyebrow">05 · Per-flow</div>
   <h2>逐流随机 State：瓶颈是“每条 flow 都要重新推断”</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>攻击者（Per-flow）</th><th class="num">C 视图 BA</th><th class="num">相对 No-canon</th><th>说明</th></tr></thead>
@@ -178,7 +146,7 @@
   <p class="note">Periodic 共享 State 可用少量标签选到 65/66 Top-1；n=64 因类别覆盖不足不可评估；Per-flow 不能把 block 标签直接迁移到其他 flow。</p>
 </section>
 <section class="slide">
-  <div class="eyebrow">08 · 为什么是双时间尺度</div>
+  <div class="eyebrow">06 · 为什么是双时间尺度</div>
   <h2>为什么最终选择双时间尺度动态防御？</h2>
   <div class="flow">
     <div class="step"><b>Fixed Mapping</b><span>静态类位置，容易被学习。</span></div>
@@ -199,6 +167,38 @@
     </tbody>
   </table></div>
   <p class="note">对应数值：固定类位置无 rotation 时 UNSW RF 0.997、CIC 0.993，加入 rotation 后 0.405 / 0.057；Periodic 的 block 平均 BA 0.965→0.828；Per-flow 的 6 类 State 推断随机基线为 0.167；Full New5 为 P8-48、48 日、零标签冻结 D/RF。</p>
+</section>
+<section class="slide">
+  <div class="eyebrow">07 · 核心结果</div>
+  <h2>Full New5 在 Deakin 上主要改善 RF 与滑动攻击</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Deakin10 · 攻击者</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th></tr></thead>
+    <tbody>
+      <tr><td>LR 累计</td><td class="num">0.3299</td><td class="num">0.3210</td><td class="num">−0.0089</td></tr>
+      <tr><td>LR 14 日滑动</td><td class="num">0.4412</td><td class="num">0.4073</td><td class="num">−0.0339</td></tr>
+      <tr><td>RF 累计</td><td class="num">0.6295</td><td class="num">0.5730</td><td class="num">−0.0565</td></tr>
+      <tr><td>RF 14 日滑动</td><td class="num">0.5506</td><td class="num">0.5092</td><td class="num">−0.0414</td></tr>
+      <tr><td>MLP 累计</td><td class="num">0.4740</td><td class="num">0.4483</td><td class="num">−0.0257</td></tr>
+      <tr><td>MLP 14 日滑动</td><td class="num">0.3618</td><td class="num">0.3529</td><td class="num">−0.0089</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">LR 累计仅下降 0.009；RF 与滑动更新的降幅更大。表中每一行都写明更新方式，避免把“全期平均”误读成所有攻击者一致下降。</div>
+  <p class="note"><b>定义：</b>固定码本 + IID = 不刷新码本，但每条 flow 独立抽 State；Full New5 = 每 5 个观测日刷新整套码本。50 日、10 类、三 seed 均值；负 Δ 表示攻击 BA 下降（防御改善）。</p>
+</section>
+<section class="slide">
+  <div class="eyebrow">08 · 攻击者能力</div>
+  <h2>不是只有最强自适应攻击者：零标签与低标签都要看</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>P8-48</th><th class="num">Frozen-clean</th><th class="num">Frozen-initial</th><th class="num">1 标签/日</th><th class="num">2</th><th class="num">4</th><th class="num">8</th></tr></thead>
+    <tbody>
+      <tr><td>D / LR</td><td class="num">0.416</td><td class="num">0.666</td><td class="num">0.681</td><td class="num">0.711</td><td class="num">0.732</td><td class="num">0.762</td></tr>
+      <tr><td>D / RF</td><td class="num">0.419</td><td class="num">0.896</td><td class="num">0.913</td><td class="num">0.926</td><td class="num">0.936</td><td class="num">0.936</td></tr>
+      <tr><td>C / LR</td><td class="num">0.861</td><td class="num">0.875</td><td class="num">0.924</td><td class="num">0.941</td><td class="num">0.970</td><td class="num">0.970</td></tr>
+      <tr><td>C / RF</td><td class="num">0.911</td><td class="num">0.978</td><td class="num">0.993</td><td class="num">0.994</td><td class="num">0.990</td><td class="num">0.982</td></tr>
+    </tbody>
+  </table></div>
+  <p>零标签的 Frozen-clean 在 C/RF 上仍有 <b>0.911</b>；只给每天 1 条标签，C/RF 就升到 <b>0.993</b>。D 视图对标签更敏感，但 Frozen-initial 的 D/RF 也已到 0.896。</p>
+  <div class="callout">所以不能只报“最强自适应”结果：零标签残余、初始防御知识、低标签适应是三种不同能力，必须分开列。1/2/4/8 = 每天新增标签数；Frozen-* = 0 新标签。</div>
 </section>
 
 <section class="slide">

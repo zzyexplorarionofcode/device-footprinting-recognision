@@ -58,12 +58,15 @@
     <div class="card"><h3>D 视图</h3><p>原 64 维：32 个带方向包长 + 32 个 log Gap，依赖事件顺序。</p></div>
     <div class="card"><h3>C 视图</h3><p>45 维顺序无关统计：下行包长直方图、大包长度与规模统计。</p></div>
   </div>
-  <div class="grid three">
-    <div class="card"><span class="tag">训练</span><h3>累计 / 14 日滑动</h3><p>累计用全部历史标签；滑动只看近 14 日。</p></div>
-    <div class="card"><span class="tag">标签</span><h3>先评分，后释放</h3><p>每天先预测 Blind，再释放 8 个新标签。</p></div>
-    <div class="card"><span class="tag">指标</span><h3>BA 越低越强</h3><p>每日 BA 对当日出现类别等权，再对天数平均。</p></div>
-  </div>
-  <div class="callout"><b>P8-48 的边界：</b>UNSW8 只有从 2017-02-23 起 48 个观测日能同时覆盖 8 类；150 日结果只能标为“5 类 warmup + 8 类 target”，两者不可混用。</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>协议</th><th>warmup 类别</th><th class="num">时长</th><th>回答</th></tr></thead>
+    <tbody>
+      <tr><td>P5-150</td><td>1/2/3/5/7</td><td class="num">150 日</td><td>长期已知设备</td></tr>
+      <tr><td>P8-48</td><td>全部 8 类</td><td class="num">48 日</td><td>完整类别识别</td></tr>
+      <tr><td>P8-open</td><td>5 类 → 8 类</td><td class="num">150 日</td><td>可选，未启动</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">UNSW8 的类别 0/4/6 在 2016-10-20 尚未出现；要 causal warmup 覆盖 8 类，只能从 2017-02-23 开始。</p>
 </section>
 
 <section class="slide">
@@ -121,12 +124,17 @@
 <section class="slide">
   <div class="eyebrow">07 · Deakin10</div>
   <h2>长 Trigger 在 C 视图上带来明显改善</h2>
-  <div class="compare-bars"><span>C 累计 RF</span><div class="rail"><i style="left:5%;width:45%"></i></div><b>−0.0716</b></div>
-  <div class="compare-bars"><span>C 滑动 RF</span><div class="rail"><i style="left:17%;width:33%"></i></div><b>−0.0533</b></div>
-  <div class="compare-bars"><span>C 累计 MLP</span><div class="rail"><i style="left:43%;width:7%"></i></div><b>−0.0120</b></div>
-  <div class="compare-bars"><span>C 滑动 MLP</span><div class="rail"><i style="left:15%;width:35%"></i></div><b>−0.0557</b></div>
-  <p class="note">中线为零，向左表示攻击 BA 下降（防御改善）。D 视图没有一致收益，D 累计 RF 反而约 +0.0095。</p>
-  <div class="callout">Deakin 的改善集中在 C 视图，说明追加字节确实进入了顺序无关的长度统计；但不能外推到 D 或所有模型。</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Deakin10 · 攻击</th><th class="num">A Full</th><th class="num">B 分散</th><th class="num">C 集中</th><th class="num">C−A</th></tr></thead>
+    <tbody>
+      <tr><td>C 累计 RF</td><td class="num">0.5561</td><td class="num">0.4942</td><td class="num">0.4845</td><td class="num">−0.0716</td></tr>
+      <tr><td>C 滑动 RF</td><td class="num">0.5108</td><td class="num">0.4704</td><td class="num">0.4575</td><td class="num">−0.0533</td></tr>
+      <tr><td>C 累计 MLP</td><td class="num">0.4586</td><td class="num">0.4476</td><td class="num">0.4466</td><td class="num">−0.0120</td></tr>
+      <tr><td>C 滑动 MLP</td><td class="num">0.3561</td><td class="num">0.3157</td><td class="num">0.3004</td><td class="num">−0.0557</td></tr>
+      <tr><td>D 累计 RF</td><td class="num">0.5730</td><td class="num">0.5820</td><td class="num">0.5825</td><td class="num">+0.0095</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">负值表示攻击 BA 下降（防御改善）。C 视图改善明显；D 累计 RF 反而上升，不能外推到所有视图与模型。</p>
 </section>
 
 <section class="slide">
@@ -136,8 +144,16 @@
     <div class="card"><span class="tag">C 累计 RF</span><div class="big">0.9854 → 0.9842</div><p>仍接近识别天花板。</p></div>
     <div class="card"><span class="tag">Frozen-clean C/RF</span><div class="big">0.9109 → 0.9081</div><p>零部署后标签，残余几乎不变。</p></div>
   </div>
-  <p>C 滑动 RF 有下降（0.8447 → 0.8352），但 C 累计 RF 与 Frozen-clean 残余都没有被解决；C/LR 的 Frozen-clean 反而上升（0.8615 → 0.8930）。</p>
-  <div class="callout">同一个“概率长 Trigger”，在 Deakin 改善 C、在 UNSW 几乎不动。差异不是随机波动，而是<b>两套数据的可操作统计不同</b>。</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>UNSW8 P8-48 · 攻击</th><th class="num">A Full</th><th class="num">B 分散</th><th class="num">C 集中</th><th class="num">C−A</th></tr></thead>
+    <tbody>
+      <tr><td>C 累计 RF</td><td class="num">0.9854</td><td class="num">0.9858</td><td class="num">0.9842</td><td class="num">−0.0012</td></tr>
+      <tr><td>C 滑动 RF</td><td class="num">0.8447</td><td class="num">0.8317</td><td class="num">0.8352</td><td class="num">−0.0095</td></tr>
+      <tr><td>D 累计 RF</td><td class="num">0.9541</td><td class="num">0.9503</td><td class="num">0.9521</td><td class="num">−0.0020</td></tr>
+      <tr><td>D 滑动 LR</td><td class="num">0.7246</td><td class="num">0.7169</td><td class="num">0.7148</td><td class="num">−0.0098</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">C 累计 RF 与 Frozen-clean 残余都没有被解决；C/LR 的 Frozen-clean 反而从 0.8615 升到 0.8930。</p>
 </section>
 
 <section class="slide">
@@ -147,7 +163,7 @@
     <div class="card"><h3>Deakin10</h3><p>设备差异更多落在 LT 能触及的<b>大包长度 / 规模统计</b>；追加字节能改变这些统计。</p></div>
     <div class="card"><h3>UNSW8</h3><p>强残余更多来自<b>当前预算不可操作</b>的统计；少量追加只影响边缘。</p></div>
   </div>
-  <div class="callout">这是机制假设，不是已经完成的特征因果归因；当前证据只能说明：两个数据集的可操作统计不同。</div>
+  <div class="callout">这是机制假设，不是已经完成的特征因果归因。它给出的下一步不是继续调比例，而是回答：<b>哪些稳定特征在允许动作下不可触及？</b></div>
 </section>
 
 <section class="slide">

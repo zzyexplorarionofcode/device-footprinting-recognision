@@ -102,32 +102,23 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">04 · 方案演化</div>
-  <h2>从静态映射走到双时间尺度：每一步的证据</h2>
-  <div class="flow">
-    <div class="step"><b>Fixed Mapping</b><span>长期共享一套类别→Code 映射。</span></div>
-    <div class="arrow">→</div>
-    <div class="step"><b>Periodic Rotation</b><span>每段换一套映射。</span></div>
-    <div class="arrow">→</div>
-    <div class="step"><b>Per-flow IID</b><span>每条 flow 独立抽 State。</span></div>
-    <div class="arrow">→</div>
-    <div class="step"><b>Full New5</b><span>5 日刷新码本 + 逐流 IID。</span></div>
-  </div>
+  <div class="eyebrow">04 · 为什么是双时间尺度</div>
+  <h2>为什么最终选择双时间尺度动态防御？</h2>
   <div class="table-wrap"><table>
-    <thead><tr><th>阶段</th><th>改了什么</th><th>指标</th><th>结果</th></tr></thead>
+    <thead><tr><th>研究问题</th><th>核心发现</th></tr></thead>
     <tbody>
-      <tr><td>Fixed Mapping</td><td>静态类位置 → 加 rotation</td><td>RF 重训 BA</td><td>UNSW 0.997 → 0.405；CIC 0.993 → 0.057</td></tr>
-      <tr><td>Periodic</td><td>固定映射 → 每 2 个 block 轮换</td><td>block 平均 BA</td><td>0.965 → 0.828</td></tr>
-      <tr><td>Per-flow</td><td>每条 flow 独立 State</td><td>State 推断 Top-1</td><td>0.458（6 类随机 0.167）</td></tr>
-      <tr><td>Full New5</td><td>固定码本 + IID → 5 日刷新</td><td>RF BA（P8-48）</td><td>0.940 → 0.896</td></tr>
+      <tr><td>固定类别—位置映射可靠吗？</td><td>不可靠，静态映射很容易被学习。</td></tr>
+      <tr><td>轮换映射能否破坏旧模型？</td><td>可以，但部分损失来自映射错配。</td></tr>
+      <tr><td>逐流随机 State 能否防止状态推断？</td><td>不能完全防止，监督推断 Top-1 为 45.8%。</td></tr>
+      <tr><td>五日刷新是否还有额外收益？</td><td>有，P8-48 的 D/RF 从 0.940 降至 0.896。</td></tr>
     </tbody>
   </table></div>
-  <p class="note">每一行用的指标不同，不能横向比较绝对值；它们只证明该阶段确实改变了攻击者可用的信息。</p>
+  <p class="note">对应数值：固定类位置无 rotation 时 UNSW RF 0.997、CIC 0.993，加入 rotation 后 0.405 / 0.057；Periodic 的 block 平均 BA 0.965→0.828；Per-flow 的 6 类 State 推断随机基线为 0.167；Full New5 为 P8-48、48 日、零标签冻结 D/RF。</p>
 </section>
 
 <section class="slide">
   <div class="eyebrow">05 · 核心结果</div>
-  <h2>Deakin 50 日：累计与滑动要分开看</h2>
+  <h2>Full New5 在 Deakin 上主要改善 RF 与滑动攻击</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Deakin10 · 攻击者</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th></tr></thead>
     <tbody>
@@ -139,7 +130,7 @@
       <tr><td>MLP 14 日滑动</td><td class="num">0.3618</td><td class="num">0.3529</td><td class="num">−0.0089</td></tr>
     </tbody>
   </table></div>
-  <div class="callout">收益主要集中在 RF 与滑动更新；LR 累计只有 −0.009。不能把“全期平均”写成所有攻击者都明显下降。</div>
+  <div class="callout">LR 累计仅下降 0.009；RF 与滑动更新的降幅更大。表中每一行都写明更新方式，避免把“全期平均”误读成所有攻击者一致下降。</div>
   <p class="note">50 日、10 类、三 seed 均值；负 Δ 表示攻击 BA 下降（防御改善）。</p>
 </section>
 <section class="slide">

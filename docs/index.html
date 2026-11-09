@@ -26,6 +26,13 @@
 .verdict{font-size:clamp(24px,2.6vw,36px);line-height:1.45;font-weight:800;color:var(--navy);max-width:1050px}
 .dark .verdict{color:#fff}
 
+
+.figpair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.figure{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+.figure img{width:100%;height:auto;display:block;border-radius:6px}
+.figure .cap{font-size:13px;color:var(--muted);line-height:1.45;margin-top:7px}
+.defs td:first-child{width:180px;font-weight:800;color:var(--blue)}
+
 </style>
 </head>
 <body>
@@ -52,7 +59,22 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">02 · 攻击者与评价</div>
+  <div class="eyebrow">02 · 静态搜索</div>
+  <h2>先找值得研究的自由度：位置、长度、Gap</h2>
+  <div class="figpair">
+    <div class="figure"><img src="figures/phase1/fig1_search.png" alt="位置、长度、Gap 搜索"><div class="cap"><b>左：</b>等成本下三个组件的 ΔBA。位置在四个数据集上都为正；长度不稳定；Gap 依赖数据集。</div></div>
+    <div class="figure"><img src="figures/phase1/fig4_mechanism.png" alt="机制分解"><div class="cap"><b>右：</b>机制分解。Dummy mixing 是主项；真实包位移与真实包 padding 的贡献较小。</div></div>
+  </div>
+  <div class="grid three">
+    <div class="card"><h3>位置</h3><p>UNSW +0.052、CIC +0.062、UNSW2018 +0.082。</p></div>
+    <div class="card"><h3>长度</h3><p>仅 +0.003，held-out 方向不稳定。</p></div>
+    <div class="card"><h3>Gap</h3><p>UNSW +0.016、CIC +0.003、UNSW2018 +0.044。</p></div>
+  </div>
+  <div class="callout">所以后面的 Fixed / Position5 / Full New5 都从“位置”这条线出发；不是先验选择，而是静态搜索的结果。</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">03 · 攻击者与评价</div>
   <h2>同一批 Blind，比较不同“可观测表示”</h2>
   <div class="grid">
     <div class="card"><h3>D 视图</h3><p>原 64 维：32 个带方向包长 + 32 个 log Gap，依赖事件顺序。</p></div>
@@ -70,7 +92,24 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">03 · 方案演化</div>
+  <div class="eyebrow">04 · 先统一几个词</div>
+  <h2>Codebook、State、Trigger、Weakener 不是一回事</h2>
+  <div class="table-wrap"><table class="defs">
+    <thead><tr><th>术语</th><th>本文定义</th></tr></thead>
+    <tbody>
+      <tr><td>Codebook</td><td>每个 Code 的位置、长度、Gap 组合；每 5 个观测日刷新。</td></tr>
+      <tr><td>Mapping State</td><td>设备类别 → Code 的置换；六个 State 不是六套独立 Trigger 参数。</td></tr>
+      <tr><td>Trigger</td><td>2 个诱导包，决定“类别看起来像什么”。</td></tr>
+      <tr><td>Weakener</td><td>3 个弱化 dummy，加上有限真实包 padding / delay。</td></tr>
+      <tr><td>D / C</td><td>D：原 64 维序列；C：45 维顺序无关统计。</td></tr>
+      <tr><td>P5 / P8</td><td>P5-150：5 类 150 日；P8-48：8 类 48 日。</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">后面所有结果都只在 D 或 C 中的某一个视图、某一组类别覆盖下成立；换视图或换协议，不能直接比较绝对值。</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">05 · 方案演化</div>
   <h2>从静态映射走到双时间尺度</h2>
   <div class="flow">
     <div class="step"><b>Fixed Mapping</b><span>长期共享一套类别→Code 映射；旧模型可稳定学习。</span></div>
@@ -85,7 +124,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">04 · 核心结果</div>
+  <div class="eyebrow">06 · 核心结果</div>
   <h2>Full New5 改变了序列，但没有关闭 C 视图</h2>
   <div class="grid">
     <div class="card"><span class="tag">UNSW8</span><div class="big">0.9647</div><p>C 视图累计 RF；D 视图为 0.8818。</p></div>
@@ -95,7 +134,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">05 · 机制审计</div>
+  <div class="eyebrow">07 · 机制审计</div>
   <h2>为什么真实包 Padding 难以奏效</h2>
   <div class="grid three">
     <div class="card"><div class="big">347 B</div><p>Weakener 字节分账。</p></div>
@@ -107,7 +146,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">06 · 新方案</div>
+  <div class="eyebrow">08 · 新方案</div>
   <h2>概率长 Trigger：基于可操作余量追加预算</h2>
   <div class="eventrow"><span class="lbl">A 原 Full New5</span><span class="ev r">R1</span><span class="ev t">T1</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2</span><span class="ev w">W2</span></div>
   <div class="eventrow"><span class="lbl">B 分散追加</span><span class="ev r">R1</span><span class="ev t">T1+</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2+</span><span class="ev w">W2</span></div>
@@ -122,7 +161,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">07 · Deakin10</div>
+  <div class="eyebrow">09 · Deakin10</div>
   <h2>长 Trigger 在 C 视图上带来明显改善</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>Deakin10 · 攻击</th><th class="num">A Full</th><th class="num">B 分散</th><th class="num">C 集中</th><th class="num">C−A</th></tr></thead>
@@ -138,7 +177,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">08 · UNSW8 P8-48</div>
+  <div class="eyebrow">10 · UNSW8 P8-48</div>
   <h2>同一方案，在 UNSW 上收益有限</h2>
   <div class="grid">
     <div class="card"><span class="tag">C 累计 RF</span><div class="big">0.9854 → 0.9842</div><p>仍接近识别天花板。</p></div>
@@ -157,7 +196,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">09 · 解释</div>
+  <div class="eyebrow">11 · 解释</div>
   <h2>两个数据集为何不同：一个待验证假设</h2>
   <div class="grid">
     <div class="card"><h3>Deakin10</h3><p>设备差异更多落在 LT 能触及的<b>大包长度 / 规模统计</b>；追加字节能改变这些统计。</p></div>
@@ -167,7 +206,7 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">10 · 五类基线</div>
+  <div class="eyebrow">12 · 五类基线</div>
   <h2>哪些方案成立，哪些不成立</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>方案</th><th>机制</th><th>证据</th><th>状态</th></tr></thead>
@@ -183,7 +222,7 @@
 </section>
 
 <section class="slide dark">
-  <div class="eyebrow">11 · 总结</div>
+  <div class="eyebrow">13 · 总结</div>
   <h2>我们做了什么</h2>
   <div class="grid">
     <div class="card"><h3>机制</h3><p>用位置、Gap、Dummy mixing 与窗口截断解释防御为什么改变序列表示。</p></div>

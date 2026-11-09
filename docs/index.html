@@ -69,9 +69,9 @@
     <div>
       <div class="eventrow"><span class="lbl">原始</span><span class="ev r">R1</span><span class="ev r">R2</span><span class="ev r">R3</span><span class="ev r">R4</span><span class="ev r">R5</span></div>
       <div class="eventrow"><span class="lbl">防御后</span><span class="ev r">R1+pad</span><span class="ev t">T1</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2</span><span class="ev w">W2</span><span class="ev x">R5 挤出</span></div>
-      <p class="note">Padding、dummy 插入、窗口截断三者耦合；但分解后，dummy mixing 的解释力最大。</p>
+      <p class="note">Padding、dummy 插入、窗口截断三者耦合；分解后 dummy mixing 解释力最大。</p>
     </div>
-    <div class="figure"><img src="figures/phase1/fig4_mechanism.png" alt="机制分解"><div class="cap"><b>图：</b>representation / displacement / dummy mixing 的分解。</div></div>
+    <div class="figure"><img src="figures/phase1/fig4_mechanism.png" alt="机制分解"><div class="cap"><b>图：</b>representation / displacement / dummy mixing 分解。</div></div>
   </div>
   <div class="table-wrap"><table>
     <thead><tr><th>数据集</th><th class="num">C→C</th><th class="num">representation</th><th class="num">displacement</th><th class="num">dummy mixing</th><th class="num">total</th></tr></thead>
@@ -82,12 +82,12 @@
       <tr><td>Deakin60</td><td class="num">0.369</td><td class="num">0.014</td><td class="num">0.000</td><td class="num">0.179</td><td class="num">0.192</td></tr>
     </tbody>
   </table></div>
-  <div class="callout">Dummy mixing 在 Deakin 解释 0.179/0.192，在 CIC 解释 0.075/0.123；真实包位移接近 0。所以不能把下降简单归因为“真实包信息被破坏”。</div>
+  <p class="note">Dummy mixing 在 Deakin 解释 0.179/0.192，在 CIC 解释 0.075/0.123；真实包位移接近 0，不能把下降简单归因为真实包信息被破坏。</p>
 </section>
 
 <section class="slide">
   <div class="eyebrow">03 · 攻击者与评价</div>
-  <h2>同一批 Blind，比较不同“可观测表示”</h2>
+  <h2>先统一术语，再看攻击者在哪里被评价</h2>
   <div class="grid">
     <div class="card"><h3>D 视图</h3><p>原 64 维：32 个带方向包长 + 32 个 log Gap，依赖事件顺序。</p></div>
     <div class="card"><h3>C 视图</h3><p>45 维顺序无关统计：下行包长直方图、大包长度与规模统计。</p></div>
@@ -100,28 +100,11 @@
       <tr><td>P8-open</td><td>5 类 → 8 类</td><td class="num">150 日</td><td>可选，未启动</td></tr>
     </tbody>
   </table></div>
-  <p class="note">UNSW8 的类别 0/4/6 在 2016-10-20 尚未出现；要 causal warmup 覆盖 8 类，只能从 2017-02-23 开始。</p>
+  <p class="note"><b>术语：</b>Codebook = 位置/长度/Gap 组合；State = 类别→Code 置换；Trigger = 2 个诱导包；Weakener = 3 个弱化 dummy + 有限真实包 padding。BA 越低表示防御越强。</p>
 </section>
 
 <section class="slide">
-  <div class="eyebrow">04 · 先统一几个词</div>
-  <h2>Codebook、State、Trigger、Weakener 不是一回事</h2>
-  <div class="table-wrap"><table class="defs">
-    <thead><tr><th>术语</th><th>本文定义</th></tr></thead>
-    <tbody>
-      <tr><td>Codebook</td><td>每个 Code 的位置、长度、Gap 组合；每 5 个观测日刷新。</td></tr>
-      <tr><td>Mapping State</td><td>设备类别 → Code 的置换；六个 State 不是六套独立 Trigger 参数。</td></tr>
-      <tr><td>Trigger</td><td>2 个诱导包，决定“类别看起来像什么”。</td></tr>
-      <tr><td>Weakener</td><td>3 个弱化 dummy，加上有限真实包 padding / delay。</td></tr>
-      <tr><td>D / C</td><td>D：原 64 维序列；C：45 维顺序无关统计。</td></tr>
-      <tr><td>P5 / P8</td><td>P5-150：5 类 150 日；P8-48：8 类 48 日。</td></tr>
-    </tbody>
-  </table></div>
-  <div class="callout">后面所有结果都只在 D 或 C 中的某一个视图、某一组类别覆盖下成立；换视图或换协议，不能直接比较绝对值。</div>
-</section>
-
-<section class="slide">
-  <div class="eyebrow">05 · 方案演化</div>
+  <div class="eyebrow">04 · 方案演化</div>
   <h2>从静态映射走到双时间尺度：每一步的证据</h2>
   <div class="flow">
     <div class="step"><b>Fixed Mapping</b><span>长期共享一套类别→Code 映射。</span></div>
@@ -145,25 +128,57 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">06 · 核心结果</div>
-  <h2>Full New5 改变了序列，但没有关闭 C 视图</h2>
-  <div class="grid">
-    <div class="card"><span class="tag">UNSW8</span><div class="big">0.9647</div><p>C 视图累计 RF；D 视图为 0.8818。</p></div>
-    <div class="card"><span class="tag">Deakin10</span><div class="big">0.5561</div><p>C 视图累计 RF；D 视图为 0.5730。</p></div>
-  </div>
-  <div class="callout">动态刷新对部分序列攻击者有增量，但顺序无关统计几乎不受影响；这就是后续所有“残余”问题的起点。<br><span class="note">UNSW8 150 日结果是 5 类 warmup + 8 类 target，不能证明“初始认识 8 类”。</span></div>
+  <div class="eyebrow">05 · 核心结果</div>
+  <h2>Full New5 改变了 D，但 C 视图几乎不动</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>P8-48 · 攻击</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th><th>解释</th></tr></thead>
+    <tbody>
+      <tr><td>D / LR</td><td class="num">0.763</td><td class="num">0.666</td><td class="num">−0.097</td><td>序列视图明显下降</td></tr>
+      <tr><td>D / RF</td><td class="num">0.940</td><td class="num">0.896</td><td class="num">−0.044</td><td>仍有残余</td></tr>
+      <tr><td>C / LR</td><td class="num">0.875</td><td class="num">0.875</td><td class="num">0.000</td><td>完全不变</td></tr>
+      <tr><td>C / RF</td><td class="num">0.978</td><td class="num">0.978</td><td class="num">0.000</td><td>完全不变</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">48 日、8 类、零部署后标签：码本刷新只作用于序列视图；C 视图没有变化。</div>
+  <p class="note">P8-48 是唯一能同时满足“初始认识全部 8 类”和“causal warmup”的 UNSW 协议；不能与 150 日结果直接比较绝对值。</p>
+</section>
+<section class="slide">
+  <div class="eyebrow">06 · 攻击者能力</div>
+  <h2>不是只有最强自适应攻击者：零标签与低标签都要看</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>P8-48</th><th class="num">Frozen-clean</th><th class="num">Frozen-initial</th><th class="num">1 标签/日</th><th class="num">2</th><th class="num">4</th><th class="num">8</th></tr></thead>
+    <tbody>
+      <tr><td>D / LR</td><td class="num">0.416</td><td class="num">0.666</td><td class="num">0.681</td><td class="num">0.711</td><td class="num">0.732</td><td class="num">0.762</td></tr>
+      <tr><td>D / RF</td><td class="num">0.419</td><td class="num">0.896</td><td class="num">0.913</td><td class="num">0.926</td><td class="num">0.936</td><td class="num">0.936</td></tr>
+      <tr><td>C / LR</td><td class="num">0.861</td><td class="num">0.875</td><td class="num">0.924</td><td class="num">0.941</td><td class="num">0.970</td><td class="num">0.970</td></tr>
+      <tr><td>C / RF</td><td class="num">0.911</td><td class="num">0.978</td><td class="num">0.993</td><td class="num">0.994</td><td class="num">0.990</td><td class="num">0.982</td></tr>
+    </tbody>
+  </table></div>
+  <p>零标签的 Frozen-clean 在 C/RF 上仍有 <b>0.911</b>；只给每天 1 条标签，C/RF 就升到 <b>0.993</b>。D 视图对标签更敏感，但 Frozen-initial 的 D/RF 也已到 0.896。</p>
+  <div class="callout">所以不能只报“最强自适应”结果：零标签残余、初始防御知识、低标签适应是三种不同能力，必须分开列。</div>
 </section>
 
 <section class="slide">
-  <div class="eyebrow">07 · 机制审计</div>
-  <h2>为什么真实包 Padding 难以奏效</h2>
-  <div class="grid three">
-    <div class="card"><div class="big">347 B</div><p>Weakener 字节分账。</p></div>
-    <div class="card"><div class="big">≈305 B</div><p>三个 Weakener dummy 的期望占用。</p></div>
-    <div class="card"><div class="big">≈42 B</div><p>真正留给真实包 padding 的空间。</p></div>
+  <div class="eyebrow">07 · Padding 与 Hybrid</div>
+  <h2>为什么真实包 Padding 难以奏效：Hybrid 也受同一预算约束</h2>
+  <div class="nums">
+    <div class="numcard"><b>347 B</b><span>Weakener 字节分账</span></div>
+    <div class="numcard"><b>≈305 B</b><span>3 个 dummy 的期望占用</span></div>
+    <div class="numcard"><b>≈42 B</b><span>真实包 padding 余量</span></div>
   </div>
-  <p>真实包 padding 只影响约 <b>4%</b> 的上行事件；Hybrid 把有限预算偏向长包，C-RF 有小幅改善，但 LR/MLP 不稳定，部分数据集 D 视图反而上升。</p>
-  <div class="callout">结论：不是“padding 没用”，而是<b>当前 630 B 分账下，可操作的真实包 padding 太少</b>，不足以重塑长度统计。</div>
+  <p><b>Hybrid 做了什么：</b>在 Weakener 预算内，按 warmup 长包阈值把 padding 优先分配给长包；H25/H50 表示预留比例。预算总量不变。</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>数据集 · 攻击</th><th class="num">Baseline</th><th class="num">Hybrid-25</th><th class="num">Hybrid-50</th><th>读法</th></tr></thead>
+    <tbody>
+      <tr><td>UNSW · C-RF 累计</td><td class="num">0.9766</td><td class="num">0.9658</td><td class="num">0.9670</td><td>小幅改善</td></tr>
+      <tr><td>UNSW · C-LR 累计</td><td class="num">0.9512</td><td class="num">0.9485</td><td class="num">0.9509</td><td>基本不变</td></tr>
+      <tr><td>UNSW · D-LR 累计</td><td class="num">0.7699</td><td class="num">0.7733</td><td class="num">0.7748</td><td>反而上升</td></tr>
+      <tr><td>Deakin · C-RF 累计</td><td class="num">0.5715</td><td class="num">0.5588</td><td class="num">0.5362</td><td>改善</td></tr>
+      <tr><td>Deakin · C-LR 累计</td><td class="num">0.4536</td><td class="num">0.4791</td><td class="num">0.4578</td><td>H25 反向</td></tr>
+      <tr><td>Deakin · D-LR 累计</td><td class="num">0.3206</td><td class="num">0.3206</td><td class="num">0.3216</td><td>基本不变</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">Hybrid 只在部分 C-RF 上有效；LR/MLP 与 D 视图不稳定。根因不是“长包没选对”，而是<b>42 B 的真实包 padding 余量太小</b>。</div>
 </section>
 
 <section class="slide">

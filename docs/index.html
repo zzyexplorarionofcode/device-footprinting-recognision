@@ -46,31 +46,43 @@
 </section>
 
 <section class="slide">
-  <div class="eyebrow">01 · 机制</div>
-  <h2>原始流量与防御后流量：改的是事件结构</h2>
-  <div class="eventrow"><span class="lbl">原始流量</span><span class="ev r">R1</span><span class="ev r">R2</span><span class="ev r">R3</span><span class="ev r">R4</span><span class="ev r">R5</span><span class="ev r">R6</span></div>
-  <div class="eventrow"><span class="lbl">Full New5</span><span class="ev r">R1+pad</span><span class="ev t">T1</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2</span><span class="ev w">W2</span><span class="ev r">R3</span><span class="ev r">R4</span><span class="ev x">R6 被挤出</span></div>
-  <div class="grid three">
-    <div class="card"><h3>真实包 Padding</h3><p>R1 变长，但不删除真实包。</p></div>
-    <div class="card"><h3>Dummy Mixing</h3><p>T/W 插入，改变长度、Gap 与事件计数。</p></div>
-    <div class="card"><h3>插入后截断</h3><p>32-event 窗口在插入之后裁剪，部分真实包被 displaced。</p></div>
+  <div class="eyebrow">01 · 静态搜索</div>
+  <h2>先找值得研究的自由度：位置、长度、Gap</h2>
+  <div class="figpair">
+    <div class="figure"><img src="figures/phase1/fig1_search.png" alt="位置、长度、Gap 搜索"><div class="cap"><b>图：</b>等成本下三个组件的 ΔBA。位置在四个数据集上都为正；长度不稳定；Gap 依赖数据集。</div></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>组件</th><th class="num">UNSW</th><th class="num">CIC</th><th class="num">UNSW2018</th></tr></thead>
+      <tbody>
+        <tr><td>位置</td><td class="num">+0.052</td><td class="num">+0.062</td><td class="num">+0.082</td></tr>
+        <tr><td>长度</td><td class="num">+0.003</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr><td>Gap</td><td class="num">+0.016</td><td class="num">+0.003</td><td class="num">+0.044</td></tr>
+      </tbody>
+    </table></div>
   </div>
-  <div class="callout">关键不是“加了几个包”，而是<b>位置、长度、Gap 与窗口截断</b>一起改变了可观测序列。</div>
+  <div class="callout">位置是唯一跨数据集稳定为正的组件；后面的 Fixed / Position5 / Full New5 都从这条线出发。</div>
 </section>
 
 <section class="slide">
-  <div class="eyebrow">02 · 静态搜索</div>
-  <h2>先找值得研究的自由度：位置、长度、Gap</h2>
+  <div class="eyebrow">02 · 机制证据</div>
+  <h2>下降来自哪里：Dummy mixing 是主项</h2>
   <div class="figpair">
-    <div class="figure"><img src="figures/phase1/fig1_search.png" alt="位置、长度、Gap 搜索"><div class="cap"><b>左：</b>等成本下三个组件的 ΔBA。位置在四个数据集上都为正；长度不稳定；Gap 依赖数据集。</div></div>
-    <div class="figure"><img src="figures/phase1/fig4_mechanism.png" alt="机制分解"><div class="cap"><b>右：</b>机制分解。Dummy mixing 是主项；真实包位移与真实包 padding 的贡献较小。</div></div>
+    <div>
+      <div class="eventrow"><span class="lbl">原始</span><span class="ev r">R1</span><span class="ev r">R2</span><span class="ev r">R3</span><span class="ev r">R4</span><span class="ev r">R5</span></div>
+      <div class="eventrow"><span class="lbl">防御后</span><span class="ev r">R1+pad</span><span class="ev t">T1</span><span class="ev w">W1</span><span class="ev r">R2</span><span class="ev t">T2</span><span class="ev w">W2</span><span class="ev x">R5 挤出</span></div>
+      <p class="note">Padding、dummy 插入、窗口截断三者耦合；但分解后，dummy mixing 的解释力最大。</p>
+    </div>
+    <div class="figure"><img src="figures/phase1/fig4_mechanism.png" alt="机制分解"><div class="cap"><b>图：</b>representation / displacement / dummy mixing 的分解。</div></div>
   </div>
-  <div class="grid three">
-    <div class="card"><h3>位置</h3><p>UNSW +0.052、CIC +0.062、UNSW2018 +0.082。</p></div>
-    <div class="card"><h3>长度</h3><p>仅 +0.003，held-out 方向不稳定。</p></div>
-    <div class="card"><h3>Gap</h3><p>UNSW +0.016、CIC +0.003、UNSW2018 +0.044。</p></div>
-  </div>
-  <div class="callout">所以后面的 Fixed / Position5 / Full New5 都从“位置”这条线出发；不是先验选择，而是静态搜索的结果。</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>数据集</th><th class="num">C→C</th><th class="num">representation</th><th class="num">displacement</th><th class="num">dummy mixing</th><th class="num">total</th></tr></thead>
+    <tbody>
+      <tr><td>UNSW</td><td class="num">0.977</td><td class="num">0.015</td><td class="num">0.004</td><td class="num">0.026</td><td class="num">0.046</td></tr>
+      <tr><td>CIC</td><td class="num">0.660</td><td class="num">0.036</td><td class="num">0.012</td><td class="num">0.075</td><td class="num">0.123</td></tr>
+      <tr><td>UNSW2018</td><td class="num">0.614</td><td class="num">0.058</td><td class="num">−0.005</td><td class="num">0.086</td><td class="num">0.140</td></tr>
+      <tr><td>Deakin60</td><td class="num">0.369</td><td class="num">0.014</td><td class="num">0.000</td><td class="num">0.179</td><td class="num">0.192</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">Dummy mixing 在 Deakin 解释 0.179/0.192，在 CIC 解释 0.075/0.123；真实包位移接近 0。所以不能把下降简单归因为“真实包信息被破坏”。</div>
 </section>
 
 <section class="slide">
@@ -110,17 +122,26 @@
 
 <section class="slide">
   <div class="eyebrow">05 · 方案演化</div>
-  <h2>从静态映射走到双时间尺度</h2>
+  <h2>从静态映射走到双时间尺度：每一步的证据</h2>
   <div class="flow">
-    <div class="step"><b>Fixed Mapping</b><span>长期共享一套类别→Code 映射；旧模型可稳定学习。</span></div>
+    <div class="step"><b>Fixed Mapping</b><span>长期共享一套类别→Code 映射。</span></div>
     <div class="arrow">→</div>
-    <div class="step"><b>Periodic Rotation</b><span>每段换一套映射；旧捷径失效，但仍可由少量标签识别共享 State。</span></div>
+    <div class="step"><b>Periodic Rotation</b><span>每段换一套映射。</span></div>
     <div class="arrow">→</div>
-    <div class="step"><b>Per-flow IID</b><span>每条 flow 独立抽 State；逐流状态推断成为瓶颈。</span></div>
+    <div class="step"><b>Per-flow IID</b><span>每条 flow 独立抽 State。</span></div>
     <div class="arrow">→</div>
-    <div class="step"><b>Full New5</b><span>5 日刷新整套码本 + 逐流 IID State。</span></div>
+    <div class="step"><b>Full New5</b><span>5 日刷新码本 + 逐流 IID。</span></div>
   </div>
-  <div class="callout">这条线的核心变化不是“更随机”，而是<b>把可学习的稳定捷径逐步拆掉</b>：先换映射，再换码本，再逐流换 State。</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>阶段</th><th>对照 / 指标</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>Fixed Mapping</td><td>静态类位置 vs 加 rotation（RF）</td><td>UNSW 0.997 → 0.405；CIC 0.993 → 0.057</td></tr>
+      <tr><td>Periodic</td><td>时间序列 J(H)</td><td>Fixed 0.965；Periodic 0.828</td></tr>
+      <tr><td>Per-flow</td><td>逐流 State Top-1 / J(H)</td><td>0.458 / 0.897</td></tr>
+      <tr><td>Full New5</td><td>固定 IID vs 5 日刷新（P8-48 RF）</td><td>0.940 → 0.896</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">这些指标来自不同实验，不能横向比较绝对值；它们只证明每一步“确实改变了攻击者的可用信息”。</p>
 </section>
 
 <section class="slide">

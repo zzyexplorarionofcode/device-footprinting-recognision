@@ -92,15 +92,13 @@
     <div class="card"><h3>D 视图</h3><p>原 64 维：32 个带方向包长 + 32 个 log Gap，依赖事件顺序。</p></div>
     <div class="card"><h3>C 视图</h3><p>45 维顺序无关统计：下行包长直方图、大包长度与规模统计。</p></div>
   </div>
-  <div class="table-wrap"><table>
-    <thead><tr><th>协议</th><th>warmup 类别</th><th class="num">时长</th><th>回答</th></tr></thead>
-    <tbody>
-      <tr><td>P5-150</td><td>1/2/3/5/7</td><td class="num">150 日</td><td>长期已知设备</td></tr>
-      <tr><td>P8-48</td><td>全部 8 类</td><td class="num">48 日</td><td>完整类别识别</td></tr>
-      <tr><td>P8-open</td><td>5 类 → 8 类</td><td class="num">150 日</td><td>可选，未启动</td></tr>
-    </tbody>
-  </table></div>
-  <p class="note"><b>术语：</b>Codebook = 位置/长度/Gap 组合；State = 类别→Code 置换；Trigger = 2 个诱导包；Weakener = 3 个弱化 dummy + 有限真实包 padding。BA 越低表示防御越强。</p>
+  <div class="grid">
+    <div class="card"><h3>Frozen-clean</h3><p>只用 clean warmup 训练，部署后 0 标签，模型冻结。</p></div>
+    <div class="card"><h3>Frozen-initial</h3><p>用 initial defended warmup 训练，部署后 0 标签，模型冻结。</p></div>
+    <div class="card"><h3>累计 LR / RF</h3><p>用截至当日的全部历史标签训练；旧样本一直保留。</p></div>
+    <div class="card"><h3>14 日滑动 LR / RF</h3><p>只用过去 14 个日历日的标签训练；更偏近期。</p></div>
+  </div>
+  <p class="note"><b>其余术语：</b>Codebook = 位置/长度/Gap 组合；State = 类别→Code 置换；Trigger = 2 个诱导包；Weakener = 3 个弱化 dummy + 有限真实包 padding。BA 越低表示防御越强。</p>
 </section>
 
 <section class="slide">
@@ -116,31 +114,33 @@
     <div class="step"><b>Full New5</b><span>5 日刷新码本 + 逐流 IID。</span></div>
   </div>
   <div class="table-wrap"><table>
-    <thead><tr><th>阶段</th><th>对照 / 指标</th><th>结果</th></tr></thead>
+    <thead><tr><th>阶段</th><th>改了什么</th><th>指标</th><th>结果</th></tr></thead>
     <tbody>
-      <tr><td>Fixed Mapping</td><td>静态类位置 vs 加 rotation（RF）</td><td>UNSW 0.997 → 0.405；CIC 0.993 → 0.057</td></tr>
-      <tr><td>Periodic</td><td>时间序列 J(H)</td><td>Fixed 0.965；Periodic 0.828</td></tr>
-      <tr><td>Per-flow</td><td>逐流 State Top-1 / J(H)</td><td>0.458 / 0.897</td></tr>
-      <tr><td>Full New5</td><td>固定 IID vs 5 日刷新（P8-48 RF）</td><td>0.940 → 0.896</td></tr>
+      <tr><td>Fixed Mapping</td><td>静态类位置 → 加 rotation</td><td>RF 重训 BA</td><td>UNSW 0.997 → 0.405；CIC 0.993 → 0.057</td></tr>
+      <tr><td>Periodic</td><td>固定映射 → 每 2 个 block 轮换</td><td>block 平均 BA</td><td>0.965 → 0.828</td></tr>
+      <tr><td>Per-flow</td><td>每条 flow 独立 State</td><td>State 推断 Top-1</td><td>0.458（6 类随机 0.167）</td></tr>
+      <tr><td>Full New5</td><td>固定码本 + IID → 5 日刷新</td><td>RF BA（P8-48）</td><td>0.940 → 0.896</td></tr>
     </tbody>
   </table></div>
-  <p class="note">这些指标来自不同实验，不能横向比较绝对值；它们只证明每一步“确实改变了攻击者的可用信息”。</p>
+  <p class="note">每一行用的指标不同，不能横向比较绝对值；它们只证明该阶段确实改变了攻击者可用的信息。</p>
 </section>
 
 <section class="slide">
   <div class="eyebrow">05 · 核心结果</div>
-  <h2>Full New5 改变了 D，但 C 视图几乎不动</h2>
+  <h2>Deakin 50 日：累计与滑动要分开看</h2>
   <div class="table-wrap"><table>
-    <thead><tr><th>P8-48 · 攻击</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th><th>解释</th></tr></thead>
+    <thead><tr><th>Deakin10 · 攻击者</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th><th class="num">Δ</th></tr></thead>
     <tbody>
-      <tr><td>D / LR</td><td class="num">0.763</td><td class="num">0.666</td><td class="num">−0.097</td><td>序列视图明显下降</td></tr>
-      <tr><td>D / RF</td><td class="num">0.940</td><td class="num">0.896</td><td class="num">−0.044</td><td>仍有残余</td></tr>
-      <tr><td>C / LR</td><td class="num">0.875</td><td class="num">0.875</td><td class="num">0.000</td><td>完全不变</td></tr>
-      <tr><td>C / RF</td><td class="num">0.978</td><td class="num">0.978</td><td class="num">0.000</td><td>完全不变</td></tr>
+      <tr><td>LR 累计</td><td class="num">0.3299</td><td class="num">0.3210</td><td class="num">−0.0089</td></tr>
+      <tr><td>LR 14 日滑动</td><td class="num">0.4412</td><td class="num">0.4073</td><td class="num">−0.0339</td></tr>
+      <tr><td>RF 累计</td><td class="num">0.6295</td><td class="num">0.5730</td><td class="num">−0.0565</td></tr>
+      <tr><td>RF 14 日滑动</td><td class="num">0.5506</td><td class="num">0.5092</td><td class="num">−0.0414</td></tr>
+      <tr><td>MLP 累计</td><td class="num">0.4740</td><td class="num">0.4483</td><td class="num">−0.0257</td></tr>
+      <tr><td>MLP 14 日滑动</td><td class="num">0.3618</td><td class="num">0.3529</td><td class="num">−0.0089</td></tr>
     </tbody>
   </table></div>
-  <div class="callout">48 日、8 类、零部署后标签：码本刷新只作用于序列视图；C 视图没有变化。</div>
-  <p class="note">P8-48 是唯一能同时满足“初始认识全部 8 类”和“causal warmup”的 UNSW 协议；不能与 150 日结果直接比较绝对值。</p>
+  <div class="callout">收益主要集中在 RF 与滑动更新；LR 累计只有 −0.009。不能把“全期平均”写成所有攻击者都明显下降。</div>
+  <p class="note">50 日、10 类、三 seed 均值；负 Δ 表示攻击 BA 下降（防御改善）。</p>
 </section>
 <section class="slide">
   <div class="eyebrow">06 · 攻击者能力</div>
@@ -229,20 +229,11 @@
     </tbody>
   </table></div>
   <p class="note">C 累计 RF 与 Frozen-clean 残余都没有被解决；C/LR 的 Frozen-clean 反而从 0.8615 升到 0.8930。</p>
-</section>
+
+  <p class="note"><b>待验证解释：</b>Deakin 的差异更多落在 LT 可触及的大包统计；UNSW 的强残余更多来自当前预算不可操作的统计。当前没有特征因果归因，不能作为结论。</p></section>
 
 <section class="slide">
-  <div class="eyebrow">11 · 解释</div>
-  <h2>两个数据集为何不同：一个待验证假设</h2>
-  <div class="grid">
-    <div class="card"><h3>Deakin10</h3><p>设备差异更多落在 LT 能触及的<b>大包长度 / 规模统计</b>；追加字节能改变这些统计。</p></div>
-    <div class="card"><h3>UNSW8</h3><p>强残余更多来自<b>当前预算不可操作</b>的统计；少量追加只影响边缘。</p></div>
-  </div>
-  <div class="callout">这是机制假设，不是已经完成的特征因果归因；当前证据只能说明：两个数据集的可操作统计不同。</div>
-</section>
-
-<section class="slide">
-  <div class="eyebrow">12 · 五类基线</div>
+  <div class="eyebrow">11 · 五类基线</div>
   <h2>哪些方案成立，哪些不成立</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>方案</th><th>机制</th><th>证据</th><th>状态</th></tr></thead>
@@ -258,7 +249,7 @@
 </section>
 
 <section class="slide dark">
-  <div class="eyebrow">13 · 总结</div>
+  <div class="eyebrow">12 · 总结</div>
   <h2>我们做了什么</h2>
   <div class="grid">
     <div class="card"><h3>机制</h3><p>用位置、Gap、Dummy mixing 与窗口截断解释防御为什么改变序列表示。</p></div>

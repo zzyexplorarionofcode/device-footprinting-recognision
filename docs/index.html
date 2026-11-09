@@ -14,7 +14,7 @@
 @media print{body{height:auto;overflow:visible;background:white}.deck{display:block;height:auto}.slide,.slide.active{display:block!important;min-height:100vh;page-break-after:always}.footer,.progress{display:none}}
 .chart:has(svg[aria-label="Hybrid相对Baseline的C视图BA差值"]){display:none}
 .compare-bars{display:grid;grid-template-columns:150px 1fr 75px;gap:12px;align-items:center;margin:12px 0;font-size:14px}.compare-bars .rail{height:23px;background:#edf1f2;border-radius:5px;position:relative}.compare-bars .rail:before{content:"";position:absolute;left:50%;height:100%;width:1px;background:#778b95}.compare-bars .rail i{position:absolute;top:2px;height:19px;border-radius:4px;background:#087f75}.compare-bars .rail i.worse{background:#b56150}.compare-bars b{text-align:right;font-variant-numeric:tabular-nums}
-.slide.compact{padding:32px clamp(28px,7vw,106px) 28px}.slide.compact .eyebrow{margin-bottom:9px}.slide.compact h2{font-size:clamp(28px,3vw,40px);margin-bottom:12px}.slide.compact p{font-size:16px;line-height:1.45;margin:7px 0}.slide.compact .lead{font-size:20px;line-height:1.4}.slide.compact .flow{margin:12px 0}.slide.compact .step{padding:11px}.slide.compact .grid{margin:12px 0;gap:10px}.slide.compact .card{padding:13px 15px}.slide.compact .card p{font-size:14px}.slide.compact .callout{margin:11px 0;padding:9px 12px;font-size:14px;line-height:1.45}.slide.compact .table-wrap{margin:11px 0}.slide.compact th,.slide.compact td{padding:7px 10px;font-size:13px}.slide.compact .note{font-size:12px}
+.slide.compact{padding:32px clamp(28px,7vw,106px) 28px}.slide.compact .eyebrow{margin-bottom:9px}.slide.compact h2{font-size:clamp(28px,3vw,40px);margin-bottom:12px}.slide.compact p{font-size:16px;line-height:1.45;margin:7px 0}.slide.compact .lead{font-size:20px;line-height:1.4}.slide.compact .flow{margin:12px 0}.slide.compact .step{padding:11px}.slide.compact .grid{margin:12px 0;gap:10px}.slide.compact .card{padding:13px 15px}.slide.compact .card p{font-size:14px}.slide.compact .callout{margin:11px 0;padding:9px 12px;font-size:14px;line-height:1.45}.slide.compact .table-wrap{margin:11px 0}.slide.compact th,.slide.compact td{padding:7px 10px;font-size:13px}.slide.compact .note{font-size:12px}.slide.compact .chart svg{max-height:340px}
 </style>
 </head>
 <body>
@@ -22,13 +22,20 @@
 <section class="slide dark active">
 <div class="eyebrow">研究阶段汇报 · 设备流量指纹防御</div>
 <h1>从静态扰动<br>到持续变化的防御</h1><div class="rule"></div>
-<p class="lead">这项工作先问：在相同通信成本下，位置、长度和时间间隔哪些值得调？随后逐步加入真实包弱化、动态码本和在线攻击者，检验防御效果能否持续。</p>
-<div class="cover-meta">汇报重点：实验是如何一步步推进的 · 当前五类基线 · 不同攻击者下怎样读结果</div>
-<div class="speaker">方向键或空格翻页</div>
+<p class="lead">研究从等预算的位置、长度与间隔搜索出发，逐步加入真实包弱化、动态码本和在线攻击者；后续分别开展等预算消融与扩展预算实验，并对照冻结攻击者和持续适应攻击者。</p>
+<div class="cover-meta">汇报主线：研究设定 · 机制证据 · 在线防御方案 · 攻击者对照</div>
+</section>
+
+<section class="slide dark">
+<div class="eyebrow">01 · 研究设定</div><h2>防御者改变流量，攻击者只从防御后观测中识别设备</h2>
+<p class="lead">问题不是让流量“看起来随机”，而是在可执行的开销约束下，降低持续学习攻击者从流量中恢复设备类别的能力。</p>
+<div class="flow"><div class="step"><b>可信端提供类别 Y</b><span>防御按已认证设备身份工作；不读取 Blind 标签来决定扰动</span></div><div class="arrow">→</div><div class="step"><b>两层防御变换</b><span>慢层刷新合法码本；快层为每条 flow 独立抽取类别到 Code 的 State</span></div><div class="arrow">→</div><div class="step"><b>攻击者看到防御后流量</b><span>D：64 维序列；C：45 维顺序无关统计。内部真实包标记仅供机制审计</span></div></div>
+<div class="grid"><div class="card"><h3>基础预算与动态结构</h3><p>T1_W3 为 2 个 Trigger + 3 个 Weakener。Full New5 每 5 个观测日刷新位置、长度与 Gap；每条流独立均匀抽取 6 个类别→Code 置换。基础预算约束为 630 B / 1.5 s / 最多 6 个 dummy。</p></div><div class="card"><h3>比较按实验问题分别配对</h3><p>报告包含等预算组件消融、LT 扩展预算实验，以及冻结模型和在线适应攻击者对照。扩展预算组不与基础组称作“等预算”；冻结攻击者也不等同于每日获得标签的在线攻击者。</p></div></div>
+<div class="callout">在线评价采用先测后训：每日先用此前已释放的标签预测当日 Blind，再释放当天新增标签供后续日期训练。当天标签不参与当天评分。</div>
 </section>
 
 <section class="slide">
-<div class="eyebrow">01 · 问题从哪里开始</div><h2>静态扰动研究之外，多问一步</h2>
+<div class="eyebrow">02 · 问题从哪里开始</div><h2>静态扰动研究之外，多问一步</h2>
 <p class="lead">已有工作通常考察一次固定变换能否降低识别率。我们的关注点逐渐转向：当攻击者继续拿到标签、持续更新模型时，固定扰动的效果还能维持多久？</p>
 <div class="grid three">
  <div class="card"><span class="tag">基础问题</span><h3>如何构造扰动？</h3><p>在严格流量预算内，改变插入位置、Trigger 长度和 Gap，观察哪些维度真能影响识别。</p></div>
@@ -39,7 +46,7 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">02 · 第一阶段</div><h2>等成本搜索：先找值得研究的自由度</h2>
+<div class="eyebrow">03 · 第一阶段</div><h2>等成本搜索：先找值得研究的自由度</h2>
 <p>固定总成本，每次只搜索一个维度。表中 ΔBA = Base − Searched，正值代表搜索后识别率下降。</p>
 <div class="table-wrap"><table><thead><tr><th>搜索维度</th><th class="num">UNSW</th><th class="num">CIC</th><th class="num">UNSW2018</th><th class="num">Mon</th><th>初步认识</th></tr></thead><tbody>
 <tr><td>位置 Position</td><td class="num">0.052</td><td class="num">0.062</td><td class="num">0.082</td><td class="num">0.009</td><td>信号最稳定，但依赖数据集</td></tr>
@@ -50,16 +57,16 @@
 <p class="sources">ΔBA 为开发搜索的 Base 与 Searched 差值；后续 held-out 结果对攻击模型和数据集更敏感。</p>
 </section>
 
-<section class="slide">
-<div class="eyebrow">03 · 第一阶段机制拆解</div><h2>识别率下降，来自哪些包级变化？</h2>
+<section class="slide compact">
+<div class="eyebrow">04 · 第一阶段机制拆解</div><h2>识别率下降，来自哪些包级变化？</h2>
 <figure class="chart"><svg viewBox="0 0 760 300" role="img" aria-label="UNSW机制分解路径差值"><line class="axis" x1="150" y1="250" x2="710" y2="250"/><line class="gridline" x1="150" y1="190" x2="710" y2="190"/><line class="gridline" x1="150" y1="130" x2="710" y2="130"/><line class="gridline" x1="150" y1="70" x2="710" y2="70"/><text x="20" y="74" font-size="14">0.04</text><text x="20" y="134" font-size="14">0.03</text><text x="20" y="194" font-size="14">0.02</text><text x="20" y="254" font-size="14">0.01</text><rect x="205" y="160" width="74" height="90" fill="#5b8b98" rx="5"/><rect x="355" y="226" width="74" height="24" fill="#e0a33b" rx="5"/><rect x="505" y="94" width="74" height="156" fill="#087f75" rx="5"/><text x="199" y="278" font-size="14">Representation</text><text x="374" y="278" font-size="14">Displacement</text><text x="518" y="278" font-size="14">Dummy mixing</text><text x="218" y="151" font-size="14">0.015</text><text x="376" y="218" font-size="14">0.004</text><text x="526" y="85" font-size="14">0.026</text><text x="615" y="40" font-size="15" fill="#596b7e">UNSW：總差值 0.046</text></svg><figcaption>图：UNSW早期链式机制分解。Representation 为真实包 padding 路径，Displacement 为窗口内真实事件位移，Dummy mixing 为 dummy 合并带来的路径差值。分解顺序固定为 CC→CD_complete→CD_visible→CD_merged，因此是路径相关差值。</figcaption></figure>
 <div class="flow"><div class="step"><b>原始真实包</b><span>设备本身的长度、方向和时间模式</span></div><div class="arrow">→</div><div class="step"><b>真实包 Padding</b><span>改变少量真实包的观测长度</span></div><div class="arrow">→</div><div class="step"><b>插入 Dummy</b><span>改变攻击者看到的混合序列</span></div><div class="arrow">→</div><div class="step"><b>前 32 事件</b><span>窗口截断可能挤出后续真实事件</span></div></div>
 <div class="grid"><div class="card"><h3>真实包与 Dummy 不是一回事</h3><p>早期机制分解显示，merged 直方图的下降很大一部分来自 dummy 混入；真实包 padding 对整体识别率的平均影响较小，并且依赖数据集。这个结果应当降低我们对“普通随机 Padding 能显著改变设备指纹”的预期。</p></div><div class="card"><h3>位置／长度搜索也不是 Padding</h3><p>Length 搜索改变的是 Trigger dummy 自身的长度码字；Weakener padding 改变真实上行包长。后续 Hybrid 不是否定早期结论，而是检验更窄的问题：固定同一预算，把 Padding 集中投向特定长包，能否比平均随机分配更有效？</p></div></div>
 <p class="sources">UNSW、CIC、UNSW2018、Deakin 的机制分解均显示：观测窗口和 dummy 混合是效果解释的重要部分，不能把总下降都归因于“真实指纹被抹去”。</p>
 </section>
 
-<section class="slide">
-<div class="eyebrow">04 · Trigger 与映射</div><h2>Trigger 内容与“类别对应哪个位置”是两个问题</h2>
+<section class="slide compact">
+<div class="eyebrow">05 · Trigger 与映射</div><h2>Trigger 内容与“类别对应哪个位置”是两个问题</h2>
 <div class="table-wrap"><table><thead><tr><th>对照</th><th>UNSW RF BA</th><th>CIC RF BA</th><th>说明</th></tr></thead><tbody><tr><td>静态类位置（无 rotation）</td><td class="num">0.997</td><td class="num">0.993</td><td>静态关联能被学习</td></tr><tr><td>类位置 + mapping rotation</td><td class="num">0.405</td><td class="num">0.057</td><td>块级切换造成明显表示失配</td></tr><tr><td>随机位置</td><td class="num">0.999</td><td class="num">0.830</td><td>失去类相关位置诱导后，收益消失</td></tr></tbody></table></div>
 <div class="grid"><div class="card"><h3>Trigger code placebo</h3><p>Real 与共享长度 code 的 Placebo 保留类相关位置投放。Real−Placebo 的 LR/RF/MLP 差异较小，表明该对照主要检验 code 内容映射，不能代替位置映射切换实验。</p></div><div class="card"><h3>位置池大小 k<sub>pos</sub></h3><p>位置池变大后识别率升高：UNSW RF 从 K=1 的 0.405 到 K=8 的 0.989；CIC RF 从 0.057 到 0.771。块级协议提示位置关联的稳定性很重要。</p></div></div>
 <p class="caption">这组大幅度结果来自早期块级机制协议，不能直接当作在线 Full New5 的长期收益。</p>
@@ -70,15 +77,15 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">05 · 攻击者与评价协议</div><h2>把攻击者放进时间轴</h2>
-<div class="flow"><div class="step"><b>可信设备类别</b><span>防御端按部署身份得到类别</span></div><div class="arrow">→</div><div class="step"><b>应用扰动策略</b><span>码本与逐流 Mapping 作用于流</span></div><div class="arrow">→</div><div class="step"><b>当日 Blind 评分</b><span>只用此前到达的标签训练</span></div><div class="arrow">→</div><div class="step"><b>释放新标签</b><span>每日到达一批设备标签供后续更新</span></div></div>
+<div class="eyebrow">06 · 攻击者与评价协议</div><h2>把攻击者放进时间轴</h2>
+<div class="flow"><div class="step"><b>可信设备类别</b><span>防御端按部署身份得到类别</span></div><div class="arrow">→</div><div class="step"><b>应用扰动策略</b><span>码本与逐流 Mapping 作用于流</span></div><div class="arrow">→</div><div class="step"><b>先评分当日 Blind</b><span>模型只用截至前一日已释放的标签；当天新标签尚不可用</span></div><div class="arrow">→</div><div class="step"><b>再释放当天标签</b><span>标签仅供后续日期更新；不会回流训练当天的评分模型</span></div></div>
 <div class="grid three"><div class="card"><h3>累计攻击者</h3><p>保留并累积历史标签，持续扩大训练集。检验历史知识能否继续利用。</p></div><div class="card"><h3>14 日滑动攻击者</h3><p>训练主要依赖近期标签，强调对新分布的快速适应。</p></div><div class="card"><h3>逐步增强的模型</h3><p>LR 是线性参照；RF 可学习非线性分割；Deakin 小型 MLP 检验不同归纳偏置。</p></div></div>
 <div class="table-wrap"><table><thead><tr><th>攻击输入</th><th>它看到什么</th><th>在汇报中怎么解释</th></tr></thead><tbody><tr><td>D：64维序列</td><td>防御后前32事件的方向/长度及 log-Gap 序列</td><td>保留顺序结构，是常规序列攻击输入</td></tr><tr><td>C：45维顺序无关统计</td><td>防御后可观测汇总统计</td><td>不依赖精确位置顺序，检查统计信息是否仍可识别</td></tr><tr><td>真实包审计视图</td><td>借助 role 标记分离真实包与 dummy</td><td>仅作机制诊断，不代表普通攻击者可见输入</td></tr></tbody></table></div>
-<p class="sources">Post BA：每日模型只使用严格早于当天 Blind 的标签。日均 Post BA 是观察期内每日 Balanced Accuracy 的平均；越低表示该协议下越难识别。</p>
+<p class="sources">在线顺序为 test-then-train：每日先用截至前一日已到达的标签评分当日 Blind，再释放当天标签。当天标签不参与当天预测，只能用于后续更新。日均 Post BA 是观察期内每日 Balanced Accuracy 的平均；越低表示该协议下越难识别。</p>
 </section>
 
 <section class="slide">
-<div class="eyebrow">06 · 中间阶段成果</div><h2>从共享映射转向逐流映射，再转向新码本</h2>
+<div class="eyebrow">07 · 中间阶段成果</div><h2>从共享映射转向逐流映射，再转向新码本</h2>
 <div class="step-chart"><div><strong>Fixed</strong><span>映射长期共享</span></div><div><strong>Periodic</strong><span>一段时间内共享</span></div><div><strong>Per-flow</strong><span>每条流独立 State</span></div><div><strong>新码本</strong><span>改变位置/长度/Gap</span></div><div><strong>在线持续学习</strong><span>每日更新攻击者</span></div></div>
 <div class="table-wrap"><table><thead><tr><th>Mapping Policy</th><th>No-canonicalization</th><th>Adaptive</th><th>Oracle参考</th><th>实验读法</th></tr></thead><tbody><tr><td>Fixed Mapping</td><td class="num">0.178</td><td class="num">0.517</td><td class="num">0.517</td><td>共享 State 可被监督适应恢复</td></tr><tr><td>Periodic</td><td class="num">0.291</td><td class="num">0.550</td><td class="num">0.550</td><td>块内共享 State 仍可从标签学习</td></tr><tr><td>Per-flow</td><td class="num">0.312</td><td class="num">0.442</td><td class="num">0.539</td><td>逐流推断使 Adaptive 与 Oracle 拉开</td></tr></tbody></table></div>
 <p class="caption">这是早期 UNSW8 单 Seed、块级 8 类评价，最多每块 1024 Calibration 和 1000 Blind；Adaptive 只用设备标签，Oracle 额外使用真实 State，属于特权参考。它解释了为何研究转向在线码本变化，但绝对值不与后面的日均 Post BA 直接比较。</p>
@@ -86,7 +93,7 @@
 </section>
 
 <section class="slide dark">
-<div class="eyebrow">07 · 当前防御结构</div><h2>慢层更新码本，快层逐流抽 State</h2>
+<div class="eyebrow">08 · 当前防御结构</div><h2>慢层更新码本，快层逐流抽 State</h2>
 <p class="lead">Full New5 组合两个时间尺度：码本大约每 5 个观测日刷新；每条 flow 再独立、均匀抽取一个 State。</p>
 <div class="flow"><div class="step"><b>类别 Y</b><span>可信防御端已知</span></div><div class="arrow">→</div><div class="step"><b>State<sub>f</sub>(Y)</b><span>六个类别→Code 置换之一</span></div><div class="arrow">→</div><div class="step"><b>Code 参数</b><span>位置、Trigger 长度与 Gap</span></div><div class="arrow">→</div><div class="step"><b>T1_W3 流量</b><span>2 Trigger + 3 Weakener</span></div></div>
 <div class="grid"><div class="card"><h3>慢时间尺度</h3><p>重新生成一套合法码本，改变各 Code 对应的参数。</p></div><div class="card"><h3>快时间尺度</h3><p>逐流抽 State，改变类别使用哪个 Code；State 是类别到 Code 的置换，不是六套独立参数。</p></div></div>
@@ -94,7 +101,7 @@
 </section>
 
 <section class="slide">
-<div class="eyebrow">08 · 基线之间的关系</div><h2>五个基线，区分动态刷新与预算落点</h2>
+<div class="eyebrow">09 · 基线之间的关系</div><h2>防御方案总览与证据等级</h2>
 <div class="table-wrap"><table><thead><tr><th>基线</th><th>什么保持固定</th><th>什么发生变化</th><th>它回答的问题</th></tr></thead><tbody>
 <tr><td><b>固定码本 + IID</b></td><td>码本参数长期固定</td><td>每条 flow 独立抽六 State</td><td>只有逐流随机映射时的参照</td></tr>
 <tr><td><b>Position5</b></td><td>Trigger 长度、Gap 固定</td><td>每 5 日刷新位置，逐流 IID</td><td>位置更新本身能保留多少效果</td></tr>
@@ -105,21 +112,26 @@
 <div class="callout">前三者比较码本动态范围；Hybrid 把原有真实包 padding 预算改投长包；LT 保持原防御结构，额外加长 Trigger dummy。Hybrid 是等原 padding 开销比较，LT 相对 Full New5 有新增字节。</div>
 </section>
 
-<section class="slide">
-<div class="eyebrow">09 · 在线动态结果</div><h2>位置解释大部分 LR 收益；完整更新对 RF 仍有增量</h2>
+<section class="slide compact">
+<div class="eyebrow">10 · 在线动态结果</div><h2>位置解释大部分 LR 收益；完整更新对 RF 仍有增量</h2>
 <p>UNSW8 150 日累计 LR 与 Deakin10 50 日累计 RF 的在线开发回放：</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击者</th><th class="num">固定码本 + IID</th><th class="num">Position5</th><th class="num">Full New5</th><th>读法</th></tr></thead><tbody>
 <tr><td>UNSW8 · 累计 LR</td><td class="num">0.8054</td><td class="num">0.7704</td><td class="num">0.7683</td><td>Position5 已接近 Full</td></tr>
 <tr><td>Deakin10 · 累计 RF</td><td class="num">0.6295</td><td class="num">0.5983</td><td class="num">0.5730</td><td>Full 相对 Position5 仍有约 0.025 BA 增益</td></tr>
 </tbody></table></div>
 <figure class="chart"><svg viewBox="0 0 780 330" role="img" aria-label="固定码本、Position5、Full New5的BA配对柱状图"><line class="axis" x1="165" y1="276" x2="730" y2="276"/><line class="gridline" x1="165" y1="210" x2="730" y2="210"/><line class="gridline" x1="165" y1="144" x2="730" y2="144"/><line class="gridline" x1="165" y1="78" x2="730" y2="78"/><text x="25" y="82" font-size="14">0.8</text><text x="25" y="148" font-size="14">0.6</text><text x="25" y="214" font-size="14">0.4</text><text x="25" y="280" font-size="14">0.2</text><text x="16" y="30" font-size="13">Post BA</text><rect x="240" y="10" width="78" height="266" fill="#7f9aa5" rx="5"/><rect x="340" y="22" width="78" height="254" fill="#087f75" rx="5"/><rect x="440" y="23" width="78" height="253" fill="#e0a33b" rx="5"/><text x="246" y="298" font-size="13">UNSW Fixed</text><text x="341" y="318" font-size="13">Position5</text><text x="445" y="298" font-size="13">Full New5</text><text x="253" y="6" font-size="13">0.805</text><text x="357" y="18" font-size="13">0.770</text><text x="457" y="19" font-size="13">0.768</text><rect x="565" y="68" width="54" height="208" fill="#7f9aa5" rx="5"/><rect x="627" y="78" width="54" height="198" fill="#087f75" rx="5"/><rect x="689" y="87" width="54" height="189" fill="#e0a33b" rx="5"/><text x="551" y="298" font-size="12">Deakin Fixed</text><text x="615" y="318" font-size="12">P5</text><text x="678" y="298" font-size="12">Full</text><text x="570" y="63" font-size="12">.630</text><text x="631" y="73" font-size="12">.598</text><text x="693" y="82" font-size="12">.573</text></svg><figcaption>在线日均 Post BA。左组三柱为 UNSW8 累计 LR，右组三柱为 Deakin10 累计 RF；纵轴从0起。两组数据集和模型不同，组间只展示各自内部基线变化。</figcaption></figure>
-<h3>更新周期也经过比较</h3><div class="table-wrap"><table><thead><tr><th>码本更新周期</th><th class="num">累计 LR</th><th class="num">滑动 LR</th><th>与 25 日相比</th></tr></thead><tbody><tr><td>5 日</td><td class="num">0.7683</td><td class="num">0.7405</td><td>初轮已测周期中较低</td></tr><tr><td>10 日</td><td class="num">0.7800</td><td class="num">0.7510</td><td>略高</td></tr><tr><td>25 日</td><td class="num">0.7939</td><td class="num">0.7568</td><td>参照周期</td></tr><tr><td>50 日</td><td class="num">0.7988</td><td class="num">0.7667</td><td>较高</td></tr></tbody></table></div>
-<div class="grid"><div class="card"><h3>Position5 的角色</h3><p>简化基线，突出位置映射刷新贡献；在 UNSW8 LR 下表现接近 Full。</p></div><div class="card"><h3>Full New5 的角色</h3><p>完整动态防御参照；Deakin RF 表明长度和 Gap 的动态更新对某些攻击者仍有价值。</p></div></div>
-<p class="note">BA = Balanced Accuracy，各数据集类别数和任务难度不同，因此不要横向比较两个数据集的绝对值。表中数值是对应在线协议下的日均 Post BA，越低越好。</p>
 </section>
 
-<section class="slide">
-<div class="eyebrow">10 · Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
+<section class="slide compact">
+<div class="eyebrow">11 · 码本更新周期</div><h2>5 日刷新在已测固定周期中取得较低 BA</h2>
+<p>在 UNSW8 的累计与滑动 LR 在线回放中，较短的码本重新生成周期对应较低的日均 Post BA。此处是周期对照结果，不意味着 5 日对所有数据与攻击者都是最优。</p>
+<div class="table-wrap"><table><thead><tr><th>码本更新周期</th><th class="num">累计 LR</th><th class="num">滑动 LR</th><th>与 25 日相比</th></tr></thead><tbody><tr><td>5 日</td><td class="num">0.7683</td><td class="num">0.7405</td><td>初轮已测周期中较低</td></tr><tr><td>10 日</td><td class="num">0.7800</td><td class="num">0.7510</td><td>略高</td></tr><tr><td>25 日</td><td class="num">0.7939</td><td class="num">0.7568</td><td>参照周期</td></tr><tr><td>50 日</td><td class="num">0.7988</td><td class="num">0.7667</td><td>较高</td></tr></tbody></table></div>
+<div class="grid"><div class="card"><h3>Position5</h3><p>简化基线，突出位置映射刷新贡献；在 UNSW8 LR 下表现接近 Full New5。</p></div><div class="card"><h3>Full New5</h3><p>完整动态防御参照；Deakin RF 表明长度和 Gap 的动态更新对某些攻击者仍有价值。</p></div></div>
+<p class="note">5 日为当前已测周期中的表现，不主张为跨数据集、跨模型的普遍最优更新周期。</p>
+</section>
+
+<section class="slide compact">
+<div class="eyebrow">12 · Weakener 支线</div><h2>Hybrid：相同 padding 花费，改变预算投向</h2>
 <p>早期证据显示，平均随机 Padding 对真实包长表示的影响有限。由此提出的 Hybrid 假设是：不增加总预算，只改变预算落点，把一部分预算预留给 warmup 判定的长包候选，或许能更有效地改变攻击者可见的上行特征。Baseline 在全部合法事件中随机分配；Hybrid-25／50 分别将约 25%／50% 预算预留给长包候选，候选内部仍随机选择。三组逐 flow 实际 Padding 字节数保持一致。</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击与视图</th><th class="num">Baseline</th><th class="num">Hybrid-25</th><th class="num">Hybrid-50</th><th>结果含义</th></tr></thead><tbody>
 <tr><td>UNSW8 · 累计 RF · C</td><td class="num">0.9766</td><td class="num">0.9658</td><td class="num">0.9670</td><td>长包偏置有改善</td></tr>
@@ -134,7 +146,7 @@
 </section>
 
 <section class="slide compact">
-<div class="eyebrow">11 · 第五个基线</div><h2>LT 比例预算：把长流新增字节给一个 Trigger</h2>
+<div class="eyebrow">13 · 扩展预算方案</div><h2>LT 比例预算：把长流新增字节给一个 Trigger</h2>
 <p class="lead">早期随机 Padding 对真实包的平均影响较小。LT 保留 Full New5 的 Weakener 和五个 dummy，不改位置、State 或 Gap；只让一个原有 Trigger dummy 在部分 flow 中变长，使攻击者看到概率性的虚假大包。</p>
 <div class="flow"><div class="step"><b>Full New5</b><span>2 Trigger + 3 Weakener；原预算上限 630 B / 1.5 s</span></div><div class="arrow">→</div><div class="step"><b>仅 warmup 定比例</b><span>Deakin r<sub>b</sub>=0.1969；UNSW r<sub>b</sub>=0.08205</span></div><div class="arrow">→</div><div class="step"><b>每条 flow</b><span>额外上限 256 B；概率 0.5；Trigger 最长 1514 B</span></div></div>
 <div class="callout">许可额外字节 = min(r<sub>b</sub> × 窗口内真实上行包可 padding headroom，256 B，目标 Trigger 的合法剩余长度)。这不是把整条流总字节乘比例；长度不足或概率未命中时可不追加。五个 dummy、时延规则与 32-event 观察窗口不变。原 630 B 上限允许被突破，理论字节上限为 886 B；实际平均额外可见字节在两套数据中约为 102–106 B/flow。</div>
@@ -142,7 +154,7 @@
 </section>
 
 <section class="slide compact">
-<div class="eyebrow">12 · 长 Trigger 的实测效果</div><h2>Deakin 改善明显；UNSW 的强统计指纹仍在</h2>
+<div class="eyebrow">14 · 长 Trigger 的实测效果</div><h2>Deakin 改善明显；UNSW 的强统计指纹仍在</h2>
 <p>下表都是同一数据集内、同一 Blind 和同一攻击协议的 A/B/C 配对日均 BA；越低说明攻击者越难识别。每个数据集三个随机 seed，但只覆盖各自同一时间捕获。</p>
 <div class="table-wrap"><table><thead><tr><th>数据／攻击者</th><th class="num">A Full New5</th><th class="num">B 分散</th><th class="num">C LT 集中</th><th>读法</th></tr></thead><tbody>
 <tr><td>Deakin10 · C · 累计 RF</td><td class="num">0.5561</td><td class="num">0.4942</td><td class="num">0.4845</td><td>追加字节带来较大下降；集中又降约 0.010</td></tr>
@@ -153,20 +165,20 @@
 <tr><td>UNSW8 P8-48 · D · 滑动 LR</td><td class="num">0.7246</td><td class="num">0.7169</td><td class="num">0.7148</td><td>三 seed 均下降</td></tr>
 </tbody></table></div>
 <div class="grid"><div class="card"><h3>已有收益</h3><p>Deakin 的 C 视图六种在线攻击配置，LT 集中臂的均值全部低于原 Full New5；D 视图六种中五种均值下降。UNSW 的十二种在线配置中十一种均值下降，但多为小幅变化。</p></div><div class="card"><h3>仍然可识别</h3><p>UNSW 完整八类的 Frozen-clean C/RF 只从 0.9109 降到 0.9081；Frozen-clean C/LR 反而从 0.8615 升到 0.8930。LT 尚未解决这里的强无序统计指纹。</p></div></div>
-<p class="note">UNSW P8-48 的 Frozen 模型只在 30 个多类 Blind 日计 BA；在线回放包含全部 48 日。两种攻击权限及平均口径分开看。完整结果：<a href="长Trigger比例预算_Deakin50日配对.md">Deakin 50 日</a>、<a href="长Trigger比例预算_UNSW8_P8-48复现.md">UNSW P8-48</a>。</p>
+<p class="note">UNSW P8-48 共 48 日，其中 30 日 Blind 含至少两类、18 日为单类日。在线 A/B/C 主结果沿用原协议汇总全部 48 日；为控制日间类别构成，Frozen 对照仅在共同的 30 个多类日计 BA。共同多类日辅助结果（A/B/C）：C 累计 RF 0.9805/0.9798/0.9775，C 滑动 RF 0.7522/0.7319/0.7368，D 累计 RF 0.9306/0.9245/0.9275。完整结果：<a href="长Trigger比例预算_Deakin50日配对.md">Deakin 50 日</a>、<a href="长Trigger比例预算_UNSW8_P8-48复现.md">UNSW P8-48</a>。</p>
 </section>
 
 <section class="slide dark">
-<div class="eyebrow">13 · 从结果到解释</div><h2>我们的预测：关键是能触及多少判别信息</h2>
+<div class="eyebrow">15 · 从结果到解释</div><h2>我们的预测：关键是能触及多少判别信息</h2>
 <p class="lead">LT 在两套数据中平均都只额外增加约 105 B 可见字节，却出现很不同的 C 视图收益。我们预计，决定效果的不只是字节数，而是这些合法新增字节能否改变设备之间真正起区分作用的可观测统计。</p>
 <div class="grid"><div class="card"><h3>Deakin10</h3><p>虚假长 Trigger 进入长度统计后，多种 C 攻击的识别率下降。一个可能解释是：部分设备差异落在 LT 能改变的大包与规模特征上。</p></div><div class="card"><h3>UNSW8</h3><p>强累计 C 攻击依然接近 0.98。一个可能解释是：主要设备差异仍由当前预算难以触及的统计承担，少量追加字节只影响边缘部分。</p></div></div>
 <div class="callout">这是机制预测，不是已经完成的特征因果归因。UNSW 与 Deakin 的类别、时间捕获和攻击协议也不同，不能仅凭基线 BA 高低断定“哪个数据集更不可操作”。现阶段把 LT 保留为<strong>有额外开销、收益依赖数据与攻击者的第五基线</strong>，不声称它普遍替代 Full New5。</div>
 </section>
 
 <section class="slide">
-<div class="eyebrow">14 · 攻击者强度怎么读</div><h2>同一套基线，要看不同学习能力与特征视图</h2>
+<div class="eyebrow">16 · 攻击者强度怎么读</div><h2>同一套基线，要看不同学习能力与特征视图</h2>
 <div class="table-wrap"><table><thead><tr><th>攻击者／视图</th><th>能力说明</th><th>应与哪些结果配套看</th><th>它衡量什么</th></tr></thead><tbody>
-<tr><td>累计 LR / RF</td><td>持续累积已到达标签</td><td>同协议的五类基线 Post BA；LT 的 UNSW 与 Deakin 使用各自的完整评价期</td><td>历史数据持续可用时的适应表现</td></tr>
+<tr><td>累计 LR / RF</td><td>持续累积已到达标签</td><td>同协议防御方案的 Post BA；LT 的 UNSW 与 Deakin 使用各自的完整评价期</td><td>历史数据持续可用时的适应表现</td></tr>
 <tr><td>14 日滑动 LR / RF</td><td>主要用近期标签更新</td><td>相同数据和 Blind 下的配对基线</td><td>偏近期适应的攻击表现</td></tr>
 <tr><td>MLP</td><td>非线性模型；LT 已在 Deakin 与 UNSW 两套回放中评价</td><td>LT 与 Full New5 的同视图、同在线协议比较</td><td>检查 LR/RF 结论是否能迁移到不同模型</td></tr>
 <tr><td>顺序无关 C 视图</td><td>忽略精确序列顺序，使用可观测统计</td><td>每种防御下 C 视图的同模型结果</td><td>判断动态位置／顺序改变后，汇总统计是否仍可识别</td></tr>
@@ -175,32 +187,32 @@
 <div class="callout">D 是原 64 维序列视图；C 是 45 维顺序无关的可观测统计视图。C 视图在 Full New5 下仍可能保持很高识别率，说明降低某一种序列攻击者 BA 不等于所有身份信息都消失。</div>
 </section>
 
-<section class="slide">
-<div class="eyebrow">攻击者对照 · 零新增标签</div><h2>先看旧模型：它在部署后不再拿到新标签</h2>
+<section class="slide compact">
+<div class="eyebrow">攻击者对照 · 冻结模型（部署后无新标签）</div><h2>干净旧模型会失配，熟悉初始防御的模型仍保留较高识别率</h2>
 <p>同一 UNSW8 完整八类的 P8-48 时间段，模型在热身期训练一次，之后连续 48 个观测日不更新。Clean-model 只见过干净流量及其标签；Initial-model 见过首套防御码本与逐流 IID 下的标签。两者评分相同的后续流。</p>
 <div class="table-wrap"><table><thead><tr><th>训练来源</th><th>评分流量</th><th class="num">D视图 LR BA</th><th class="num">D视图 RF BA</th></tr></thead><tbody><tr><td>Clean-model</td><td>Clean</td><td class="num">0.850</td><td class="num">0.996</td></tr><tr><td>Clean-model</td><td>Fixed-map</td><td class="num">0.399</td><td class="num">0.441</td></tr><tr><td>Clean-model</td><td>固定码本 + IID</td><td class="num">0.430</td><td class="num">0.411</td></tr><tr><td>Clean-model</td><td>Full New5</td><td class="num">0.416</td><td class="num">0.419</td></tr><tr><td>Initial-model</td><td>Fixed-map</td><td class="num">0.767</td><td class="num">0.956</td></tr><tr><td>Initial-model</td><td>固定码本 + IID</td><td class="num">0.763</td><td class="num">0.940</td></tr><tr><td>Initial-model</td><td>Full New5</td><td class="num">0.666</td><td class="num">0.896</td></tr></tbody></table></div>
-<div class="callout">Clean-model 衡量基础扰动造成的首次分布失配。Initial-model 已认识初始防御，因而更能隔离后续码本刷新的作用：固定 IID 到 Full New5，LR 下降 0.097，RF 下降 0.044。</div>
+<div class="callout">Clean-model 的 D 视图从 Clean 的 LR/RF 0.850/0.996 降至 Full New5 下的 0.416/0.419，说明只熟悉干净源域的旧模型遭遇严重分布失配。熟悉首套防御的 Initial-model 仍达到 LR 0.666、RF 0.896；因此 Full New5 并未消除 D 视图中的设备识别信息。相对固定码本 + IID，刷新码本使 Initial-model 的 LR/RF 分别下降 0.097/0.044。</div>
 <p class="sources">P8-48 只含一个 seed、48 日，且没有部署后新增标签。它与前面的 UNSW8 150 日在线主表不是同一评价期限。</p>
 </section>
 
 <section class="slide">
-<div class="eyebrow">攻击者对照 · 可观测视图</div><h2>零标签模型在 C 视图上几乎看不到码本刷新的影响</h2>
+<div class="eyebrow">攻击者对照 · 冻结模型的可观测视图</div><h2>熟悉初始防御后，C 视图基本不受码本刷新影响</h2>
 <div class="table-wrap"><table><thead><tr><th>训练模型与输入</th><th class="num">Clean</th><th class="num">Fixed-map</th><th class="num">固定码本 + IID</th><th class="num">Full New5</th></tr></thead><tbody><tr><td>Clean-model · C · LR</td><td class="num">0.861</td><td class="num">0.861</td><td class="num">0.861</td><td class="num">0.861</td></tr><tr><td>Clean-model · C · RF</td><td class="num">0.912</td><td class="num">0.911</td><td class="num">0.911</td><td class="num">0.911</td></tr><tr><td>Initial-model · C · LR</td><td class="num">—</td><td class="num">0.875</td><td class="num">0.875</td><td class="num">0.875</td></tr><tr><td>Initial-model · C · RF</td><td class="num">—</td><td class="num">0.978</td><td class="num">0.978</td><td class="num">0.978</td></tr></tbody></table></div>
 <div class="grid"><div class="card"><h3>与强适应攻击者的关系</h3><p>零标签组让我们看清切换瞬间的分布失配；每日新增标签的累计与滑动模型，则衡量攻击者能否逐日恢复。两套指标必须分别解读。</p></div><div class="card"><h3>为什么 C 很关键</h3><p>C 是攻击者从防御后流量直接构造的无序统计。它对位置码本刷新不敏感，因此在静态和在线评价中都是重要补充。</p></div></div>
 <p class="sources">来源：<a href="P8-48静态源域对照.md">P8-48 静态源域对照</a>。C 视图的定义排除了 Trigger 长度区间；不能用它单独概括所有可观测特征。</p>
 </section>
 
 <section class="slide">
-<div class="eyebrow">15 · 机制与观察</div><h2>动态扰动能改变表示，但结果取决于攻击者怎样看流量</h2>
+<div class="eyebrow">17 · 机制与观察</div><h2>动态扰动能改变表示，但结果取决于攻击者怎样看流量</h2>
 <div class="grid three"><div class="card"><span class="tag">早期机制</span><h3>位置搜索有信号</h3><p>等成本搜索中位置最稳定，推动了映射轮换与动态码本研究。</p></div><div class="card"><span class="tag">在线结果</span><h3>新码本 + 逐流 IID</h3><p>在部分累计／滑动 LR、RF 条件下，Post BA 低于固定码本参照。</p></div><div class="card"><span class="tag">Weakener诊断</span><h3>预算去向会改统计</h3><p>Hybrid 有时改善可观测 C-RF，却可能对 LR 或 MLP 无效甚至反向。</p></div></div>
 <p class="keyline">所以当前结果最好理解为：防御对一类攻击表示造成了学习成本，但不同特征视图和模型会看到不同效果。</p>
 <p class="sources">例如 UNSW8 Full New5 下，45 维无序 C 的累计 RF BA 约为 0.9647；该值是该攻击设置下的识别结果，不应与其他任务或模型的 BA 混成一个总体强度排名。</p>
 </section>
 
 <section class="slide dark">
-<div class="eyebrow">汇报小结</div><h2>我们做了什么</h2>
-<div class="grid"><div class="card"><h3>从静态到动态</h3><p>先以等成本搜索定位位置等参数信号，再拆解真实包与 dummy 的作用，随后构建在线持续学习评价。</p></div><div class="card"><h3>形成五类基线</h3><p>固定码本 + IID 是参照；Position5 突出位置刷新；Full New5 刷新完整码本；Hybrid 改变原 Weakener 预算落点；LT 比例预算另用少量字节制造虚假长 Trigger。</p></div></div>
-<p class="keyline">最终效果由防御能改变哪些判别特征、攻击者怎样更新、以及攻击者读取哪种表示共同决定。</p>
+<div class="eyebrow">研究结论</div><h2>动态序列扰动的有效性与边界</h2>
+<div class="grid three"><div class="card"><span class="tag">发现一 · 表示</span><h3>动态刷新能制造序列失配</h3><p>位置映射刷新与 Full New5 降低了部分在线序列攻击者的 Post BA。对只见过干净流量的旧 D 模型，Full New5 造成严重失配；见过初始防御的攻击者仍保留较高识别率。</p></div><div class="card"><span class="tag">发现二 · 预算</span><h3>真实包可操作余量有限</h3><p>早期真实包 Padding 的平均作用较小。等预算 Hybrid 在 C-RF 上偶有收益，但 LR/MLP 不一致，尚未形成跨模型稳定优势。</p></div><div class="card"><span class="tag">发现三 · 长 Trigger</span><h3>扩展预算有效，但依赖数据与攻击者</h3><p>LT 每条流最多额外 256 B、以 0.5 概率加长一个 Trigger；平均新增可见字节约 102–106 B。Deakin 的多种 C 攻击改善明显，UNSW 的强 C 统计识别仍接近 0.98。</p></div></div>
+<div class="callout"><b>当前判断：</b>动态扰动的收益不只取决于刷新频率，也取决于合法预算能否触及设备之间真正有判别力、且防御者可改变的可观测特征。Deakin 与 UNSW 的差异支持这一预测，但尚未构成对特征因果贡献的直接证明。</div>
 </section>
 </main>
 <div class="progress" id="progress"></div>

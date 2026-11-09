@@ -42,7 +42,7 @@
   <h1>动态流量扰动<br>能否持续削弱设备指纹识别？</h1>
   <div class="rule"></div>
   <p class="lead">从码本刷新、真实包 Padding 到概率长 Trigger</p>
-  <div class="cover-meta">UNSW8 P8-48 · Deakin10 · 相同预算、相同 Blind、零部署后标签对照</div>
+  <div class="cover-meta">UNSW8 P8-48 · Deakin10 · 等预算消融与扩展预算实验；冻结与在线攻击对照</div>
 </section>
 
 <section class="slide">
@@ -95,7 +95,7 @@
   <div class="grid">
     <div class="card"><h3>Frozen-clean</h3><p>只用 clean warmup 训练，部署后 0 标签，模型冻结。</p></div>
     <div class="card"><h3>Frozen-initial</h3><p>用 initial defended warmup 训练，部署后 0 标签，模型冻结。</p></div>
-    <div class="card"><h3>累计 LR / RF</h3><p>用截至当日的全部历史标签训练；旧样本一直保留。</p></div>
+    <div class="card"><h3>累计 LR / RF</h3><p>每日先测试 Blind，再释放当天标签；旧样本持续保留并用于后续训练。</p></div>
     <div class="card"><h3>14 日滑动 LR / RF</h3><p>只用过去 14 个日历日的标签训练；更偏近期。</p></div>
   </div>
   <p class="note"><b>其余术语：</b>Codebook = 位置/长度/Gap 组合；State = 类别→Code 置换；Trigger = 2 个诱导包；Weakener = 3 个弱化 dummy + 有限真实包 padding。BA 越低表示防御越强。</p>
@@ -271,12 +271,12 @@
       <tr><td>D 滑动 LR</td><td class="num">0.7246</td><td class="num">0.7169</td><td class="num">0.7148</td><td class="num">−0.0098</td></tr>
     </tbody>
   </table></div>
-  <p class="note">C 累计 RF 与 Frozen-clean 残余都没有被解决；C/LR 的 Frozen-clean 反而从 0.8615 升到 0.8930。</p>
+  <p class="note">48 日中有 18 个单类 Blind 日、30 个至少两类的共同多类日。在线结果按既定 48 日口径汇总；另报告共同多类日辅助结果：C 累计 RF 的 A/B/C 为 0.9805/0.9798/0.9775，C 滑动 RF 为 0.7522/0.7319/0.7368，D 累计 RF 为 0.9306/0.9245/0.9275。C 累计 RF 与 Frozen-clean 残余都没有被解决；C/LR 的 Frozen-clean 反而从 0.8615 升到 0.8930。</p>
 
   <p class="note"><b>待验证解释：</b>Deakin 的差异更多落在 LT 可触及的大包统计；UNSW 的强残余更多来自当前预算不可操作的统计。当前没有特征因果归因，不能作为结论。</p></section>
 
 <section class="slide">
-  <div class="eyebrow">13 · 五类基线</div>
+  <div class="eyebrow">13 · 防御方案总览与证据等级</div>
   <h2>哪些方案成立，哪些不成立</h2>
   <div class="table-wrap"><table>
     <thead><tr><th>方案</th><th>机制</th><th>证据</th><th>状态</th></tr></thead>
@@ -295,11 +295,11 @@
 
 <section class="slide dark">
   <div class="eyebrow">14 · 总结</div>
-  <h2>我们做了什么</h2>
+  <h2>研究结论：动态序列扰动的有效性与边界</h2>
   <div class="grid">
     <div class="card"><h3>机制</h3><p>用位置、Gap、Dummy mixing 与窗口截断解释防御为什么改变序列表示。</p></div>
     <div class="card"><h3>演化</h3><p>从 Fixed Mapping 到 Periodic、Per-flow IID，再到 Full New5。</p></div>
-    <div class="card"><h3>边界</h3><p>Full New5 能打崩 D，但对 C 视图与 Frozen-clean 残余作用有限。</p></div>
+    <div class="card"><h3>边界</h3><p>Full New5 让只见过干净流量的旧模型在 D 视图上严重失配；熟悉初始防御的攻击者仍有较高识别率。</p></div>
     <div class="card"><h3>新证据</h3><p>概率长 Trigger 在 Deakin 的 C 上有效，在 UNSW 上收益有限。</p></div>
   </div>
   <p class="verdict">动态扰动改变了序列表示，但没有消除跨防御稳定的无序统计指纹。</p>

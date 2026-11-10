@@ -1,0 +1,1070 @@
+{
+  "dataset": "deakin10",
+  "protocol": "Deakin50",
+  "seed": 0,
+  "days": 50,
+  "return_probability": 0.48,
+  "reply_bytes": 56,
+  "delay_seconds": 0.05,
+  "mean_visible_replies": 0.9451470588235295,
+  "mean_visible_downlink_bytes": 52.92823529411765,
+  "n_blind": 6400,
+  "results": {
+    "C": {
+      "MLP": {
+        "FullNew5": {
+          "summary": {
+            "cumulative": {
+              "mean_pre_ba": 0.45661303795334496,
+              "mean_post_ba": 0.45856912344851364,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            },
+            "sliding": {
+              "mean_pre_ba": 0.35324927361929925,
+              "mean_post_ba": 0.3561111237746616,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            }
+          },
+          "daily_post": {
+            "cumulative": [
+              0.6464696172812926,
+              0.4461050724637681,
+              0.42779496413950197,
+              0.37516339869281046,
+              0.44336970899470896,
+              0.4265873015873016,
+              0.2903930750674045,
+              0.43951745718050067,
+              0.3351298937083251,
+              0.5286131996658312,
+              0.3391694403994175,
+              0.3661400328066995,
+              0.3347606499780413,
+              0.36427235316124207,
+              0.412962962962963,
+              0.43867521367521367,
+              0.39042384630619925,
+              0.5304464285714285,
+              0.48148148148148145,
+              0.5125953984287318,
+              0.47111992945326286,
+              0.5024605024605024,
+              0.4962340491752257,
+              0.24166666666666664,
+              0.5782010582010582,
+              0.48817304699657643,
+              0.48134920634920636,
+              0.49600580973129993,
+              0.5099584398976982,
+              0.4456500624978886,
+              0.5111889200124495,
+              0.5169521915046212,
+              0.41379838485101644,
+              0.4598364598364598,
+              0.47460197754315403,
+              0.502088203210223,
+              0.5125,
+              0.4493892339544513,
+              0.3762393162393162,
+              0.4556136528685549,
+              0.45857487922705314,
+              0.4694114635635104,
+              0.48700253048079134,
+              0.47538986354775825,
+              0.5155077086656034,
+              0.450051440329218,
+              0.5545634920634921,
+              0.511349104859335,
+              0.5505011293054771,
+              0.5430059523809524
+            ],
+            "sliding": [
+              0.580132049744205,
+              0.4578804347826087,
+              0.2542555483731954,
+              0.22265795206971678,
+              0.22056878306878308,
+              0.23723544973544972,
+              0.23575989782886334,
+              0.2288166996047431,
+              0.18663761801016704,
+              0.19940476190476192,
+              0.17274287497399626,
+              0.14771648104981436,
+              0.13814778216952128,
+              0.1838757949869061,
+              0.38500881834215167,
+              0.47619047619047616,
+              0.5256769374416433,
+              0.5371428571428571,
+              0.4767195767195767,
+              0.48080246913580243,
+              0.38955314009661834,
+              0.42294261179710096,
+              0.4374290741937801,
+              0.22222222222222224,
+              0.3741798941798941,
+              0.3017040149393091,
+              0.3251851851851852,
+              0.2806267806267806,
+              0.4670742753623188,
+              0.3933177933177933,
+              0.36807705538355695,
+              0.35840809753853237,
+              0.36507936507936506,
+              0.43,
+              0.43984414278531925,
+              0.3961352657004831,
+              0.5197916666666667,
+              0.3989648033126294,
+              0.4007239819004525,
+              0.43787435512925715,
+              0.4035896403650027,
+              0.42128275936755466,
+              0.40361935434399204,
+              0.420101279769472,
+              0.3104093567251462,
+              0.41916519694297466,
+              0.375,
+              0.3282049232736573,
+              0.3205933559194429,
+              0.32708333333333334
+            ]
+          }
+        },
+        "ICMP48": {
+          "summary": {
+            "cumulative": {
+              "mean_pre_ba": 0.42300363946506414,
+              "mean_post_ba": 0.4420205074230338,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            },
+            "sliding": {
+              "mean_pre_ba": 0.25611380530335026,
+              "mean_post_ba": 0.25982752924805597,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            }
+          },
+          "daily_post": {
+            "cumulative": [
+              0.4722572509457755,
+              0.3819067028985507,
+              0.30126111983254844,
+              0.3155410312273057,
+              0.32343524531024526,
+              0.37875115021854155,
+              0.37964382006527597,
+              0.4230961791831357,
+              0.3136503928170595,
+              0.491906850459482,
+              0.3368999491482329,
+              0.3755334842291364,
+              0.47283981115502854,
+              0.42450430228208014,
+              0.40767195767195763,
+              0.4493589743589744,
+              0.37841156664686076,
+              0.5532142857142857,
+              0.4844135802469136,
+              0.47971661054994386,
+              0.4384920634920635,
+              0.461546079193138,
+              0.4482415188297541,
+              0.24166666666666664,
+              0.5462049062049061,
+              0.43716153127917834,
+              0.4268253968253968,
+              0.48540305010893253,
+              0.4720348465473146,
+              0.42960119590554374,
+              0.4686937933067964,
+              0.4512747127836642,
+              0.4491410149304886,
+              0.48263588263588264,
+              0.4371543489190548,
+              0.5199309599029094,
+              0.44635416666666666,
+              0.4203416149068323,
+              0.437051282051282,
+              0.4370623131407445,
+              0.48031736446591516,
+              0.45027516884242025,
+              0.43898090637221077,
+              0.47765276718365957,
+              0.519604820131136,
+              0.4845458553791887,
+              0.5847222222222223,
+              0.48155298186468265,
+              0.546682665160926,
+              0.555859010270775
+            ],
+            "sliding": [
+              0.397036057371923,
+              0.40489130434782605,
+              0.21278172807584572,
+              0.27781408859840234,
+              0.23085016835016836,
+              0.1931216931216931,
+              0.18582375478927204,
+              0.19252305665349145,
+              0.17411451112431506,
+              0.2968358395989975,
+              0.2845570117652497,
+              0.23588917791816344,
+              0.2619949494949495,
+              0.2264870931537598,
+              0.19382716049382717,
+              0.270536408036408,
+              0.303921568627451,
+              0.31145833333333334,
+              0.2783730158730159,
+              0.3270679012345679,
+              0.19620811287477954,
+              0.23457044045279338,
+              0.28872489166606813,
+              0.08884335154826958,
+              0.29987437399202105,
+              0.22836912542794893,
+              0.20367724867724868,
+              0.20987654320987653,
+              0.2721875888036374,
+              0.25703185703185705,
+              0.2377001872873906,
+              0.2758531607636467,
+              0.18945868945868943,
+              0.24414862914862911,
+              0.34101802337096454,
+              0.2839701361440492,
+              0.35479166666666667,
+              0.2601621808143547,
+              0.2391880341880342,
+              0.23698629620198247,
+              0.38698336017176593,
+              0.3104802902317522,
+              0.27842190016103063,
+              0.2837189592338334,
+              0.2498600035442141,
+              0.24912551440329217,
+              0.24904761904761905,
+              0.25547292780748665,
+              0.25356541606541605,
+              0.27215511204481796
+            ]
+          }
+        }
+      }
+    },
+    "D": {
+      "MLP": {
+        "FullNew5": {
+          "summary": {
+            "cumulative": {
+              "mean_pre_ba": 0.44088305108343834,
+              "mean_post_ba": 0.4515173376762718,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            },
+            "sliding": {
+              "mean_pre_ba": 0.3516719585940332,
+              "mean_post_ba": 0.3522846405641636,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            }
+          },
+          "daily_post": {
+            "cumulative": [
+              0.837295850890413,
+              0.5962409420289855,
+              0.41786483824298953,
+              0.3907770515613653,
+              0.42418981481481477,
+              0.4187830687830688,
+              0.3665273423894113,
+              0.44252305665349145,
+              0.3980796527365155,
+              0.48908730158730157,
+              0.4478697732473476,
+              0.3666148666148666,
+              0.31228727492314445,
+              0.3901608679386457,
+              0.4063492063492064,
+              0.37981740481740484,
+              0.3602325778796367,
+              0.5203571428571429,
+              0.3925925925925926,
+              0.5622586980920313,
+              0.4478615520282187,
+              0.38032664503252733,
+              0.49461682108740934,
+              0.3277777777777778,
+              0.43943241943241945,
+              0.456271397447868,
+              0.41449735449735453,
+              0.42531143511535663,
+              0.45275202472293263,
+              0.4283188631014718,
+              0.46320785624191196,
+              0.4443970825044994,
+              0.4345168476747424,
+              0.4416810966810967,
+              0.41802552930003906,
+              0.4308045390794339,
+              0.5169791666666667,
+              0.3974378881987578,
+              0.4100276520864757,
+              0.4553625894802365,
+              0.5038244766505636,
+              0.4763300647803572,
+              0.4630434782608695,
+              0.5188151538265955,
+              0.4541166046429205,
+              0.5091122868900647,
+              0.49404761904761907,
+              0.47494223727040225,
+              0.46393515904385474,
+              0.6181839402427638
+            ],
+            "sliding": [
+              0.7145552035596018,
+              0.5211730072463768,
+              0.25722904546433956,
+              0.19564270152505447,
+              0.23115079365079366,
+              0.24186507936507934,
+              0.17701149425287357,
+              0.25928442028985504,
+              0.18477668845315906,
+              0.30753968253968256,
+              0.3388105887247764,
+              0.2287835621168954,
+              0.35337066315327187,
+              0.3135802469135803,
+              0.3119047619047619,
+              0.33135198135198135,
+              0.3545157456922163,
+              0.39526785714285717,
+              0.3452380952380952,
+              0.37910493827160496,
+              0.3602321524422974,
+              0.37732288351483395,
+              0.36268943474825827,
+              0.30364298724954464,
+              0.4552907223495459,
+              0.3930283224400871,
+              0.3933958633958634,
+              0.31244064577397906,
+              0.3337595907928389,
+              0.35427350427350424,
+              0.3279956427015251,
+              0.3312133226881735,
+              0.3372651714756978,
+              0.35115079365079366,
+              0.38097998588194665,
+              0.37957792039138466,
+              0.41729166666666667,
+              0.33521221532091094,
+              0.3401282051282052,
+              0.3191010006696281,
+              0.3663949275362319,
+              0.2936565951916829,
+              0.33197607545433633,
+              0.3883358759216883,
+              0.3974534821903243,
+              0.44469028913473363,
+              0.4588888888888889,
+              0.4132715017825312,
+              0.4087722462722463,
+              0.5026435574229692
+            ]
+          }
+        },
+        "ICMP48": {
+          "summary": {
+            "cumulative": {
+              "mean_pre_ba": 0.40114090595933766,
+              "mean_post_ba": 0.4081188239452374,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            },
+            "sliding": {
+              "mean_pre_ba": 0.31981047948580277,
+              "mean_post_ba": 0.323549389088938,
+              "threshold": [
+                {
+                  "regime": 0,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 1,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 2,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 3,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 4,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 10,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 5,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 6,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 7,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 8,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                },
+                {
+                  "regime": 9,
+                  "first_sustained_day": null,
+                  "first_sustained_labels": null,
+                  "horizon_days": 4,
+                  "horizon_labels": 32
+                }
+              ]
+            }
+          },
+          "daily_post": {
+            "cumulative": [
+              0.5412091573626959,
+              0.4355751811594203,
+              0.35578539107950874,
+              0.28660130718954246,
+              0.32589285714285715,
+              0.3290257648953301,
+              0.29167085929538034,
+              0.35214509222661394,
+              0.3308179837591603,
+              0.5055868838763575,
+              0.4816343642373391,
+              0.3483515947284064,
+              0.3856303720434155,
+              0.4143658810325477,
+              0.3954365079365079,
+              0.3904234654234654,
+              0.4063294004470476,
+              0.42624999999999996,
+              0.37134038800705466,
+              0.5042115600448933,
+              0.35626102292768963,
+              0.40225787284610814,
+              0.41726579520697166,
+              0.3055555555555555,
+              0.41279461279461277,
+              0.3753034547152195,
+              0.41158730158730156,
+              0.45008658734148926,
+              0.43426044330775787,
+              0.39071455919282005,
+              0.4034964863138238,
+              0.36689265078011885,
+              0.32969924812030077,
+              0.3948448773448774,
+              0.3529355901904922,
+              0.45893389245422905,
+              0.4754166666666666,
+              0.4081021394064872,
+              0.41158119658119663,
+              0.42948476360241067,
+              0.4589137144390768,
+              0.41318398409041684,
+              0.44318303811057436,
+              0.4637893041783202,
+              0.43473684210526314,
+              0.50827721661055,
+              0.4665476190476191,
+              0.4181471847632334,
+              0.41703159964029524,
+              0.5163719654528478
+            ],
+            "sliding": [
+              0.6737715170342119,
+              0.5007925724637681,
+              0.26597716009480715,
+              0.19836601307189544,
+              0.205026455026455,
+              0.21481481481481482,
+              0.17911877394636014,
+              0.20386610671936758,
+              0.1901779230210603,
+              0.26686507936507936,
+              0.24865040565841484,
+              0.19822153155486488,
+              0.2391235726833553,
+              0.24567901234567902,
+              0.3090608465608466,
+              0.33371212121212124,
+              0.3100713012477718,
+              0.3638095238095238,
+              0.33485110568443904,
+              0.3128423120089787,
+              0.30385802469135803,
+              0.3042138460095116,
+              0.3182689315042257,
+              0.25901639344262295,
+              0.3952754435107376,
+              0.40823996265172735,
+              0.3908032708032708,
+              0.2789648622981956,
+              0.30164641943734016,
+              0.31527777777777777,
+              0.3556956115779645,
+              0.31093113573931985,
+              0.319919456761562,
+              0.3506746031746032,
+              0.3589768981925845,
+              0.35557916707986836,
+              0.40645833333333337,
+              0.31668046928916493,
+              0.32303418803418804,
+              0.30676494166690244,
+              0.307457729468599,
+              0.31243231535629196,
+              0.31713058814508094,
+              0.4004830917874396,
+              0.3761864256601098,
+              0.3897660467104912,
+              0.4856349206349206,
+              0.38351352398666977,
+              0.405513468013468,
+              0.3242734593837535
+            ]
+          }
+        }
+      }
+    }
+  }
+}
